@@ -159,17 +159,17 @@ class SoapWebServiceController implements ContainerAwareInterface
             ->build()
         ;
 
-//        ob_start();
-//        $server->handle(
-//            '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://besim.pl/soap/exception/1.0/">'.
-//            '<soapenv:Header/>'.
-//            '<soapenv:Body>'.
-//            '<ns:exception />'.
-//            '</soapenv:Body>'.
-//            '</soapenv:Envelope>'
-//        );
-//
-//        return new Response(ob_get_clean());
+        ob_start();
+        $server->handle(
+            '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://besim.pl/soap/exception/1.0/">'.
+            '<soapenv:Header/>'.
+            '<soapenv:Body>'.
+            '<ns:exception />'.
+            '</soapenv:Body>'.
+            '</soapenv:Envelope>'
+        );
+
+        return new Response(ob_get_clean());
     }
 
     /**
