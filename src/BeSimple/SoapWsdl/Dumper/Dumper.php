@@ -16,63 +16,85 @@ use BeSimple\SoapCommon\Definition\Definition;
 use BeSimple\SoapCommon\Definition\Method;
 use BeSimple\SoapCommon\Definition\Type\ArrayOfType;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
+use DOMDocument;
+use DOMElement;
+use Exception;
+use InvalidArgumentException;
+use const SOAP_1_2;
 
 /**
  * @author Francis Besset <francis.besset@gmail.com>
  */
 class Dumper
 {
-    const XML_NS = 'xmlns';
+    const XML_NS     = 'xmlns';
     const XML_NS_URI = 'http://www.w3.org/2000/xmlns/';
 
-    const WSDL_NS = 'wsdl';
+    const WSDL_NS     = 'wsdl';
     const WSDL_NS_URI = 'http://schemas.xmlsoap.org/wsdl/';
 
-    const SOAP_NS = 'soap';
+    const SOAP_NS     = 'soap';
     const SOAP_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap/';
 
-    const SOAP12_NS = 'soap12';
+    const SOAP12_NS     = 'soap12';
     const SOAP12_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap12/';
 
-    const SOAP_ENC_NS = 'soap-enc';
+    const SOAP_ENC_NS  = 'soap-enc';
     const SOAP_ENC_URI = 'http://schemas.xmlsoap.org/soap/encoding/';
 
-    const XSD_NS = 'xsd';
+    const XSD_NS     = 'xsd';
     const XSD_NS_URI = 'http://www.w3.org/2001/XMLSchema';
 
     const TYPES_NS = 'tns';
 
+    /**
+     * @var Definition
+     */
     protected $definition;
     protected $options;
 
     protected $version11;
     protected $version12;
 
+    /**
+     * @var DOMDocument
+     */
     protected $document;
     protected $domDefinitions;
     protected $domSchema;
     protected $domService;
     protected $domPortType;
 
-    public function __construct(Definition $definition, array $options = array())
+    /**
+     * Dumper constructor.
+     *
+     * @param Definition $definition
+     * @param array $options
+     */
+    public function __construct(Definition $definition, array $options = [])
     {
         $this->definition = $definition;
-        $this->document = new \DOMDocument('1.0', 'utf-8');
+        $this->document = new DOMDocument('1.0', 'utf-8');
 
         $this->setOptions($options);
     }
 
+    /**
+     * @param array $options
+     *
+     * @return $this
+     */
     public function setOptions(array $options)
     {
-        $this->options = array(
-            'version11_class' => 'BeSimple\\SoapWsdl\\Dumper\\Version11',
-            'version12_class' => 'BeSimple\\SoapWsdl\\Dumper\\Version12',
-            'version11_name' => $this->definition->getName(),
-            'version12_name' => $this->definition->getName().'12',
-            'stylesheet' => null,
-        );
+        $this->options = [
+            'version11_class' => Version11::class,
+            'version12_class' => Version12::class,
+            'version11_name'  => $this->definition->getName(),
+            'version12_name'  => $this->definition->getName() . '12',
+            'stylesheet'      => null,
+        ];
 
-        $invalid = array();
+        $invalid = [];
         foreach ($options as $key => $value) {
             if (array_key_exists($key, $this->options)) {
                 $this->options[$key] = $value;
@@ -82,16 +104,25 @@ class Dumper
         }
 
         if ($invalid) {
-            throw new \InvalidArgumentException(sprintf('The Definition does not support the following options: "%s"', implode('", "', $invalid)));
+            throw new InvalidArgumentException(
+                sprintf('The Definition does not support the following options: "%s"',
+                    implode('", "', $invalid))
+            );
         }
 
         return $this;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     *
+     * @return $this
+     */
     public function setOption($key, $value)
     {
         if (!array_key_exists($key, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         $this->options[$key] = $value;
@@ -99,15 +130,24 @@ class Dumper
         return $this;
     }
 
+    /**
+     * @param $key
+     *
+     * @return mixed
+     */
     public function getOption($key)
     {
         if (!array_key_exists($key, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         return $this->options[$key];
     }
 
+    /**
+     * @return string
+     * @throws Exception
+     */
     public function dump()
     {
         $this->addDefinitions();
@@ -140,10 +180,13 @@ class Dumper
         $this->domService->appendChild($servicePort);
     }
 
+    /**
+     * @return DOMElement
+     */
     protected function addService()
     {
         $this->domService = $this->document->createElement('service');
-        $this->domService->setAttribute('name', $this->definition->getName().'Service');
+        $this->domService->setAttribute('name', $this->definition->getName() . 'Service');
 
         $this->domDefinitions->appendChild($this->domService);
 
@@ -154,15 +197,15 @@ class Dumper
     {
         $this->domDefinitions = $this->document->createElement('definitions');
         $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS, static::WSDL_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS.':'.static::TYPES_NS, $this->definition->getNamespace());
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS.':'.static::SOAP_NS, static::SOAP_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS.':'.static::SOAP12_NS, static::SOAP12_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS.':'.static::XSD_NS, static::XSD_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS.':'.static::SOAP_ENC_NS, static::SOAP_ENC_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS.':'.static::WSDL_NS, static::WSDL_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::TYPES_NS,  $this->definition->getNamespace());
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP_NS,static::SOAP_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP12_NS,static::SOAP12_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::XSD_NS,static::XSD_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP_ENC_NS,static::SOAP_ENC_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::WSDL_NS,static::WSDL_NS_URI);
 
         foreach ($this->definition->getTypeRepository()->getXmlNamespaces() as $prefix => $uri) {
-            $this->domDefinitions->setAttributeNs(static::XML_NS_URI, static::XML_NS.':'.$prefix, $uri);
+            $this->domDefinitions->setAttributeNs(static::XML_NS_URI, static::XML_NS . ':' . $prefix, $uri);
         }
 
         $this->domDefinitions->setAttribute('name', $this->definition->getName());
@@ -171,6 +214,9 @@ class Dumper
         $this->document->appendChild($this->domDefinitions);
     }
 
+    /**
+     * @throws Exception
+     */
     protected function addMethods()
     {
         $this->addPortType();
@@ -203,9 +249,9 @@ class Dumper
                 $partElement->setAttribute('name', $part->getName());
 
                 if ($type instanceof ComplexType) {
-                    $partElement->setAttribute('element', static::TYPES_NS.':'.$type->getXmlType());
+                    $partElement->setAttribute('type', static::TYPES_NS . ':' . $type->getXmlType());
                 } else {
-                    $partElement->setAttribute('element', $type);
+                    $partElement->setAttribute('type', $type);
                 }
 
                 $messageElement->appendChild($partElement);
@@ -215,15 +261,17 @@ class Dumper
         }
     }
 
+    /**
+     * @return DOMElement
+     * @throws Exception
+     */
     protected function addComplexTypes()
     {
-        $types = $this->document->createElement(static::WSDL_NS . ':types');
+        $types = $this->document->createElement('types');
         $this->domDefinitions->appendChild($types);
 
-        $this->domSchema = $this->document->createElement(static::XSD_NS.':schema');
+        $this->domSchema = $this->document->createElement(static::XSD_NS . ':schema');
         $this->domSchema->setAttribute('targetNamespace', $this->definition->getNamespace());
-        $this->domSchema->setAttribute('elementFormDefault', 'unqualified');
-        $this->domSchema->setAttribute(static::XML_NS.':'.static::XSD_NS, static::XSD_NS_URI);
         $types->appendChild($this->domSchema);
 
         foreach ($this->definition->getTypeRepository()->getComplexTypes() as $type) {
@@ -233,12 +281,17 @@ class Dumper
         return $types;
     }
 
+    /**
+     * @param ComplexType $type
+     *
+     * @throws Exception
+     */
     protected function addComplexType(ComplexType $type)
     {
-        $complexType = $this->document->createElement(static::XSD_NS.':complexType');
+        $complexType = $this->document->createElement(static::XSD_NS . ':complexType');
         $complexType->setAttribute('name', $type->getXmlType());
 
-        $all = $this->document->createElement(static::XSD_NS.':'.'sequence');
+        $all = $this->document->createElement(static::XSD_NS.':'.($type instanceof ArrayOfType ? 'sequence' : 'all'));
         $complexType->appendChild($all);
 
         foreach ($type->all() as $child) {
@@ -246,9 +299,9 @@ class Dumper
             $childType = $this->definition->getTypeRepository()->getType($child->getType());
 
             if ($child->isAttribute()) {
-                $element = $this->document->createElement(static::XSD_NS.':attribute');
+                $element = $this->document->createElement(static::XSD_NS . ':attribute');
             } else {
-                $element = $this->document->createElement(static::XSD_NS.':element');
+                $element = $this->document->createElement(static::XSD_NS . ':element');
             }
             $element->setAttribute('name', $child->getName());
 
@@ -258,22 +311,18 @@ class Dumper
                     $name = $childType->getName();
                 }
 
-                $element->setAttribute('type', static::TYPES_NS.':'.$name);
+                $element->setAttribute('type', static::TYPES_NS . ':' . $name);
             } else {
                 $element->setAttribute('type', $childType);
             }
 
             if ($child->isNillable()) {
-                $element->setAttribute('minOccurs', 0);
-            } else {
-                $element->setAttribute('minOccurs', 1);
+                $element->setAttribute('nillable', 'true');
             }
 
             if ($type instanceof ArrayOfType || $isArray) {
                 $element->setAttribute('minOccurs', 0);
                 $element->setAttribute('maxOccurs', 'unbounded');
-            } else {
-                $element->setAttribute('maxOccurs', 1);
             }
 
             if ($child->isAttribute()) {
@@ -289,23 +338,31 @@ class Dumper
     protected function addPortType()
     {
         $this->domPortType = $this->document->createElement('portType');
-        $this->domPortType->setAttribute('name', $this->definition->getName().'PortType');
+        $this->domPortType->setAttribute('name', $this->definition->getName() . 'PortType');
 
         $this->domDefinitions->appendChild($this->domPortType);
     }
 
+    /**
+     * @param Method $method
+     *
+     * @return DOMElement
+     */
     protected function addPortOperation(Method $method)
     {
         $operation = $this->document->createElement('operation');
         $operation->setAttribute('name', $method->getName());
 
-        foreach (array('input' => $method->getInput(), 'output' => $method->getOutput(), 'fault' => $method->getFault()) as $type => $message) {
+        foreach (array('input'  => $method->getInput(),
+                       'output' => $method->getOutput(),
+                       'fault'  => $method->getFault(),
+                 ) as $type => $message) {
             if ('fault' === $type && $message->isEmpty()) {
                 continue;
             }
 
             $node = $this->document->createElement($type);
-            $node->setAttribute('message', static::TYPES_NS.':'.$message->getName());
+            $node->setAttribute('message', static::TYPES_NS . ':' . $message->getName());
 
             $operation->appendChild($node);
         }
@@ -318,21 +375,30 @@ class Dumper
     protected function addStylesheet()
     {
         if ($this->options['stylesheet']) {
-            $stylesheet = $this->document->createProcessingInstruction('xml-stylesheet', sprintf('type="text/xsl" href="%s"', $this->options['stylesheet']));
+            $stylesheet = $this->document->createProcessingInstruction('xml-stylesheet',
+                sprintf('type="text/xsl" href="%s"', $this->options['stylesheet']));
 
             $this->document->insertBefore($stylesheet, $this->document->documentElement);
         }
     }
 
+    /**
+     * @param $version
+     *
+     * @return mixed
+     */
     protected function getVersion($version)
     {
-        if (\SOAP_1_2 === $version) {
+        if (SOAP_1_2 === $version) {
             return $this->getVersion12();
         }
 
         return $this->getVersion11();
     }
 
+    /**
+     * @return mixed
+     */
     protected function getVersion11()
     {
         if (!$this->version11) {
@@ -341,7 +407,7 @@ class Dumper
                 static::TYPES_NS,
                 $this->options['version11_name'],
                 $this->definition->getNamespace(),
-                static::TYPES_NS.':'.$this->definition->getName().'PortType',
+                static::TYPES_NS . ':' . $this->definition->getName() . 'PortType',
                 $this->definition->getOption('location'),
                 $this->definition->getOption('style')
             );
@@ -350,6 +416,9 @@ class Dumper
         return $this->version11;
     }
 
+    /**
+     * @return mixed
+     */
     protected function getVersion12()
     {
         if (!$this->version12) {
@@ -358,7 +427,7 @@ class Dumper
                 static::TYPES_NS,
                 $this->options['version12_name'],
                 $this->definition->getNamespace(),
-                static::TYPES_NS.':'.$this->definition->getName().'PortType',
+                static::TYPES_NS . ':' . $this->definition->getName() . 'PortType',
                 $this->definition->getOption('location'),
                 $this->definition->getOption('style')
             );

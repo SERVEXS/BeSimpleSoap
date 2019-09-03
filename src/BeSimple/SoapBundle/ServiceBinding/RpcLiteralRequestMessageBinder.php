@@ -22,7 +22,7 @@ use BeSimple\SoapCommon\Util\MessageBinder;
  * @author Christian Kerl <christian-kerl@web.de>
  * @author Francis Besset <francis.besset@gmail.com>
  */
-class RpcLiteralResponseMessageBinder implements MessageBinderInterface
+class RpcLiteralRequestMessageBinder implements MessageBinderInterface
 {
     protected $typeRepository;
 
