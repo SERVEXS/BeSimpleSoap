@@ -32,66 +32,93 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
     {
         $this->typeRepository = $typeRepository;
 
-        $parts = $messageDefinition->getOutput()->all();
-        $part = array_shift($parts);
+        $result = array();
+        $i      = 0;
 
-        return $this->processType($part->getType(), $message);
+        foreach ($messageDefinition->getInput()->all() as $argument) {
+            if (isset($message[$i])) {
+                $result[$argument->getName()] = $this->processType($argument->getType(), $message[$i]);
+            }
+
+            $i++;
+        }
+
+        return $result;
     }
 
-    private function processType($phpType, $message)
+    protected function processType($phpType, $message)
     {
         $isArray = false;
 
         $type = $this->typeRepository->getType($phpType);
         if ($type instanceof ArrayOfType) {
             $isArray = true;
+            $array = array();
 
-            $type = $this->typeRepository->getType($type->get('item')->getType());
+            $phpType = substr($type->getPhpType(), 0, strlen($type->getPhpType()) - 2);
+            $type = $this->typeRepository->getType($phpType);
         }
 
+        // @TODO Fix array reference
         if ($type instanceof ComplexType) {
             $phpType = $type->getPhpType();
 
             if ($isArray) {
-                $array = array();
-
-                // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
-                if (is_array($message) && in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
-                    $keyValue = array();
-                    foreach ($message as $key => $value) {
-                        $keyValue[] = new $phpType($key, $value);
+                if (isset($message->item)) {
+                    foreach ($message->item as $complexType) {
+                        $array[] = $this->checkComplexType($phpType, $complexType);
                     }
 
-                    $message = $keyValue;
-                }
+                    // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
+                    if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
+                        $assocArray = array();
+                        foreach ($array as $keyValue) {
+                            $assocArray[$keyValue->getKey()] = $keyValue->getValue();
+                        }
 
-                foreach ($message as $complexType) {
-                    $array[] = $this->checkComplexType($phpType, $complexType);
+                        $array = $assocArray;
+                    }
+                }
+                if (is_array($message)) {
+                    foreach ($message as $complexType) {
+                        $array[] = $this->checkComplexType($phpType, $complexType);
+                    }
+
+                    // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
+                    if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
+                        $assocArray = array();
+                        foreach ($array as $keyValue) {
+                            $assocArray[$keyValue->getKey()] = $keyValue->getValue();
+                        }
+
+                        $array = $assocArray;
+                    }
                 }
 
                 $message = $array;
             } else {
                 $message = $this->checkComplexType($phpType, $message);
             }
+        } elseif ($isArray) {
+            if (isset($message->item)) {
+                $message = $message->item;
+            } else {
+                $message = $array;
+            }
         }
 
         return $message;
     }
 
-    private function checkComplexType($phpType, $message)
+    protected function checkComplexType($phpType, $message)
     {
         $hash = spl_object_hash($message);
         if (isset($this->messageRefs[$hash])) {
-            return clone $this->messageRefs[$hash];
+            return $this->messageRefs[$hash];
         }
 
         $this->messageRefs[$hash] = $message;
 
-        if (!$message instanceof $phpType) {
-            throw new \InvalidArgumentException(sprintf('The instance class must be "%s", "%s" given.', $phpType, get_class($message)));
-        }
-
-        $message = clone $message;
         $messageBinder = new MessageBinder($message);
         foreach ($this->typeRepository->getType($phpType)->all() as $type) {
             $property = $type->getName();
@@ -101,10 +128,9 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
                 $value = $this->processType($type->getType(), $value);
 
                 $messageBinder->writeProperty($property, $value);
-            }
-
-            if (!$type->isNillable() && null === $value) {
-                throw new \InvalidArgumentException(sprintf('"%s::%s" cannot be null.', $phpType, $type->getName()));
+            } elseif (!$type->isNillable()) {
+                // @TODO use xmlType instead of phpType
+                throw new \SoapFault('SOAP_ERROR_COMPLEX_TYPE', sprintf('"%s:%s" cannot be null.', ucfirst($phpType), $type->getName()));
             }
         }
 
