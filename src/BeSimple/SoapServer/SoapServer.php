@@ -100,34 +100,6 @@ class SoapServer extends \SoapServer
         parent::handle($soapRequest->getContent());
         $response = ob_get_clean();
 
-        $dom = \DOMDocument::loadXML($response);
-
-        /** @var \DOMElement $envelop */
-        $envelop = $dom->childNodes->item(0);
-        $ns1 = $envelop->getAttribute('xmlns:ns1');
-        $envelop->removeAttributeNS($ns1, 'ns1');
-        $envelop->prefix = 'soap';
-
-        $envelop->setAttribute('soap:encodingStyle', 'http://schemas.xmlsoap.org/soap/encoding/');
-        $envelop->setAttribute('xmlns:soapenc', 'http://schemas.xmlsoap.org/soap/encoding/');
-        $envelop->setAttribute('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
-        $envelop->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-
-        /** @var \DOMElement $body */
-        $body = $envelop->childNodes->item(0);
-        $body->prefix = 'soap';
-
-        /** @var \DOMElement $responseRoot */
-        $responseRoot = $body->childNodes->item(0);
-        $responseRoot->setAttribute('xmlns', $ns1);
-
-        $envelop->removeAttributeNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV');
-        $envelop->removeAttributeNS('http://schemas.xmlsoap.org/soap/encoding/', 'SOAP-ENC');
-
-        $response = $dom->saveXML();
-
-        $response = preg_replace('/xsi:type="ns1:\w*"/', '', $response);
-
         // Remove headers added by SoapServer::handle() method
         header_remove('Content-Length');
         header_remove('Content-Type');
