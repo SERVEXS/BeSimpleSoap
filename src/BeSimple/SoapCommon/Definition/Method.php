@@ -68,10 +68,6 @@ class Method
 
     public function setOutput($type, $name = 'return')
     {
-        if ('return' !== $name) {
-            $this->output = new Message($name);
-        }
-
         $this->output->add($name, $type);
     }
 
