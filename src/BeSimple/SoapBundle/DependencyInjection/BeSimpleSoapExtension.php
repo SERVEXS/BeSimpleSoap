@@ -37,6 +37,9 @@ class BeSimpleSoapExtension extends Extension
         'document-wrapped' => 'documentwrapped',
     );
 
+    /**
+     * @inheritDoc
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -50,7 +53,7 @@ class BeSimpleSoapExtension extends Extension
         $processor     = new Processor();
         $configuration = new Configuration();
 
-        $config = $processor->process($configuration->getConfigTree(), $configs);
+        $config = $processor->process($configuration->getConfigTree()->buildTree(), $configs);
 
         $this->registerCacheConfiguration($config['cache'], $container, $loader);
 
