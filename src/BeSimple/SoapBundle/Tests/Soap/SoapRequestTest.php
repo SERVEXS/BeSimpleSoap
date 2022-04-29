@@ -13,15 +13,16 @@
 namespace BeSimple\SoapBundle\Tests\Soap;
 
 use BeSimple\SoapBundle\Soap\SoapRequest;
+use PHPUnit\Framework\TestCase;
 
 /**
  * UnitTest for \BeSimple\SoapBundle\Soap\SoapRequest.
  *
  * @author Christian Kerl <christian-kerl@web.de>
  */
-class SoapRequestTest extends \PHPUnit_Framework_TestCase
+class SoapRequestTest extends TestCase
 {
-    public function testMtomMessage()
+    public function testMtomMessage(): void
     {
         $this->markTestSkipped('Skip because I\'m not sure that SoapRequest is used in a HTTP Request process.');
 
@@ -33,7 +34,7 @@ class SoapRequestTest extends \PHPUnit_Framework_TestCase
         $message = $request->getSoapMessage();
 
         $this->assertEquals(735, strlen(trim($message)));
-        $this->assertEquals(1, count($request->getSoapAttachments()));
+        $this->assertCount(1, $request->getSoapAttachments());
 
         $attachment = $request->getSoapAttachments()->get('http://tempuri.org/1/632618206527087310');
 

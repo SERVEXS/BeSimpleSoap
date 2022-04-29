@@ -12,12 +12,11 @@
 
 namespace BeSimple\SoapClient\Tests;
 
+use BeSimple\SoapClient\Curl;
 use BeSimple\SoapClient\WsdlDownloader;
 use BeSimple\SoapCommon\Cache;
-use BeSimple\SoapClient\Curl;
-use Symfony\Component\Filesystem\Filesystem;
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamWrapper;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @author Andreas Schamberger <mail@andreass.net>
@@ -32,7 +31,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     /**
      * @dataProvider provideDownload
      */
-    public function testDownload($source, $regexp, $nbDownloads)
+    public function testDownload($source, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
         $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
@@ -49,10 +48,10 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         $cacheFileName = $wsdlDownloader->download($source);
         $this->assertCount($nbDownloads, $wsdlCacheDir->getChildren());
 
-        $this->assertRegExp('#'.sprintf($regexp, $cacheDirForRegExp).'#', file_get_contents($cacheFileName));
+        $this->assertMatchesRegularExpression('#' . sprintf($regexp, $cacheDirForRegExp) . '#', file_get_contents($cacheFileName));
     }
 
-    public function provideDownload()
+    public function provideDownload(): array
     {
         return array(
             array(
@@ -78,7 +77,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         );
     }
 
-    public function testIsRemoteFile()
+    public function testIsRemoteFile(): void
     {
         $wsdlDownloader = new WsdlDownloader(new Curl());
 
@@ -106,7 +105,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     /**
      * @dataProvider provideResolveWsdlIncludes
      */
-    public function testResolveWsdlIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads)
+    public function testResolveWsdlIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
         $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
@@ -128,10 +127,10 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         $m->invoke($wsdlDownloader, file_get_contents($source), $cacheFile, $remoteParentUrl);
         $this->assertCount($nbDownloads, $wsdlCacheDir->getChildren());
 
-        $this->assertRegExp('#'.sprintf($regexp, $cacheDirForRegExp).'#', file_get_contents($cacheFile));
+        $this->assertMatchesRegularExpression('#' . sprintf($regexp, $cacheDirForRegExp) . '#', file_get_contents($cacheFile));
     }
 
-    public function provideResolveWsdlIncludes()
+    public function provideResolveWsdlIncludes(): array
     {
         $remoteUrlAbsolute = sprintf('http://localhost:%d/build_include/wsdlinctest_absolute.xml', WEBSERVER_PORT);
         $remoteUrlRelative = sprintf('http://localhost:%d/wsdlinclude/wsdlinctest_relative.xml', WEBSERVER_PORT);
@@ -171,7 +170,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     /**
      * @dataProvider provideResolveXsdIncludes
      */
-    public function testResolveXsdIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads)
+    public function testResolveXsdIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
         $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
@@ -193,10 +192,10 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         $m->invoke($wsdlDownloader, file_get_contents($source), $cacheFile, $remoteParentUrl);
         $this->assertCount($nbDownloads, $wsdlCacheDir->getChildren());
 
-        $this->assertRegExp('#'.sprintf($regexp, $cacheDirForRegExp).'#', file_get_contents($cacheFile));
+        $this->assertMatchesRegularExpression('#' . sprintf($regexp, $cacheDirForRegExp) . '#', file_get_contents($cacheFile));
     }
 
-    public function provideResolveXsdIncludes()
+    public function provideResolveXsdIncludes(): array
     {
         $remoteUrlAbsolute = sprintf('http://localhost:%d/build_include/xsdinctest_absolute.xml', WEBSERVER_PORT);
         $remoteUrlRelative = sprintf('http://localhost:%d/xsdinclude/xsdinctest_relative.xml', WEBSERVER_PORT);
@@ -233,7 +232,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         );
     }
 
-    public function testResolveRelativePathInUrl()
+    public function testResolveRelativePathInUrl(): void
     {
         $wsdlDownloader = new WsdlDownloader(new Curl());
 
@@ -266,7 +265,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         $this->assertEquals('http://localhost/test', $m->invoke($wsdlDownloader, 'http://localhost/sub/sub/sub/', '../../../test'));
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -282,7 +281,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
 

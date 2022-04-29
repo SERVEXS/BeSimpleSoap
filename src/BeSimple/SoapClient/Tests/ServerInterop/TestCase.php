@@ -2,11 +2,11 @@
 
 namespace BeSimple\SoapClient\Tests\ServerInterop;
 
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
-        if (version_compare(PHP_VERSION, '5.3.0', '=')) {
+        if (PHP_VERSION_ID === 50300) {
             $this->markTestSkipped(
                 'The PHP cli webserver is not available with PHP 5.3.'
             );

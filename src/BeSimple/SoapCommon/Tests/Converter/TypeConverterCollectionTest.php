@@ -15,15 +15,16 @@ namespace BeSimple\SoapCommon\Tests\Converter;
 use BeSimple\SoapCommon\Converter\TypeConverterCollection;
 use BeSimple\SoapCommon\Converter\DateTimeTypeConverter;
 use BeSimple\SoapCommon\Converter\DateTypeConverter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * UnitTest for \BeSimple\SoapCommon\Converter\TypeConverterCollection.
  *
  * @author Francis Besset <francis.besset@gmail.com>
  */
-class TypeConverterCollectionTest extends \PHPUnit_Framework_TestCase
+class TypeConverterCollectionTest extends TestCase
 {
-    public function testAdd()
+    public function testAdd(): void
     {
         $converters = new TypeConverterCollection();
 
@@ -38,7 +39,7 @@ class TypeConverterCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array($dateTimeTypeConverter, $dateTypeConverter), $converters->all());
     }
 
-    public function testGetTypemap()
+    public function testGetTypemap(): void
     {
         $converters = new TypeConverterCollection();
 
@@ -63,7 +64,7 @@ class TypeConverterCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Closure', $typemap[1]['to_xml']);
     }
 
-    public function testSet()
+    public function testSet(): void
     {
         $converters = new TypeConverterCollection();
 
@@ -76,7 +77,7 @@ class TypeConverterCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($converter, $converters->all());
     }
 
-    public function testAddCollection()
+    public function testAddCollection(): void
     {
         $converters1 = new TypeConverterCollection();
         $converters2 = new TypeConverterCollection();
@@ -87,7 +88,7 @@ class TypeConverterCollectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(array($dateTimeTypeConverter), $converters1->all());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $converters1->addCollection($converters2);
     }
 }

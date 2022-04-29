@@ -15,10 +15,11 @@ namespace BeSimple\SoapCommon\Tests;
 use BeSimple\SoapCommon\Cache;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamWrapper;
+use PHPUnit\Framework\TestCase;
 
-class SoapRequestTest extends \PHPUnit_Framework_TestCase
+class SoapRequestTest extends TestCase
 {
-    public function testSetEnabled()
+    public function testSetEnabled(): void
     {
         Cache::setEnabled(Cache::ENABLED);
         $this->assertEquals(Cache::ENABLED, Cache::isEnabled());
@@ -27,13 +28,13 @@ class SoapRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Cache::DISABLED, Cache::isEnabled());
     }
 
-    public function testSetEnabledBadValue()
+    public function testSetEnabledBadValue(): void
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         Cache::setEnabled('foo');
     }
 
-    public function testSetType()
+    public function testSetType(): void
     {
         Cache::setType(Cache::TYPE_DISK);
         $this->assertEquals(Cache::TYPE_DISK, Cache::getType());
@@ -42,13 +43,13 @@ class SoapRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Cache::TYPE_NONE, Cache::getType());
     }
 
-    public function testSetTypeBadValue()
+    public function testSetTypeBadValue(): void
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         Cache::setType('foo');
     }
 
-    public function testSetDirectory()
+    public function testSetDirectory(): void
     {
         vfsStream::setup('Fixtures');
 
@@ -65,7 +66,7 @@ class SoapRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(vfsStreamWrapper::getRoot()->hasChild('bar'));
     }
 
-    public function testSetLifetime()
+    public function testSetLifetime(): void
     {
         Cache::setLifetime(1234);
         $this->assertEquals(1234, Cache::getLifetime());
@@ -74,7 +75,7 @@ class SoapRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(4321, Cache::getLifetime());
     }
 
-    public function testSetLimit()
+    public function testSetLimit(): void
     {
         Cache::setLimit(10);
         $this->assertEquals(10, Cache::getLimit());
@@ -83,7 +84,7 @@ class SoapRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, Cache::getLimit());
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         ini_restore('soap.wsdl_cache_enabled');
         ini_restore('soap.wsdl_cache');

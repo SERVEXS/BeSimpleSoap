@@ -12,13 +12,13 @@
 
 namespace BeSimple\SoapCommon\Tests;
 
+use BeSimple\SoapClient\Tests\ServerInterop\TestCase;
 use BeSimple\SoapCommon\Mime\MultiPart;
 use BeSimple\SoapCommon\Mime\Part;
-use BeSimple\SoapCommon\Mime\PartHeader;
 
-class MultiPartTest extends \PHPUnit_Framework_TestCase
+class MultiPartTest extends TestCase
 {
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $mp = new MultiPart();
 
@@ -26,10 +26,10 @@ class MultiPartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('multipart/related', $mp->getHeader('Content-Type'));
         $this->assertEquals('text/xml', $mp->getHeader('Content-Type', 'type'));
         $this->assertEquals('utf-8', $mp->getHeader('Content-Type', 'charset'));
-        $this->assertRegExp('~urn:uuid:.*~', $mp->getHeader('Content-Type', 'boundary'));
+        $this->assertMatchesRegularExpression('~urn:uuid:.*~', $mp->getHeader('Content-Type', 'boundary'));
     }
 
-    public function testGetMimeMessage()
+    public function testGetMimeMessage(): void
     {
         $mp = new MultiPart();
 
@@ -55,7 +55,7 @@ class MultiPartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(259, strlen($mp->getMimeMessage()));
     }
 
-    public function testGetMimeMessageWithHeaders()
+    public function testGetMimeMessageWithHeaders(): void
     {
         $mp = new MultiPart();
 
@@ -85,7 +85,7 @@ class MultiPartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(458, strlen($mp->getMimeMessage(true)));
     }
 
-    public function testGetHeadersForHttp()
+    public function testGetHeadersForHttp(): void
     {
         $mp = new MultiPart();
 
@@ -102,7 +102,7 @@ class MultiPartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $mp->getHeadersForHttp());
     }
 
-    public function testAddGetPart()
+    public function testAddGetPart(): void
     {
         $mp = new MultiPart();
 
@@ -112,7 +112,7 @@ class MultiPartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $mp->getPart('mycontentid'));
     }
 
-    public function testAddGetPartWithMain()
+    public function testAddGetPartWithMain(): void
     {
         $mp = new MultiPart();
 
@@ -121,7 +121,7 @@ class MultiPartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($p, $mp->getPart());
     }
 
-    public function testGetParts()
+    public function testGetParts(): void
     {
         $mp = new MultiPart();
 

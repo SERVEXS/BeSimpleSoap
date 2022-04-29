@@ -13,11 +13,11 @@
 namespace BeSimple\SoapCommon\Tests;
 
 use BeSimple\SoapCommon\Mime\Part;
-use BeSimple\SoapCommon\Mime\PartHeader;
+use PHPUnit\Framework\TestCase;
 
-class PartTest extends \PHPUnit_Framework_TestCase
+class PartTest extends TestCase
 {
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $p = new Part('<xml1/>', 'text/xml', 'utf-8', Part::ENCODING_BINARY, 'urn:myuniqueresource');
 
@@ -28,7 +28,7 @@ class PartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<urn:myuniqueresource>', $p->getHeader('Content-ID'));
     }
 
-    public function testDefaultConstructor()
+    public function testDefaultConstructor(): void
     {
         $p = new Part();
 
@@ -36,10 +36,10 @@ class PartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('application/octet-stream', $p->getHeader('Content-Type'));
         $this->assertEquals('utf-8', $p->getHeader('Content-Type', 'charset'));
         $this->assertEquals(Part::ENCODING_BINARY, $p->getHeader('Content-Transfer-Encoding'));
-        $this->assertRegExp('~<urn:uuid:.*>~', $p->getHeader('Content-ID'));
+        $this->assertMatchesRegularExpression('~<urn:uuid:.*>~', $p->getHeader('Content-ID'));
     }
 
-    public function testSetContent()
+    public function testSetContent(): void
     {
         $p = new Part();
 
@@ -47,7 +47,7 @@ class PartTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<xml1/>', $p->getContent());
     }
 
-    public function testGetMessagePart()
+    public function testGetMessagePart(): void
     {
         $p = new Part('<xml1/>', 'text/xml', 'utf-8', Part::ENCODING_BINARY, 'urn:myuniqueresource');
 

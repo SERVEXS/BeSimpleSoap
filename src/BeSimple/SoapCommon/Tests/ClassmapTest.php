@@ -13,69 +13,70 @@
 namespace BeSimple\SoapCommon\Tests;
 
 use BeSimple\SoapCommon\Classmap;
+use PHPUnit\Framework\TestCase;
 
 /**
  * UnitTest for \BeSimple\SoapCommon\Classmap.
  *
  * @author Francis Besset <francis.besset@gmail.com>
  */
-class ClassmapTest extends \PHPUnit_Framework_TestCase
+class ClassmapTest extends TestCase
 {
-    public function testAll()
+    public function testAll(): void
     {
         $classmap = new Classmap();
 
         $this->assertSame(array(), $classmap->all());
     }
 
-    public function testAdd()
+    public function testAdd(): void
     {
         $classmap = new Classmap();
 
-        $classmap->add('foobar', 'BeSimple\SoapCommon\Classmap');
+        $classmap->add('foobar', Classmap::class);
 
-        $this->setExpectedException('InvalidArgumentException');
-        $classmap->add('foobar', 'BeSimple\SoapCommon\Classmap');
+        $this->expectException('InvalidArgumentException');
+        $classmap->add('foobar', Classmap::class);
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $classmap = new Classmap();
 
-        $classmap->add('foobar', 'BeSimple\SoapCommon\Classmap');
-        $this->assertSame('BeSimple\SoapCommon\Classmap', $classmap->get('foobar'));
+        $classmap->add('foobar', Classmap::class);
+        $this->assertSame(Classmap::class, $classmap->get('foobar'));
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $classmap->get('bar');
     }
 
-    public function testSet()
+    public function testSet(): void
     {
         $classmap = new Classmap();
 
-        $classmap->add('foobar', 'BeSimple\SoapCommon\Tests\ClassmapTest');
+        $classmap->add('foobar', __CLASS__);
         $classmap->add('foo', 'BeSimple\SoapCommon\Tests\Classmap');
 
         $map = array(
-            'foobar' => 'BeSimple\SoapCommon\Classmap',
-            'barfoo' => 'BeSimple\SoapCommon\Tests\ClassmapTest',
+            'foobar' => Classmap::class,
+            'barfoo' => __CLASS__,
         );
         $classmap->set($map);
 
         $this->assertSame($map, $classmap->all());
     }
 
-    public function testAddClassmap()
+    public function testAddClassmap(): void
     {
         $classmap1 = new Classmap();
         $classmap2 = new Classmap();
 
-        $classmap2->add('foobar', 'BeSimple\SoapCommon\Classmap');
+        $classmap2->add('foobar', Classmap::class);
         $classmap1->addClassmap($classmap2);
 
-        $this->assertEquals(array('foobar' => 'BeSimple\SoapCommon\Classmap'), $classmap1->all());
+        $this->assertEquals(array('foobar' => Classmap::class), $classmap1->all());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $classmap1->addClassmap($classmap2);
     }
 }
