@@ -15,11 +15,11 @@ namespace BeSimple\SoapCommon\Tests;
 use BeSimple\SoapCommon\Mime\MultiPart;
 use BeSimple\SoapCommon\Mime\Parser;
 use BeSimple\SoapCommon\Mime\Part;
-use BeSimple\SoapCommon\Mime\PartHeader;
+use PHPUnit\Framework\TestCase;
 
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends TestCase
 {
-    public function testParserRequestWsi()
+    public function testParserRequestWsi(): void
     {
         $filename = dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixtures/WS-I-MTOM-request.txt';
         $mimeMessage = file_get_contents($filename);
@@ -28,7 +28,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertsForWsiMtomRequest($mp);
     }
 
-    public function testParserResponseAmazon()
+    public function testParserResponseAmazon(): void
     {
         $filename = dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixtures/SwA-response-amazon.txt';
         $mimeMessage = file_get_contents($filename);
@@ -45,19 +45,19 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('xxx-MIME-Boundary-xxx-0xa36cb38-0a36cb38-xxx-END-xxx', $mp->getHeader('Content-Type', 'boundary'));
 
         $p1 = $mp->getPart();
-        $this->assertInstanceOf('BeSimple\SoapCommon\Mime\Part', $p1);
+        $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('text/xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('UTF-8', $p1->getHeader('Content-Type', 'charset'));
         $this->assertEquals(389, strlen($p1->getContent()));
 
         $p2 = $mp->getPart('0x9d6ad00-0xa19ef48-0x9de7500-0xa4fae78-0xa382698');
-        $this->assertInstanceOf('BeSimple\SoapCommon\Mime\Part', $p1);
+        $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('binary', $p2->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/binary', $p2->getHeader('Content-Type'));
         $this->assertEquals(79, strlen($p2->getContent()));
     }
 
-    public function testParserResponseAxis()
+    public function testParserResponseAxis(): void
     {
         $filename = dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixtures/SwA-response-axis.txt';
         $mimeMessage = file_get_contents($filename);
@@ -75,14 +75,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('MIMEBoundaryurn_uuid_2DB7ABF3DC5BED7FA51284209577582', $mp->getHeader('Content-Type', 'boundary'));
 
         $p1 = $mp->getPart('0.urn:uuid:2DB7ABF3DC5BED7FA51284209577583@apache.org');
-        $this->assertInstanceOf('BeSimple\SoapCommon\Mime\Part', $p1);
+        $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('8bit', $p1->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/soap+xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('utf-8', $p1->getHeader('Content-Type', 'charset'));
         $this->assertEquals(499, strlen($p1->getContent()));
     }
 
-    public function testParserResponseWsi()
+    public function testParserResponseWsi(): void
     {
         $filename = dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixtures/WS-I-MTOM-response.txt';
         $mimeMessage = file_get_contents($filename);
@@ -101,7 +101,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('uuid:b71dc628-ec8f-4422-8a4a-992f041cb94c+id=46', $mp->getHeader('Content-Type', 'boundary'));
 
         $p1 = $mp->getPart('http://tempuri.org/0');
-        $this->assertInstanceOf('BeSimple\SoapCommon\Mime\Part', $p1);
+        $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('8bit', $p1->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/xop+xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('utf-8', $p1->getHeader('Content-Type', 'charset'));
@@ -109,7 +109,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(910, strlen($p1->getContent()));
     }
 
-    public function testParserWithHeaderArray()
+    public function testParserWithHeaderArray(): void
     {
         $filename = dirname(__DIR__).DIRECTORY_SEPARATOR.'Fixtures/WS-I-MTOM-request_noheader.txt';
         $mimeMessage = file_get_contents($filename);
@@ -130,7 +130,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      * - testParserWithHeaderArray
      * - testParserRequestWsi
      */
-    private function assertsForWsiMtomRequest(MultiPart $mp)
+    private function assertsForWsiMtomRequest(MultiPart $mp): void
     {
         $this->assertEquals('multipart/related', $mp->getHeader('Content-Type'));
         $this->assertEquals('application/xop+xml', $mp->getHeader('Content-Type', 'type'));
@@ -143,7 +143,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('100-continue', $mp->getHeader('Expect'));
 
         $p1 = $mp->getPart('http://tempuri.org/0');
-        $this->assertInstanceOf('BeSimple\SoapCommon\Mime\Part', $p1);
+        $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('8bit', $p1->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/xop+xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('utf-8', $p1->getHeader('Content-Type', 'charset'));
@@ -151,7 +151,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(737, strlen($p1->getContent()));
 
         $p2 = $mp->getPart('http://tempuri.org/1/632618206527087310');
-        $this->assertInstanceOf('BeSimple\SoapCommon\Mime\Part', $p1);
+        $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('binary', $p2->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/octet-stream', $p2->getHeader('Content-Type'));
         $this->assertEquals(769, strlen($p2->getContent()));

@@ -13,32 +13,33 @@
 namespace BeSimple\SoapServer\Tests;
 
 use BeSimple\SoapServer\SoapServerBuilder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * UnitTest for \BeSimple\SoapServer\SoapServerBuilder
  *
  * @author Christian Kerl <christian-kerl@web.de>
  */
-class SoapServerBuilderTest extends \PHPUnit_Framework_TestCase
+class SoapServerBuilderTest extends TestCase
 {
-    public function testUnconfiguredWsdl()
+    public function testUnconfiguredWsdl(): void
     {
         $builder = $this->getSoapServerBuilder();
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $builder->build();
     }
 
-    public function testUnconfiguredHandler()
+    public function testUnconfiguredHandler(): void
     {
         $builder = $this->getSoapServerBuilder();
         $builder->withWsdl('my.wsdl');
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $builder->build();
     }
 
-    public function getSoapServerBuilder()
+    public function getSoapServerBuilder(): SoapServerBuilder
     {
         return new SoapServerBuilder();
     }

@@ -13,10 +13,11 @@
 namespace BeSimple\SoapCommon\Tests;
 
 use BeSimple\SoapCommon\WsdlHandler;
+use PHPUnit\Framework\TestCase;
 
-class WsdlHandlerTest extends \PHPUnit_Framework_TestCase
+class WsdlHandlerTest extends TestCase
 {
-    public function testIsValidMimeTypeType()
+    public function testIsValidMimeTypeType(): void
     {
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/WsdlMimeContent.wsdl';
         $wh = new WsdlHandler($filename, SOAP_1_1);

@@ -14,24 +14,25 @@ namespace BeSimple\SoapCommon\Tests;
 
 use BeSimple\SoapCommon\WsSecurityKey;
 use ass\XmlSecurity\Key as XmlSecurityKey;
+use PHPUnit\Framework\TestCase;
 
-class WsSecurityKeyTest extends \PHPUnit_Framework_TestCase
+class WsSecurityKeyTest extends TestCase
 {
-    public function testHasKeys()
+    public function testHasKeys(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
-        $wsk->addPrivateKey(\ass\XmlSecurity\Key::RSA_SHA1, $filename);
+        $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, $filename);
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
-        $wsk->addPublicKey(\ass\XmlSecurity\Key::RSA_SHA1, $filename);
+        $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertTrue($wsk->hasKeys());
         $this->assertTrue($wsk->hasPrivateKey());
         $this->assertTrue($wsk->hasPublicKey());
     }
 
-    public function testHasKeysNone()
+    public function testHasKeysNone(): void
     {
         $wsk = new WsSecurityKey();
 
@@ -40,80 +41,80 @@ class WsSecurityKeyTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($wsk->hasPublicKey());
     }
 
-    public function testHasPrivateKey()
+    public function testHasPrivateKey(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
-        $wsk->addPrivateKey(\ass\XmlSecurity\Key::RSA_SHA1, $filename);
+        $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertFalse($wsk->hasKeys());
         $this->assertTrue($wsk->hasPrivateKey());
     }
 
-    public function testHasPublicKey()
+    public function testHasPublicKey(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
-        $wsk->addPublicKey(\ass\XmlSecurity\Key::RSA_SHA1, $filename);
+        $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertFalse($wsk->hasKeys());
         $this->assertTrue($wsk->hasPublicKey());
     }
 
-    public function testAddPrivateKey()
+    public function testAddPrivateKey(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
-        $wsk->addPrivateKey(\ass\XmlSecurity\Key::RSA_SHA1, $filename);
+        $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertTrue($wsk->hasPrivateKey());
-        $this->assertInstanceOf('ass\XmlSecurity\Key', $wsk->getPrivateKey());
+        $this->assertInstanceOf(XmlSecurityKey::class, $wsk->getPrivateKey());
     }
 
-    public function testAddPrivateKeySessionKey()
+    public function testAddPrivateKeySessionKey(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
-        $wsk->addPrivateKey(\ass\XmlSecurity\Key::TRIPLEDES_CBC);
+        $wsk->addPrivateKey(XmlSecurityKey::TRIPLEDES_CBC);
 
         $this->assertTrue($wsk->hasPrivateKey());
-        $this->assertInstanceOf('ass\XmlSecurity\Key', $wsk->getPrivateKey());
+        $this->assertInstanceOf(XmlSecurityKey::class, $wsk->getPrivateKey());
     }
 
-    public function testAddPrivateKeyNoFile()
+    public function testAddPrivateKeyNoFile(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
-        $wsk->addPrivateKey(\ass\XmlSecurity\Key::RSA_SHA1, file_get_contents($filename), false);
+        $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, file_get_contents($filename), false);
 
         $this->assertTrue($wsk->hasPrivateKey());
-        $this->assertInstanceOf('ass\XmlSecurity\Key', $wsk->getPrivateKey());
+        $this->assertInstanceOf(XmlSecurityKey::class, $wsk->getPrivateKey());
     }
 
-    public function testAddPublicKey()
+    public function testAddPublicKey(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
-        $wsk->addPublicKey(\ass\XmlSecurity\Key::RSA_SHA1, $filename);
+        $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertTrue($wsk->hasPublicKey());
-        $this->assertInstanceOf('ass\XmlSecurity\Key', $wsk->getPublicKey());
+        $this->assertInstanceOf(XmlSecurityKey::class, $wsk->getPublicKey());
     }
 
-    public function testAddPublicKeyNoFile()
+    public function testAddPublicKeyNoFile(): void
     {
         $wsk = new WsSecurityKey();
 
         $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
-        $wsk->addPublicKey(\ass\XmlSecurity\Key::RSA_SHA1, file_get_contents($filename), false);
+        $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, file_get_contents($filename), false);
 
         $this->assertTrue($wsk->hasPublicKey());
-        $this->assertInstanceOf('ass\XmlSecurity\Key', $wsk->getPublicKey());
+        $this->assertInstanceOf(XmlSecurityKey::class, $wsk->getPublicKey());
     }
 }

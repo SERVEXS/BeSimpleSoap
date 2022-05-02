@@ -11,8 +11,9 @@
 namespace BeSimple\SoapBundle\Soap;
 
 use BeSimple\SoapBundle\Util\Collection;
+use InvalidArgumentException;
+use Laminas\Mime\Message;
 use Symfony\Component\HttpFoundation\Request;
-use Zend\Mime\Message;
 
 /**
  * SoapRequest.
@@ -32,21 +33,21 @@ class SoapRequest extends Request
     protected $soapAction;
 
     /**
-     * @var \BeSimple\SoapBundle\Util\Collection
+     * @var Collection
      */
     protected $soapHeaders;
 
     /**
-     * @var \BeSimple\SoapBundle\Util\Collection
+     * @var Collection
      */
     protected $soapAttachments;
 
     /**
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
      *
      * @return SoapRequest
      */
-    public static function createFromHttpRequest(Request $request)
+    public static function createFromHttpRequest(Request $request): self
     {
         return new static($request->query->all(), $request->request->all(), $request->attributes->all(), $request->cookies->all(), $request->files->all(), $request->server->all(), $request->content);
     }
@@ -56,8 +57,8 @@ class SoapRequest extends Request
         parent::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
 
         $this->soapMessage     = null;
-        $this->soapHeaders     = new Collection('getName', 'BeSimple\SoapBundle\Soap\SoapHeader');
-        $this->soapAttachments = new Collection('getId', 'BeSimple\SoapBundle\Soap\SoapAttachment');
+        $this->soapHeaders     = new Collection('getName', SoapHeader::class);
+        $this->soapAttachments = new Collection('getId', SoapAttachment::class);
 
         $this->setRequestFormat('soap');
     }
@@ -95,8 +96,6 @@ class SoapRequest extends Request
                 case 'multipart/related':
                     if($type['type'] == 'application/xop+xml') {
                         return $this->initializeMtomSoapMessage($type, $this->getContent());
-                    } else {
-                        //log error
                     }
                     break;
                 case 'application/soap+xml':
@@ -115,7 +114,7 @@ class SoapRequest extends Request
     protected function initializeMtomSoapMessage(array $contentTypeHeader, $content)
     {
         if(!isset($contentTypeHeader['start']) || !isset($contentTypeHeader['start-info']) || !isset($contentTypeHeader['boundary'])) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $mimeMessage = Message::createFromMessage($content, $contentTypeHeader['boundary']);
@@ -130,7 +129,7 @@ class SoapRequest extends Request
         // TODO: add more checks to achieve full compatibility to MTOM spec
         // http://www.w3.org/TR/soap12-mtom/
         if($rootPart->id != $soapMimePartId || $rootPartType['_type'] != 'application/xop+xml' || $rootPartType['type'] != $soapMimePartType) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         foreach($mimeParts as $mimePart) {
@@ -154,7 +153,7 @@ class SoapRequest extends Request
         $result['_type'] = array_shift($parts);
 
         foreach($parts as $part) {
-            list($key, $value) = explode('=', trim($part), 2);
+            [$key, $value] = explode('=', trim($part), 2);
 
             $result[$key] = trim($value, '"');
         }
