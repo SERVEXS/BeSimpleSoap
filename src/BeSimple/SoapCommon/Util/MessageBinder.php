@@ -12,6 +12,9 @@
 
 namespace BeSimple\SoapCommon\Util;
 
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+
 /**
  * @author Francis Besset <francis.besset@gmail.com>
  */
@@ -23,9 +26,9 @@ class MessageBinder
     protected $message;
 
     /**
-     * @var \ReflectionClass
+     * @var PropertyAccessor
      */
-    protected $reflectionClass;
+    protected $propertyAccessor;
 
     public function __construct($message)
     {
@@ -34,68 +37,16 @@ class MessageBinder
         }
 
         $this->message = $message;
-        $this->reflectionClass = new \ReflectionClass($this->message);
+        $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
     }
 
     public function readProperty($property)
     {
-        if ($this->reflectionClass->hasMethod($getter = 'get'.$property)) {
-            if (!$this->reflectionClass->getMethod($getter)->isPublic()) {
-                throw new \RuntimeException(sprintf('Method "%s()" is not public in class "%s"', $getter, $this->reflectionClass->name));
-            }
-
-            $value = $this->message->{$getter}();
-        } elseif ($this->reflectionClass->hasMethod($isser = 'is'.$property)) {
-            if (!$this->reflectionClass->getMethod($isser)->isPublic()) {
-                throw new \RuntimeException(sprintf('Method "%s()" is not public in class "%s"', $isser, $this->reflectionClass->name));
-            }
-
-            $value = $this->message->{$isser}();
-        } elseif ($this->reflectionClass->hasMethod($hasser = 'has'.$property)) {
-            if (!$this->reflectionClass->getMethod($hasser)->isPublic()) {
-                throw new \RuntimeException(sprintf('Method "%s()" is not public in class "%s"', $hasser, $this->reflectionClass->name));
-            }
-
-            $value = $this->message->{$hasser}();
-        } elseif ($this->reflectionClass->hasMethod('__get')) {
-            // needed to support magic method __get
-            $value = $this->message->{$property};
-        } elseif ($this->reflectionClass->hasProperty($property)) {
-            $p = $this->reflectionClass->getProperty($property);
-            if (!$p->isPublic()) {
-                $p->setAccessible(true);
-            }
-
-            $value = $p->getValue($this->message);
-        } elseif (property_exists($this->message, $property)) {
-            // needed to support \stdClass instances
-            $value = $this->message->{$property};
-        }
-
-        return $value;
+        return $this->propertyAccessor->getValue($this->message, $property);
     }
 
     public function writeProperty($property, $value)
     {
-        if ($this->reflectionClass->hasMethod($setter = 'set'.$property)) {
-            if (!$this->reflectionClass->getMethod($setter)->isPublic()) {
-                throw new \RuntimeException(sprintf('Method "%s()" is not public in class "%s"', $setter, $this->reflectionClass->name));
-            }
-
-            $this->message->{$setter}($value);
-        } elseif ($this->reflectionClass->hasMethod('__set')) {
-            // needed to support magic method __set
-            $this->message->{$property} = $value;
-        } elseif ($this->reflectionClass->hasProperty($property)) {
-            $p = $this->reflectionClass->getProperty($property);
-            if (!$p->isPublic()) {
-                $p->setAccessible(true);
-            }
-
-            $p->setValue($this->message, $value);
-        } elseif (property_exists($this->message, $property)) {
-            // needed to support \stdClass instances
-            $this->message->{$property} = $value;
-        }
+        $this->propertyAccessor->setValue($this->message, $property, $value);
     }
 }
