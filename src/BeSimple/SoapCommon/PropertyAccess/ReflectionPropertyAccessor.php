@@ -12,8 +12,8 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
 
 /**
- * Symfony property access cannot access/modify private property or method there for this on nelmo/alice inspired
- * Reflection based property has been added, see links below for more information.
+ * Symfony property access cannot access a private property or method, therefore this `nelmo/alice` inspired
+ * Reflection based PropertyAccessor has been added, see links below for more information.
  *
  * @link https://github.com/symfony/symfony/issues/23938
  * @link https://github.com/symfony/symfony/issues/23938#issuecomment-325186998
