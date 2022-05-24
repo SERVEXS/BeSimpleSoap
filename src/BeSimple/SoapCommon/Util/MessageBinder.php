@@ -12,8 +12,9 @@
 
 namespace BeSimple\SoapCommon\Util;
 
+use BeSimple\SoapCommon\PropertyAccess\ReflectionPropertyAccessor;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * @author Francis Besset <francis.besset@gmail.com>
@@ -26,7 +27,7 @@ class MessageBinder
     protected $message;
 
     /**
-     * @var PropertyAccessor
+     * @var PropertyAccessorInterface
      */
     protected $propertyAccessor;
 
@@ -37,7 +38,9 @@ class MessageBinder
         }
 
         $this->message = $message;
-        $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $this->propertyAccessor = new ReflectionPropertyAccessor(
+            PropertyAccess::createPropertyAccessor()
+        );
     }
 
     public function readProperty($property)

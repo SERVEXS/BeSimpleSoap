@@ -26,6 +26,7 @@
         "ass/xmlsecurity": "~1.0",
         "symfony/framework-bundle": "^3.4|^4.0",
         "symfony/twig-bundle": "^3.4|^4.0",
+        "symfony/property-access": "^3.4|^4.0",
         "laminas/laminas-mime": "~2.7"
     },
     "replace": {
@@ -48,5 +49,8 @@
         "branch-alias": {
             "dev-master": "master-dev"
         }
+    },
+    "scripts": {
+        "tests": "phpunit"
     }
 }
