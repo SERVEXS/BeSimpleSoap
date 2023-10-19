@@ -77,6 +77,6 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
      */
     public function supports($resource, ?string $type = null): bool
     {
-        return is_string($resource) && class_exists($resource) && 'annotation_complextype' === $type;
+        return \is_string($resource) && class_exists($resource) && 'annotation_complextype' === $type;
     }
 }

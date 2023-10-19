@@ -150,7 +150,7 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
         );
 
         $result = $result['simple_arrays'];
-        $this->assertEquals(null, $result->array1);
+        $this->assertNull($result->array1);
         $this->assertEquals([], $result->getArray2());
         $this->assertEquals($array, $result->getArray3());
     }

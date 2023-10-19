@@ -48,7 +48,7 @@ class SoapResponse extends Response
     /**
      * @param mixed|null $value
      */
-    public function setReturnValue($value): SoapResponse
+    public function setReturnValue($value): self
     {
         $this->soapReturnValue = $value;
 

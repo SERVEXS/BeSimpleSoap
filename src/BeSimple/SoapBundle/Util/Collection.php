@@ -41,7 +41,7 @@ class Collection implements \IteratorAggregate, \Countable
     public function add($element): void
     {
         if ($this->class && !$element instanceof $this->class) {
-            throw new \InvalidArgumentException(sprintf('Cannot add class "%s" because it is not an instance of "%s"', get_class($element), $this->class));
+            throw new \InvalidArgumentException(sprintf('Cannot add class "%s" because it is not an instance of "%s"', $element::class, $this->class));
         }
 
         $this->elements[$element->{$this->getter}()] = $element;
@@ -81,7 +81,7 @@ class Collection implements \IteratorAggregate, \Countable
 
     public function count(): int
     {
-        return count($this->elements);
+        return \count($this->elements);
     }
 
     public function getIterator(): \ArrayIterator

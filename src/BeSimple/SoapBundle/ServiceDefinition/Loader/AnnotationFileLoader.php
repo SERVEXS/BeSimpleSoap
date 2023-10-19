@@ -37,7 +37,7 @@ class AnnotationFileLoader extends FileLoader
      */
     public function __construct(FileLocator $locator, AnnotationClassLoader $loader, $paths = [])
     {
-        if (!function_exists('token_get_all')) {
+        if (!\function_exists('token_get_all')) {
             throw new \RuntimeException('The Tokenizer extension is required for the routing annotation loaders.');
         }
 
@@ -77,7 +77,7 @@ class AnnotationFileLoader extends FileLoader
      */
     public function supports($resource, $type = null)
     {
-        return is_string($resource) && 'php' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'annotation' === $type);
+        return \is_string($resource) && 'php' === pathinfo($resource, \PATHINFO_EXTENSION) && (!$type || 'annotation' === $type);
     }
 
     /**
@@ -93,27 +93,27 @@ class AnnotationFileLoader extends FileLoader
         $namespace = false;
         $tokens    = token_get_all(file_get_contents($file));
         while ($token = array_shift($tokens)) {
-            if (!is_array($token)) {
+            if (!\is_array($token)) {
                 continue;
             }
 
-            if (true === $class && T_STRING === $token[0]) {
+            if (true === $class && \T_STRING === $token[0]) {
                 return $namespace.'\\'.$token[1];
             }
 
-            if (true === $namespace && T_STRING === $token[0]) {
+            if (true === $namespace && \T_STRING === $token[0]) {
                 $namespace = '';
                 do {
                     $namespace .= $token[1];
                     $token = array_shift($tokens);
-                } while ($tokens && is_array($token) && in_array($token[0], [T_NS_SEPARATOR, T_STRING]));
+                } while ($tokens && \is_array($token) && \in_array($token[0], [\T_NS_SEPARATOR, \T_STRING]));
             }
 
-            if (T_CLASS === $token[0]) {
+            if (\T_CLASS === $token[0]) {
                 $class = true;
             }
 
-            if (T_NAMESPACE === $token[0]) {
+            if (\T_NAMESPACE === $token[0]) {
                 $namespace = true;
             }
         }

@@ -60,7 +60,7 @@ class SoapClientBuilder extends BaseSoapClientBuilder
         $invalid   = [];
         $isInvalid = false;
         foreach ($options as $key => $value) {
-            if (!array_key_exists($key, $checkOptions)) {
+            if (!\array_key_exists($key, $checkOptions)) {
                 $isInvalid = true;
                 $invalid[] = $key;
             }
@@ -69,7 +69,7 @@ class SoapClientBuilder extends BaseSoapClientBuilder
         if ($isInvalid) {
             throw new \InvalidArgumentException(sprintf(
                 'The "%s" class does not support the following options: "%s".',
-                get_class($this),
+                static::class,
                 implode('\', \'', $invalid)
             ));
         }

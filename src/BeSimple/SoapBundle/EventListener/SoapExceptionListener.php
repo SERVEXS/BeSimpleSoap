@@ -53,7 +53,7 @@ class SoapExceptionListener extends ErrorListener
         }
 
         $request = $event->getRequest();
-        if (!in_array($request->getRequestFormat(), ['soap', 'xml'])) {
+        if (!\in_array($request->getRequestFormat(), ['soap', 'xml'])) {
             return;
         }
 

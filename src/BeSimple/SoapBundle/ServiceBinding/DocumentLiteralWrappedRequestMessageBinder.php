@@ -20,7 +20,7 @@ class DocumentLiteralWrappedRequestMessageBinder implements MessageBinderInterfa
 {
     public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository)
     {
-        if(count($message) > 1) {
+        if(\count($message) > 1) {
             throw new \InvalidArgumentException();
         }
 

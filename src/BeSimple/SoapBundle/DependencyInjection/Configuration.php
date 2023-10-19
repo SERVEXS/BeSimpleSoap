@@ -96,7 +96,7 @@ class Configuration implements ConfigurationInterface
                                     ->info('proxy configuration')
                                     ->addDefaultsIfNotSet()
                                     ->beforeNormalization()
-                                        ->ifTrue(fn($v) => !is_array($v))
+                                        ->ifTrue(fn($v) => !\is_array($v))
                                         ->then(fn($v) => ['host' => $v ?? false])
                                     ->end()
                                     ->children()

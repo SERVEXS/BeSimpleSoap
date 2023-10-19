@@ -17,6 +17,7 @@ use BeSimple\SoapCommon\Definition\Type\ArrayOfType;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use BeSimple\SoapCommon\Util\MessageBinder;
+use BeSimple\SoapCommon\Type\AbstractKeyValue;
 
 /**
  * @author Christian Kerl <christian-kerl@web.de>
@@ -55,7 +56,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
             $isArray = true;
             $array = [];
 
-            $phpType = substr($type->getPhpType(), 0, strlen($type->getPhpType()) - 2);
+            $phpType = substr($type->getPhpType(), 0, \strlen($type->getPhpType()) - 2);
             $type = $this->typeRepository->getType($phpType);
         }
 
@@ -70,7 +71,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
                     }
 
                     // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
-                    if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
+                    if (\in_array(AbstractKeyValue::class, class_parents($phpType), true)) {
                         $assocArray = [];
                         foreach ($array as $keyValue) {
                             $assocArray[$keyValue->getKey()] = $keyValue->getValue();
@@ -79,13 +80,13 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
                         $array = $assocArray;
                     }
                 }
-                if (is_array($message)) {
+                if (\is_array($message)) {
                     foreach ($message as $complexType) {
                         $array[] = $this->checkComplexType($phpType, $complexType);
                     }
 
                     // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
-                    if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
+                    if (\in_array(AbstractKeyValue::class, class_parents($phpType), true)) {
                         $assocArray = [];
                         foreach ($array as $keyValue) {
                             $assocArray[$keyValue->getKey()] = $keyValue->getValue();

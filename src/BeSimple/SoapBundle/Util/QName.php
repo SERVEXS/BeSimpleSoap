@@ -20,7 +20,7 @@ class QName
 
     public static function isPrefixedQName($qname)
     {
-        return false !== strpos($qname, ':') ? true : false;
+        return   str_contains($qname, ':') ? true : false;
     }
 
     public static function fromPrefixedQName($qname, $resolveNamespacePrefixCallable)
@@ -29,7 +29,7 @@ class QName
 
         [$prefix, $name] = explode(':', $qname);
 
-        return new self(call_user_func($resolveNamespacePrefixCallable, $prefix), $name);
+        return new self(\call_user_func($resolveNamespacePrefixCallable, $prefix), $name);
     }
 
     public static function fromPackedQName($qname)

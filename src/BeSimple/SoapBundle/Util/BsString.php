@@ -27,8 +27,8 @@ class BsString
      */
     public static function startsWith($str, $substr)
     {
-        if(is_string($str) && is_string($substr) && strlen($str) >= strlen($substr)) {
-            return $substr == substr($str, 0, strlen($substr));
+        if(\is_string($str) && \is_string($substr) && \strlen($str) >= \strlen($substr)) {
+            return $substr == substr($str, 0, \strlen($substr));
         }
     }
 
@@ -42,8 +42,8 @@ class BsString
      */
     public static function endsWith($str, $substr)
     {
-        if(is_string($str) && is_string($substr) && strlen($str) >= strlen($substr)) {
-            return $substr == substr($str, strlen($str) - strlen($substr));
+        if(\is_string($str) && \is_string($substr) && \strlen($str) >= \strlen($substr)) {
+            return $substr == substr($str, \strlen($str) - \strlen($substr));
         }
     }
 }
