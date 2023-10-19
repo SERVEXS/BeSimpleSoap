@@ -21,7 +21,7 @@ class ParserTest extends TestCase
 {
     public function testParserRequestWsi(): void
     {
-        $filename = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures/WS-I-MTOM-request.txt';
+        $filename = \dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'Fixtures/WS-I-MTOM-request.txt';
         $mimeMessage = file_get_contents($filename);
 
         $mp = Parser::parseMimeMessage($mimeMessage);
@@ -30,7 +30,7 @@ class ParserTest extends TestCase
 
     public function testParserResponseAmazon(): void
     {
-        $filename = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures/SwA-response-amazon.txt';
+        $filename = \dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'Fixtures/SwA-response-amazon.txt';
         $mimeMessage = file_get_contents($filename);
 
         $mp = Parser::parseMimeMessage($mimeMessage);
@@ -59,7 +59,7 @@ class ParserTest extends TestCase
 
     public function testParserResponseAxis(): void
     {
-        $filename = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures/SwA-response-axis.txt';
+        $filename = \dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'Fixtures/SwA-response-axis.txt';
         $mimeMessage = file_get_contents($filename);
 
         $mp = Parser::parseMimeMessage($mimeMessage);
@@ -84,7 +84,7 @@ class ParserTest extends TestCase
 
     public function testParserResponseWsi(): void
     {
-        $filename = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures/WS-I-MTOM-response.txt';
+        $filename = \dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'Fixtures/WS-I-MTOM-response.txt';
         $mimeMessage = file_get_contents($filename);
 
         $mp = Parser::parseMimeMessage($mimeMessage);
@@ -111,15 +111,15 @@ class ParserTest extends TestCase
 
     public function testParserWithHeaderArray(): void
     {
-        $filename = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures/WS-I-MTOM-request_noheader.txt';
+        $filename = \dirname(__DIR__) . \DIRECTORY_SEPARATOR . 'Fixtures/WS-I-MTOM-request_noheader.txt';
         $mimeMessage = file_get_contents($filename);
 
-        $headers = array(
+        $headers = [
             'Content-Type' => 'multipart/related; type="application/xop+xml";start="<http://tempuri.org/0>";boundary="uuid:0ca0e16e-feb1-426c-97d8-c4508ada5e82+id=7";start-info="application/soap+xml"',
             'Content-Length' => 1941,
             'Host' => '131.107.72.15',
             'Expect' => '100-continue',
-        );
+        ];
 
         $mp = Parser::parseMimeMessage($mimeMessage, $headers);
         $this->assertsForWsiMtomRequest($mp);

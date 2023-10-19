@@ -26,31 +26,31 @@ abstract class SoapMessage
      *
      * @var string
      */
-    const CONTENT_TYPE_HEADER = 'CONTENT_TYPE';
+    public const CONTENT_TYPE_HEADER = 'CONTENT_TYPE';
 
     /**
      * $_SERVER key for 'Content-Type' header (with PHP cli-webserver)
      *
      * @var string
      */
-    const HTTP_CONTENT_TYPE_HEADER = 'HTTP_CONTENT_TYPE';
+    public const HTTP_CONTENT_TYPE_HEADER = 'HTTP_CONTENT_TYPE';
 
     /**
      * $_SERVER key for 'SOAPAction' header.
      *
      * @var string
      */
-    const SOAP_ACTION_HEADER = 'HTTP_SOAPACTION';
+    public const SOAP_ACTION_HEADER = 'HTTP_SOAPACTION';
 
     /**
      * Content types for SOAP versions.
      *
      * @var array(string=>string)
      */
-    static protected $versionToContentTypeMap = array(
+    protected static $versionToContentTypeMap = [
         \SOAP_1_1 => 'text/xml; charset=utf-8',
-        \SOAP_1_2 => 'application/soap+xml; charset=utf-8'
-    );
+        \SOAP_1_2 => 'application/soap+xml; charset=utf-8',
+    ];
 
     /**
      * SOAP action.
@@ -64,7 +64,7 @@ abstract class SoapMessage
      *
      * @var array(\BeSimple\SoapCommon\Mime\Part)
      */
-    protected $attachments = array();
+    protected $attachments = [];
 
     /**
      * Message content (MIME Message or SOAP Envelope).
@@ -74,11 +74,11 @@ abstract class SoapMessage
     protected $content;
 
     /**
-     *
      * Enter description here ...
+     *
      * @var \DOMDocument
      */
-    protected $contentDomDocument = null;
+    protected $contentDomDocument;
 
     /**
      * Message content type.
@@ -102,16 +102,17 @@ abstract class SoapMessage
     protected $version;
 
     /**
-    * Get content type for given SOAP version.
-    *
-    * @param string $version SOAP version constant SOAP_1_1|SOAP_1_2
-    *
-    * @return string
-    * @throws \InvalidArgumentException
-    */
+     * Get content type for given SOAP version.
+     *
+     * @param string $version SOAP version constant SOAP_1_1|SOAP_1_2
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
     public static function getContentTypeForVersion($version)
     {
-        if (!\in_array($version, array(\SOAP_1_1, \SOAP_1_2))) {
+        if (!\in_array($version, [\SOAP_1_1, \SOAP_1_2])) {
             throw new \InvalidArgumentException("The 'version' argument has to be either 'SOAP_1_1' or 'SOAP_1_2'!");
         }
 
@@ -169,6 +170,7 @@ abstract class SoapMessage
             $this->content = $this->contentDomDocument->saveXML();
             $this->contentDomDocument = null;
         }
+
         return $this->content;
     }
 

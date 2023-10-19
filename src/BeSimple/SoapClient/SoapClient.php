@@ -12,10 +12,9 @@
 
 namespace BeSimple\SoapClient;
 
-use BeSimple\SoapCommon\Helper;
 use BeSimple\SoapCommon\Converter\MtomTypeConverter;
 use BeSimple\SoapCommon\Converter\SwaTypeConverter;
-use BeSimple\SoapCommon\SoapMessage;
+use BeSimple\SoapCommon\Helper;
 
 /**
  * Extended SoapClient that uses a a cURL wrapper for all underlying HTTP
@@ -32,12 +31,12 @@ class SoapClient extends \SoapClient
      *
      * @var int
      */
-    protected $soapVersion = SOAP_1_1;
+    protected $soapVersion = \SOAP_1_1;
 
     /**
      * Tracing enabled?
      *
-     * @var boolean
+     * @var bool
      */
     protected $tracingEnabled = false;
 
@@ -46,7 +45,7 @@ class SoapClient extends \SoapClient
      *
      * @var \BeSimple\SoapClient\Curl
      */
-    protected $curl = null;
+    protected $curl;
 
     /**
      * Last request headers.
@@ -81,7 +80,7 @@ class SoapClient extends \SoapClient
      *
      * @var \BeSimple\SoapClient\SoapKernel
      */
-    protected $soapKernel = null;
+    protected $soapKernel;
 
     /**
      * Constructor.
@@ -89,7 +88,7 @@ class SoapClient extends \SoapClient
      * @param string               $wsdl    WSDL file
      * @param array(string=>mixed) $options Options array
      */
-    public function __construct($wsdl, array $options = array())
+    public function __construct($wsdl, array $options = [])
     {
         // tracing enabled: store last request/response header and body
         if (isset($options['trace']) && $options['trace'] === true) {
@@ -116,10 +115,9 @@ class SoapClient extends \SoapClient
         // disable obsolete trace option for native SoapClient as we need to do our own tracing anyways
         $options['trace'] = false;
         // disable WSDL caching as we handle WSDL caching for remote URLs ourself
-        $options['cache_wsdl'] = WSDL_CACHE_NONE;
+        $options['cache_wsdl'] = \WSDL_CACHE_NONE;
         parent::__construct($wsdlFile, $options);
     }
-
 
     /**
      * Perform HTTP request with cURL.
@@ -133,15 +131,15 @@ class SoapClient extends \SoapClient
         // HTTP headers
         $soapVersion = $soapRequest->getVersion();
         $soapAction = $soapRequest->getAction();
-        if (SOAP_1_1 == $soapVersion) {
-            $headers = array(
+        if (\SOAP_1_1 == $soapVersion) {
+            $headers = [
                 'Content-Type:' . $soapRequest->getContentType(),
                 'SOAPAction: "' . $soapAction . '"',
-            );
+            ];
         } else {
-            $headers = array(
-               'Content-Type:' . $soapRequest->getContentType() . '; action="' . $soapAction . '"',
-            );
+            $headers = [
+                'Content-Type:' . $soapRequest->getContentType() . '; action="' . $soapAction . '"',
+            ];
         }
 
         $location = $soapRequest->getLocation();
@@ -255,7 +253,7 @@ class SoapClient extends \SoapClient
      */
     protected function filterRequestOptions(SoapRequest $soapRequest)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -309,13 +307,11 @@ class SoapClient extends \SoapClient
     }
 
     /**
-    * Configure filter and type converter for SwA/MTOM.
-    *
-    * @param array &$options SOAP constructor options array.
-    *
-    * @return void
-    */
-    private function configureMime(array &$options)
+     * Configure filter and type converter for SwA/MTOM.
+     *
+     * @param array &$options SOAP constructor options array
+     */
+    private function configureMime(array &$options): void
     {
         if (isset($options['attachment_type']) && Helper::ATTACHMENTS_TYPE_BASE64 !== $options['attachment_type']) {
             // register mime filter in SoapKernel
@@ -333,18 +329,14 @@ class SoapClient extends \SoapClient
             }
             // configure typemap
             if (!isset($options['typemap'])) {
-                $options['typemap'] = array();
+                $options['typemap'] = [];
             }
-            $options['typemap'][] = array(
+            $options['typemap'][] = [
                 'type_name' => $converter->getTypeName(),
-                'type_ns'   => $converter->getTypeNamespace(),
-                'from_xml'  => function($input) use ($converter) {
-                    return $converter->convertXmlToPhp($input);
-                },
-                'to_xml'    => function($input) use ($converter) {
-                    return $converter->convertPhpToXml($input);
-                },
-            );
+                'type_ns' => $converter->getTypeNamespace(),
+                'from_xml' => fn ($input) => $converter->convertXmlToPhp($input),
+                'to_xml' => fn ($input) => $converter->convertPhpToXml($input),
+            ];
         }
     }
 
@@ -367,7 +359,7 @@ class SoapClient extends \SoapClient
             $resolveRemoteIncludes = $options['resolve_wsdl_remote_includes'];
         }
         // option to enable cache
-        $wsdlCache = WSDL_CACHE_DISK;
+        $wsdlCache = \WSDL_CACHE_DISK;
         if (isset($options['cache_wsdl'])) {
             $wsdlCache = $options['cache_wsdl'];
         }
@@ -375,7 +367,7 @@ class SoapClient extends \SoapClient
         try {
             $cacheFileName = $wsdlDownloader->download($wsdl);
         } catch (\RuntimeException $e) {
-            throw new \SoapFault('WSDL', "SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl . "' : failed to load external entity \"" . $wsdl . "\"");
+            throw new \SoapFault('WSDL', "SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl . "' : failed to load external entity \"" . $wsdl . '"');
         }
 
         return $cacheFileName;

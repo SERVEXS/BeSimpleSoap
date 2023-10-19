@@ -31,32 +31,30 @@ class Part extends PartHeader
     /**
      * Encoding type base 64
      */
-    const ENCODING_BASE64 = 'base64';
+    public const ENCODING_BASE64 = 'base64';
 
     /**
      * Encoding type binary
      */
-    const ENCODING_BINARY = 'binary';
+    public const ENCODING_BINARY = 'binary';
 
     /**
      * Encoding type eight bit
      */
-    const ENCODING_EIGHT_BIT = '8bit';
+    public const ENCODING_EIGHT_BIT = '8bit';
 
     /**
      * Encoding type seven bit
      */
-    const ENCODING_SEVEN_BIT = '7bit';
+    public const ENCODING_SEVEN_BIT = '7bit';
 
     /**
      * Encoding type quoted printable
      */
-    const ENCODING_QUOTED_PRINTABLE = 'quoted-printable';
+    public const ENCODING_QUOTED_PRINTABLE = 'quoted-printable';
 
     /**
      * Content.
-     *
-     * @var mixed
      */
     protected $content;
 
@@ -89,8 +87,6 @@ class Part extends PartHeader
 
     /**
      * __toString.
-     *
-     * @return mixed
      */
     public function __toString()
     {
@@ -99,8 +95,6 @@ class Part extends PartHeader
 
     /**
      * Get mime content.
-     *
-     * @return mixed
      */
     public function getContent()
     {
@@ -111,8 +105,6 @@ class Part extends PartHeader
      * Set mime content.
      *
      * @param mixed $content Content to set
-     *
-     * @return void
      */
     public function setContent($content): void
     {

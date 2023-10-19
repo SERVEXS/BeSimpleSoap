@@ -107,7 +107,7 @@ class SoapWebServiceController implements ContainerAwareInterface
     {
         if (!$webservice = $request->query->get('_besimple_soap_webservice')) {
             throw new \LogicException(
-                \sprintf(
+                sprintf(
                     'The parameter "%s" is required in Request::$query parameter bag to generate the SoapFault.',
                     '_besimple_soap_webservice'
                 ),
@@ -225,16 +225,16 @@ class SoapWebServiceController implements ContainerAwareInterface
 
     protected function getWebServiceContext($webservice): ?object
     {
-        $context = \sprintf('besimple.soap.context.%s', $webservice);
+        $context = sprintf('besimple.soap.context.%s', $webservice);
 
         if ($this->container->has($context)) {
             return $this->container->get($context);
         }
 
-        $context = \sprintf('besimple.soap.context.%s', \ucfirst($webservice));
+        $context = sprintf('besimple.soap.context.%s', ucfirst($webservice));
         if (!$this->container->has($context)) {
             throw new NotFoundHttpException(
-                \sprintf('No WebService with name "%s" found. Possible cause: case sensitivity.', $webservice)
+                sprintf('No WebService with name "%s" found. Possible cause: case sensitivity.', $webservice)
             );
         }
 

@@ -13,7 +13,6 @@
 namespace BeSimple\SoapCommon\Tests\Converter;
 
 use BeSimple\SoapCommon\Converter\DateTypeConverter;
-use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,14 +27,14 @@ class DateTypeConverterTest extends TestCase
         $dateXml = '<sometag>2002-10-10</sometag>';
         $date = $converter->convertXmlToPhp($dateXml);
 
-        $this->assertEquals(new DateTime('2002-10-10'), $date);
+        $this->assertEquals(new \DateTime('2002-10-10'), $date);
     }
 
     public function testConvertPhpToXml(): void
     {
         $converter = new DateTypeConverter();
 
-        $date    = new DateTime('2002-10-10');
+        $date = new \DateTime('2002-10-10');
         $dateXml = $converter->convertPhpToXml($date);
 
         $this->assertEquals('<date>2002-10-10</date>', $dateXml);
@@ -51,4 +50,3 @@ class DateTypeConverterTest extends TestCase
         $this->assertNull($date);
     }
 }
-

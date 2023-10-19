@@ -50,9 +50,9 @@ class Part
      */
     public function setAttribute($attribute)
     {
-            $this->attribute = $attribute;
-    
-            return $this;
+        $this->attribute = $attribute;
+
+        return $this;
     }
 
     public function getType()
@@ -72,6 +72,6 @@ class Part
 
     public function setNillable($nillable): void
     {
-        $this->nillable = (boolean) $nillable;
+        $this->nillable = (bool) $nillable;
     }
 }

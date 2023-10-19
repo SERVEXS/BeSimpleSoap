@@ -38,12 +38,12 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
     /**
      * (UT 3.1) Password type: plain text.
      */
-    const PASSWORD_TYPE_TEXT = 0;
+    public const PASSWORD_TYPE_TEXT = 0;
 
     /**
      * (UT 3.1) Password type: digest.
      */
-    const PASSWORD_TYPE_DIGEST = 1;
+    public const PASSWORD_TYPE_DIGEST = 1;
 
     /**
      * (UT 3.1) Password.
@@ -79,35 +79,31 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      * @param string $username     Username
      * @param string $password     Password
      * @param int    $passwordType self::PASSWORD_TYPE_DIGEST | self::PASSWORD_TYPE_TEXT
-     *
-     * @return void
      */
-    public function addUserData($username, $password = null, $passwordType = self::PASSWORD_TYPE_DIGEST)
+    public function addUserData($username, $password = null, $passwordType = self::PASSWORD_TYPE_DIGEST): void
     {
-        $this->username     = $username;
-        $this->password     = $password;
+        $this->username = $username;
+        $this->password = $password;
         $this->passwordType = $passwordType;
     }
 
     /**
      * Reset all properties to default values.
      */
-    public function resetFilter()
+    public function resetFilter(): void
     {
         parent::resetFilter();
-        $this->password     = null;
+        $this->password = null;
         $this->passwordType = null;
-        $this->username     = null;
+        $this->username = null;
     }
 
     /**
      * Modify the given request XML.
      *
      * @param \BeSimple\SoapCommon\SoapRequest $request SOAP request
-     *
-     * @return void
      */
-    public function filterRequest(CommonSoapRequest $request)
+    public function filterRequest(CommonSoapRequest $request): void
     {
         // get \DOMDocument from SOAP request
         $dom = $request->getContentDocument();
@@ -151,7 +147,6 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
             if (null !== $this->password
                 && (null === $this->userSecurityKey
                     || (null !== $this->userSecurityKey && !$this->userSecurityKey->hasPrivateKey()))) {
-
                 if (self::PASSWORD_TYPE_DIGEST === $this->passwordType) {
                     $nonce = mt_rand();
                     $password = base64_encode(sha1($nonce . $createdTimestamp . $this->password, true));
@@ -182,10 +177,10 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
             }
             $nodes = $this->createNodeListForSigning($dom, $security);
             $signature = XmlSecurityDSig::createSignature($this->userSecurityKey->getPrivateKey(), XmlSecurityDSig::EXC_C14N, $security, null, $keyInfo);
-            $options = array(
+            $options = [
                 'id_ns_prefix' => Helper::PFX_WSU,
                 'id_prefix_ns' => Helper::NS_WSU,
-            );
+            ];
             foreach ($nodes as $node) {
                 XmlSecurityDSig::addNodeToSignature($signature, $node, XmlSecurityDSig::SHA1, XmlSecurityDSig::EXC_C14N, $options);
             }
@@ -226,10 +221,8 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      * Modify the given request XML.
      *
      * @param \BeSimple\SoapCommon\SoapResponse $response SOAP response
-     *
-     * @return void
      */
-    public function filterResponse(CommonSoapResponse $response)
+    public function filterResponse(CommonSoapResponse $response): void
     {
         // get \DOMDocument from SOAP response
         $dom = $response->getContentDocument();
@@ -238,7 +231,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
         $security = $dom->getElementsByTagNameNS(Helper::NS_WSS, 'Security')->item(0);
         if (null !== $security) {
             // add SecurityTokenReference resolver for KeyInfo
-            $keyResolver = array($this, 'keyInfoSecurityTokenReferenceResolver');
+            $keyResolver = [$this, 'keyInfoSecurityTokenReferenceResolver'];
             XmlSecurityDSig::addKeyInfoResolver(Helper::NS_WSS, 'SecurityTokenReference', $keyResolver);
             // do we have a reference list in header
             $referenceList = XmlSecurityEnc::locateReferenceList($security);
@@ -254,10 +247,10 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
             $signature = XmlSecurityDSig::locateSignature($security);
             if (null !== $signature) {
                 // verify references
-                $options = array(
+                $options = [
                     'id_ns_prefix' => Helper::PFX_WSU,
                     'id_prefix_ns' => Helper::NS_WSU,
-                );
+                ];
                 if (XmlSecurityDSig::verifyReferences($signature, $options) !== true) {
                     throw new \SoapFault('wsse:FailedCheck', 'The signature or decryption was invalid');
                 }

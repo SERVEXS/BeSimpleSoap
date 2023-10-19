@@ -25,7 +25,7 @@ class Message
     public function __construct($name)
     {
         $this->name = $name;
-        $this->parts = array();
+        $this->parts = [];
     }
 
     public function getName()

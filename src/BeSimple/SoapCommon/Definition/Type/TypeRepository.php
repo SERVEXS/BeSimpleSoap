@@ -20,14 +20,14 @@ use BeSimple\SoapCommon\Classmap;
  */
 class TypeRepository
 {
-    const ARRAY_SUFFIX = '[]';
+    public const ARRAY_SUFFIX = '[]';
 
-    protected $xmlNamespaces = array();
-    protected $types = array();
+    protected $xmlNamespaces = [];
+    protected $types = [];
 
     protected $classmap;
 
-    public function __construct(Classmap $classmap = null)
+    public function __construct(?Classmap $classmap = null)
     {
         $this->classmap = $classmap;
     }
@@ -36,6 +36,7 @@ class TypeRepository
     {
         return $this->xmlNamespaces;
     }
+
     public function getXmlNamespace($prefix)
     {
         return $this->xmlNamespaces[$prefix];
@@ -115,7 +116,7 @@ class TypeRepository
 
     public function getArrayOf($arrayType)
     {
-        if (!preg_match('#(.*)'.preg_quote(static::ARRAY_SUFFIX, '#').'$#', $arrayType, $match)) {
+        if (!preg_match('#(.*)' . preg_quote(static::ARRAY_SUFFIX, '#') . '$#', $arrayType, $match)) {
             return false;
         }
 

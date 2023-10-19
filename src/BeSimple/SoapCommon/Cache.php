@@ -18,19 +18,19 @@ namespace BeSimple\SoapCommon;
 class Cache
 {
     public const DISABLED = 0;
-    public const ENABLED  = 1;
+    public const ENABLED = 1;
 
-    public const TYPE_NONE        = \WSDL_CACHE_NONE;
-    public const TYPE_DISK        = \WSDL_CACHE_DISK;
-    public const TYPE_MEMORY      = \WSDL_CACHE_MEMORY;
+    public const TYPE_NONE = \WSDL_CACHE_NONE;
+    public const TYPE_DISK = \WSDL_CACHE_DISK;
+    public const TYPE_MEMORY = \WSDL_CACHE_MEMORY;
     public const TYPE_DISK_MEMORY = \WSDL_CACHE_BOTH;
 
-    static protected $types = array(
+    protected static $types = [
         self::TYPE_NONE,
         self::TYPE_DISK,
         self::TYPE_MEMORY,
         self::TYPE_DISK_MEMORY,
-    );
+    ];
 
     public static function getTypes()
     {
@@ -44,7 +44,7 @@ class Cache
 
     public static function setEnabled($enabled): void
     {
-        if (!\in_array($enabled, array(self::ENABLED, self::DISABLED), true)) {
+        if (!\in_array($enabled, [self::ENABLED, self::DISABLED], true)) {
             throw new \InvalidArgumentException();
         }
 

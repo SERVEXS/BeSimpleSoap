@@ -27,7 +27,7 @@ class Parser
      *
      * @return \BeSimple\SoapCommon\Mime\MultiPart
      */
-    public static function parseMimeMessage($mimeMessage, array $headers = array())
+    public static function parseMimeMessage($mimeMessage, array $headers = [])
     {
         $boundary = null;
         $start = null;
@@ -60,10 +60,10 @@ class Parser
                     $currentHeader .= $line;
                     continue;
                 }
-                if (str_contains($currentHeader, ':')  ) {
-                    list($headerName, $headerValue) = explode(':', $currentHeader, 2);
+                if (str_contains($currentHeader, ':')) {
+                    [$headerName, $headerValue] = explode(':', $currentHeader, 2);
                     $headerValue = iconv_mime_decode($headerValue, 0, 'utf-8');
-                    if (str_contains($headerValue, ';')  ) {
+                    if (str_contains($headerValue, ';')) {
                         self::parseContentTypeHeader($currentPart, $headerName, $headerValue);
                         $boundary = $multipart->getHeader('Content-Type', 'boundary');
                         $start = $multipart->getHeader('Content-Type', 'start');
@@ -80,25 +80,11 @@ class Parser
                 }
                 $currentHeader = $line;
                 continue;
-            } else {
-                // check if we hit any of the boundaries
-                if ($line !== '' && $line[0] == "-") {
-                    if (strcmp(trim($line), '--' . $boundary) === 0) {
-                        if ($currentPart instanceof Part) {
-                            $content = substr($content, 0, -2);
-                            self::decodeContent($currentPart, $content);
-                            // check if there is a start parameter given, if not set first part
-                            $isMain = (null === $start || $start == $currentPart->getHeader('Content-ID')) ? true : false;
-                            if ($isMain === true) {
-                                $start = $currentPart->getHeader('Content-ID');
-                            }
-                            $multipart->addPart($currentPart, $isMain);
-                        }
-                        $currentPart = new Part();
-                        $hitFirstBoundary = true;
-                        $inHeader = true;
-                        $content = '';
-                    } elseif (strcmp(trim($line), '--' . $boundary . '--') === 0) {
+            }
+            // check if we hit any of the boundaries
+            if ($line !== '' && $line[0] == '-') {
+                if (strcmp(trim($line), '--' . $boundary) === 0) {
+                    if ($currentPart instanceof Part) {
                         $content = substr($content, 0, -2);
                         self::decodeContent($currentPart, $content);
                         // check if there is a start parameter given, if not set first part
@@ -107,20 +93,34 @@ class Parser
                             $start = $currentPart->getHeader('Content-ID');
                         }
                         $multipart->addPart($currentPart, $isMain);
-                        $content = '';
                     }
-                } else {
-                    if ($hitFirstBoundary === false) {
-                        if (trim($line) != '') {
-                            $inHeader = true;
-                            $currentHeader = $line;
-                            continue;
-                        }
+                    $currentPart = new Part();
+                    $hitFirstBoundary = true;
+                    $inHeader = true;
+                    $content = '';
+                } elseif (strcmp(trim($line), '--' . $boundary . '--') === 0) {
+                    $content = substr($content, 0, -2);
+                    self::decodeContent($currentPart, $content);
+                    // check if there is a start parameter given, if not set first part
+                    $isMain = (null === $start || $start == $currentPart->getHeader('Content-ID')) ? true : false;
+                    if ($isMain === true) {
+                        $start = $currentPart->getHeader('Content-ID');
                     }
-                    $content .= $line . "\r\n";
+                    $multipart->addPart($currentPart, $isMain);
+                    $content = '';
                 }
+            } else {
+                if ($hitFirstBoundary === false) {
+                    if (trim($line) != '') {
+                        $inHeader = true;
+                        $currentHeader = $line;
+                        continue;
+                    }
+                }
+                $content .= $line . "\r\n";
             }
         }
+
         return $multipart;
     }
 
@@ -139,7 +139,7 @@ class Parser
      */
     private static function parseContentTypeHeader(PartHeader $part, $headerName, $headerValue)
     {
-        list($value, $remainder) = explode(';', $headerValue, 2);
+        [$value, $remainder] = explode(';', $headerValue, 2);
         $value = trim($value);
         $part->setHeader($headerName, $value);
         $remainder = trim($remainder);
@@ -149,7 +149,7 @@ class Parser
             }
             $name = $matches[1];
             $delimiter = $matches[2];
-            $remainder = substr($remainder, \strlen($name)+1);
+            $remainder = substr($remainder, \strlen($name) + 1);
             if (!preg_match('/([^;]+)(;)?(\s|$)?/', $remainder, $matches)) {
                 break;
             }

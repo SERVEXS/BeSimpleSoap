@@ -12,9 +12,9 @@
 
 namespace BeSimple\SoapCommon\Tests\Converter;
 
-use BeSimple\SoapCommon\Converter\TypeConverterCollection;
 use BeSimple\SoapCommon\Converter\DateTimeTypeConverter;
 use BeSimple\SoapCommon\Converter\DateTypeConverter;
+use BeSimple\SoapCommon\Converter\TypeConverterCollection;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,19 +31,19 @@ class TypeConverterCollectionTest extends TestCase
         $dateTimeTypeConverter = new DateTimeTypeConverter();
         $converters->add($dateTimeTypeConverter);
 
-        $this->assertSame(array($dateTimeTypeConverter), $converters->all());
+        $this->assertSame([$dateTimeTypeConverter], $converters->all());
 
         $dateTypeConverter = new DateTypeConverter();
         $converters->add($dateTypeConverter);
 
-        $this->assertSame(array($dateTimeTypeConverter, $dateTypeConverter), $converters->all());
+        $this->assertSame([$dateTimeTypeConverter, $dateTypeConverter], $converters->all());
     }
 
     public function testGetTypemap(): void
     {
         $converters = new TypeConverterCollection();
 
-        $this->assertEquals(array(), $converters->getTypemap());
+        $this->assertEquals([], $converters->getTypemap());
 
         $dateTimeTypeConverter = new DateTimeTypeConverter();
         $converters->add($dateTimeTypeConverter);
@@ -71,7 +71,7 @@ class TypeConverterCollectionTest extends TestCase
         $dateTimeTypeConverter = new DateTimeTypeConverter();
         $converters->add($dateTimeTypeConverter);
 
-        $converter = array(new DateTypeConverter);
+        $converter = [new DateTypeConverter()];
         $converters->set($converter);
 
         $this->assertSame($converter, $converters->all());
@@ -86,7 +86,7 @@ class TypeConverterCollectionTest extends TestCase
         $converters2->add($dateTimeTypeConverter);
         $converters1->addCollection($converters2);
 
-        $this->assertSame(array($dateTimeTypeConverter), $converters1->all());
+        $this->assertSame([$dateTimeTypeConverter], $converters1->all());
 
         $this->expectException('InvalidArgumentException');
         $converters1->addCollection($converters2);

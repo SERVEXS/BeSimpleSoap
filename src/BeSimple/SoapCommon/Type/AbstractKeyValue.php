@@ -18,7 +18,7 @@ abstract class AbstractKeyValue
 
     public function __construct($key, $value)
     {
-        $this->key   = $key;
+        $this->key = $key;
         $this->value = $value;
     }
 

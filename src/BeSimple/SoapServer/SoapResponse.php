@@ -12,8 +12,8 @@
 
 namespace BeSimple\SoapServer;
 
-use BeSimple\SoapCommon\SoapResponse as CommonSoapResponse;
 use BeSimple\SoapCommon\SoapMessage;
+use BeSimple\SoapCommon\SoapResponse as CommonSoapResponse;
 
 /**
  * SoapResponse class for SoapClient. Provides factory function for response object.
@@ -51,7 +51,7 @@ class SoapResponse extends CommonSoapResponse
     public function send(): void
     {
         // set Content-Type header
-        header('Content-Type: '.$this->getContentType());
+        header('Content-Type: ' . $this->getContentType());
 
         // send content to client
         echo $this->getContent();

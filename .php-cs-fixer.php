@@ -2,7 +2,7 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in([
-        'src/BeSimple/SoapBundle',
+        'src/BeSimple',
     ]);
 
 $config = new PhpCsFixer\Config();
@@ -11,6 +11,7 @@ $config = new PhpCsFixer\Config();
 // https://cs.symfony.com/doc/rules/
 
 return $config->setRules([
+    'declare_strict_types' => false,
     '@Symfony' => true,
     'yoda_style' => false,
     'phpdoc_summary' => false,

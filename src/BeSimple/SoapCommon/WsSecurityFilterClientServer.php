@@ -16,9 +16,6 @@ use ass\XmlSecurity\DSig as XmlSecurityDSig;
 use ass\XmlSecurity\Enc as XmlSecurityEnc;
 use ass\XmlSecurity\Key as XmlSecurityKey;
 use ass\XmlSecurity\Pem as XmlSecurityPem;
-use BeSimple\SoapCommon\FilterHelper;
-use BeSimple\SoapCommon\Helper;
-use BeSimple\SoapCommon\WsSecurityKey;
 
 /**
  * WS-Security common code for client & server.
@@ -30,22 +27,22 @@ abstract class WsSecurityFilterClientServer
     /**
      * The date format to be used with {@link \DateTime}
      */
-    const DATETIME_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+    public const DATETIME_FORMAT = 'Y-m-d\TH:i:s.u\Z';
 
     /**
      * (X509 3.2.1) Reference to a Subject Key Identifier
      */
-    const TOKEN_REFERENCE_SUBJECT_KEY_IDENTIFIER = 0;
+    public const TOKEN_REFERENCE_SUBJECT_KEY_IDENTIFIER = 0;
 
     /**
      * (X509 3.2.1) Reference to a Security Token
      */
-    const TOKEN_REFERENCE_SECURITY_TOKEN = 1;
+    public const TOKEN_REFERENCE_SECURITY_TOKEN = 1;
 
     /**
      * (SMS_1.1 7.3) Key Identifiers
      */
-    const TOKEN_REFERENCE_THUMBPRINT_SHA1 = 2;
+    public const TOKEN_REFERENCE_THUMBPRINT_SHA1 = 2;
 
     /**
      * Actor.
@@ -57,14 +54,14 @@ abstract class WsSecurityFilterClientServer
     /**
      * (SMS 10) Add security timestamp.
      *
-     * @var boolean
+     * @var bool
      */
     protected $addTimestamp;
 
     /**
      * Encrypt the signature?
      *
-     * @var boolean
+     * @var bool
      */
     protected $encryptSignature;
 
@@ -78,7 +75,7 @@ abstract class WsSecurityFilterClientServer
     /**
      * Sign all headers.
      *
-     * @var boolean
+     * @var bool
      */
     protected $signAllHeaders;
 
@@ -87,14 +84,14 @@ abstract class WsSecurityFilterClientServer
      *
      * @var int
      */
-    protected $tokenReferenceEncryption = null;
+    protected $tokenReferenceEncryption;
 
     /**
      * (X509 3.2) Token reference type for signature.
      *
      * @var int
      */
-    protected $tokenReferenceSignature = null;
+    protected $tokenReferenceSignature;
 
     /**
      * Service WsSecurityKey.
@@ -113,15 +110,15 @@ abstract class WsSecurityFilterClientServer
     /**
      * Constructor.
      *
-     * @param boolean $addTimestamp (SMS 10) Add security timestamp.
-     * @param int     $expires      (SMS 10) Security timestamp expires time in seconds.
+     * @param bool $addTimestamp (SMS 10) Add security timestamp
+     * @param int     $expires      (SMS 10) Security timestamp expires time in seconds
      * @param string  $actor        SOAP actor
      */
     public function __construct($addTimestamp = true, $expires = 300, $actor = null)
     {
         $this->addTimestamp = $addTimestamp;
-        $this->expires      = $expires;
-        $this->actor        = $actor;
+        $this->expires = $expires;
+        $this->actor = $actor;
     }
 
     /**
@@ -129,23 +126,21 @@ abstract class WsSecurityFilterClientServer
      */
     public function resetFilter(): void
     {
-        $this->actor                    = null;
-        $this->addTimestamp             = null;
-        $this->encryptSignature         = null;
-        $this->expires                  = null;
-        $this->serviceSecurityKey       = null;
-        $this->signAllHeaders           = null;
+        $this->actor = null;
+        $this->addTimestamp = null;
+        $this->encryptSignature = null;
+        $this->expires = null;
+        $this->serviceSecurityKey = null;
+        $this->signAllHeaders = null;
         $this->tokenReferenceEncryption = null;
-        $this->tokenReferenceSignature  = null;
-        $this->userSecurityKey          = null;
+        $this->tokenReferenceSignature = null;
+        $this->userSecurityKey = null;
     }
 
     /**
      * Set service security key.
      *
      * @param \BeSimple\SoapCommon\WsSecurityKey $serviceSecurityKey Service security key
-     *
-     * @return void
      */
     public function setServiceSecurityKeyObject(WsSecurityKey $serviceSecurityKey): void
     {
@@ -156,8 +151,6 @@ abstract class WsSecurityFilterClientServer
      * Set user security key.
      *
      * @param \BeSimple\SoapCommon\WsSecurityKey $userSecurityKey User security key
-     *
-     * @return void
      */
     public function setUserSecurityKeyObject(WsSecurityKey $userSecurityKey): void
     {
@@ -168,28 +161,24 @@ abstract class WsSecurityFilterClientServer
      * Set security options.
      *
      * @param int     $tokenReference   self::TOKEN_REFERENCE_SUBJECT_KEY_IDENTIFIER | self::TOKEN_REFERENCE_SECURITY_TOKEN | self::TOKEN_REFERENCE_THUMBPRINT_SHA1
-     * @param boolean $encryptSignature Encrypt signature
-     *
-     * @return void
+     * @param bool $encryptSignature Encrypt signature
      */
     public function setSecurityOptionsEncryption($tokenReference, $encryptSignature = false): void
     {
         $this->tokenReferenceEncryption = $tokenReference;
-        $this->encryptSignature         = $encryptSignature;
+        $this->encryptSignature = $encryptSignature;
     }
 
     /**
      * Set security options.
      *
      * @param int     $tokenReference self::TOKEN_REFERENCE_SUBJECT_KEY_IDENTIFIER | self::TOKEN_REFERENCE_SECURITY_TOKEN | self::TOKEN_REFERENCE_THUMBPRINT_SHA1
-     * @param boolean $signAllHeaders Sign all headers?
-     *
-     * @return void
+     * @param bool $signAllHeaders Sign all headers?
      */
     public function setSecurityOptionsSignature($tokenReference, $signAllHeaders = false): void
     {
         $this->tokenReferenceSignature = $tokenReference;
-        $this->signAllHeaders          = $signAllHeaders;
+        $this->signAllHeaders = $signAllHeaders;
     }
 
     /**
@@ -202,7 +191,7 @@ abstract class WsSecurityFilterClientServer
      *
      * @return \DOMElement
      */
-    protected function createKeyInfo(FilterHelper $filterHelper, $tokenReference, $guid, XmlSecurityKey $xmlSecurityKey = null)
+    protected function createKeyInfo(FilterHelper $filterHelper, $tokenReference, $guid, ?XmlSecurityKey $xmlSecurityKey = null)
     {
         $keyInfo = $filterHelper->createElement(XmlSecurityDSig::NS_XMLDSIG, 'KeyInfo');
         $securityTokenReference = $filterHelper->createElement(Helper::NS_WSS, 'SecurityTokenReference');
@@ -215,7 +204,7 @@ abstract class WsSecurityFilterClientServer
                 $filterHelper->setAttribute($reference, null, 'ValueType', Helper::NAME_WSS_X509 . '#X509v3');
             }
             $securityTokenReference->appendChild($reference);
-        // subject key identifier
+            // subject key identifier
         } elseif (self::TOKEN_REFERENCE_SUBJECT_KEY_IDENTIFIER === $tokenReference && null !== $xmlSecurityKey) {
             $keyIdentifier = $filterHelper->createElement(Helper::NS_WSS, 'KeyIdentifier');
             $filterHelper->setAttribute($keyIdentifier, null, 'EncodingType', Helper::NAME_WSS_SMS . '#Base64Binary');
@@ -224,7 +213,7 @@ abstract class WsSecurityFilterClientServer
             $certificate = $xmlSecurityKey->getX509SubjectKeyIdentifier();
             $dataNode = new \DOMText($certificate);
             $keyIdentifier->appendChild($dataNode);
-        // thumbprint sha1
+            // thumbprint sha1
         } elseif (self::TOKEN_REFERENCE_THUMBPRINT_SHA1 === $tokenReference && null !== $xmlSecurityKey) {
             $keyIdentifier = $filterHelper->createElement(Helper::NS_WSS, 'KeyIdentifier');
             $filterHelper->setAttribute($keyIdentifier, null, 'EncodingType', Helper::NAME_WSS_SMS . '#Base64Binary');
@@ -269,7 +258,7 @@ abstract class WsSecurityFilterClientServer
      */
     protected function createNodeListForSigning(\DOMDocument $dom, \DOMElement $security)
     {
-        $nodes = array();
+        $nodes = [];
         $body = $dom->getElementsByTagNameNS($dom->documentElement->namespaceURI, 'Body')->item(0);
         if (null !== $body) {
             $nodes[] = $body;
@@ -281,8 +270,8 @@ abstract class WsSecurityFilterClientServer
         }
         if ($this->signAllHeaders) {
             foreach ($security->parentNode->childNodes as $node) {
-                if (\XML_ELEMENT_NODE === $node->nodeType &&
-                    Helper::NS_WSS !== $node->namespaceURI) {
+                if (\XML_ELEMENT_NODE === $node->nodeType
+                    && Helper::NS_WSS !== $node->namespaceURI) {
                     $nodes[] = $node;
                 }
             }
@@ -303,13 +292,12 @@ abstract class WsSecurityFilterClientServer
     {
         $url = parse_url($uri);
         $referenceId = $url['fragment'];
-        $query = '//*[@'.Helper::PFX_WSU.':Id="'.$referenceId.'" or @Id="'.$referenceId.'"]';
+        $query = '//*[@' . Helper::PFX_WSU . ':Id="' . $referenceId . '" or @Id="' . $referenceId . '"]';
         $xpath = new \DOMXPath($node->ownerDocument);
         $xpath->registerNamespace(Helper::PFX_WSU, Helper::NS_WSU);
 
         return $xpath->query($query)->item(0);
     }
-
 
     /**
      * Tries to resolve a key from the given \DOMElement.
@@ -325,7 +313,6 @@ abstract class WsSecurityFilterClientServer
             if (Helper::NS_WSS === $key->namespaceURI) {
                 switch ($key->localName) {
                     case 'KeyIdentifier':
-
                         return $this->serviceSecurityKey->getPublicKey();
                     case 'Reference':
                         $uri = $key->getAttribute('URI');
@@ -336,9 +323,9 @@ abstract class WsSecurityFilterClientServer
                             $key = XmlSecurityEnc::decryptEncryptedKey($referencedNode, $this->userSecurityKey->getPrivateKey());
 
                             return XmlSecurityKey::factory($algorithm, $key, false, XmlSecurityKey::TYPE_PRIVATE);
-                        } elseif (Helper::NS_WSS === $referencedNode->namespaceURI
+                        }
+                        if (Helper::NS_WSS === $referencedNode->namespaceURI
                                 && 'BinarySecurityToken' == $referencedNode->localName) {
-
                             $key = XmlSecurityPem::formatKeyInPemFormat($referencedNode->textContent);
 
                             return XmlSecurityKey::factory(XmlSecurityKey::RSA_SHA1, $key, false, XmlSecurityKey::TYPE_PUBLIC);

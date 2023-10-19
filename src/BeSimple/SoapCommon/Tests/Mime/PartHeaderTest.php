@@ -14,7 +14,6 @@ namespace BeSimple\SoapCommon\Tests;
 
 use BeSimple\SoapCommon\Tests\Fixtures\MimePartHeader;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 class PartHeaderTest extends TestCase
 {
@@ -40,7 +39,7 @@ class PartHeaderTest extends TestCase
     {
         $ph = new MimePartHeader();
 
-        $class = new ReflectionClass($ph);
+        $class = new \ReflectionClass($ph);
         $method = $class->getMethod('generateHeaders');
         $method->setAccessible(true);
 

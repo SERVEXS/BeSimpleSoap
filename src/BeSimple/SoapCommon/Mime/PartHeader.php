@@ -24,7 +24,7 @@ abstract class PartHeader
      *
      * @var array(string=>mixed|array(mixed))
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * Add a new header to the mime part.
@@ -32,17 +32,15 @@ abstract class PartHeader
      * @param string $name     Header name
      * @param string $value    Header value
      * @param string $subValue Is sub value?
-     *
-     * @return void
      */
     public function setHeader($name, $value, $subValue = null): void
     {
         if (isset($this->headers[$name]) && null !== $subValue) {
             if (!\is_array($this->headers[$name])) {
-                $this->headers[$name] = array(
-                    '@'    => $this->headers[$name],
+                $this->headers[$name] = [
+                    '@' => $this->headers[$name],
                     $value => $subValue,
-                );
+                ];
             } else {
                 $this->headers[$name][$value] = $subValue;
             }
@@ -70,12 +68,14 @@ abstract class PartHeader
                 }
 
                 return null;
-            } elseif (\is_array($this->headers[$name]) && isset($this->headers[$name]['@'])) {
-                return $this->headers[$name]['@'];
-            } else {
-                return $this->headers[$name];
             }
+            if (\is_array($this->headers[$name]) && isset($this->headers[$name]['@'])) {
+                return $this->headers[$name]['@'];
+            }
+
+            return $this->headers[$name];
         }
+
         return null;
     }
 
@@ -87,11 +87,11 @@ abstract class PartHeader
     protected function generateHeaders()
     {
         $charset = strtolower($this->getHeader('Content-Type', 'charset'));
-        $preferences = array(
+        $preferences = [
             'scheme' => 'Q',
             'input-charset' => 'utf-8',
             'output-charset' => $charset,
-        );
+        ];
         $headers = '';
         foreach ($this->headers as $fieldName => $value) {
             $fieldValue = $this->generateHeaderFieldValue($value);
@@ -99,6 +99,7 @@ abstract class PartHeader
             // $headers .= iconv_mime_encode($field_name, $field_value, $preferences) . "\r\n";
             $headers .= $fieldName . ': ' . $fieldValue . "\r\n";
         }
+
         return $headers;
     }
 
@@ -124,6 +125,7 @@ abstract class PartHeader
         } else {
             $fieldValue .= $value;
         }
+
         return $fieldValue;
     }
 
@@ -139,8 +141,8 @@ abstract class PartHeader
     {
         if (preg_match('~[()<>@,;:\\"/\[\]?=]~', $string)) {
             return '"' . $string . '"';
-        } else {
-            return $string;
         }
+
+        return $string;
     }
 }

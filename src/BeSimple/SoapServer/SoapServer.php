@@ -12,9 +12,9 @@
 
 namespace BeSimple\SoapServer;
 
-use BeSimple\SoapCommon\Helper;
 use BeSimple\SoapCommon\Converter\MtomTypeConverter;
 use BeSimple\SoapCommon\Converter\SwaTypeConverter;
+use BeSimple\SoapCommon\Helper;
 
 /**
  * Extended SoapServer that allows adding filters for SwA, MTOM, ... .
@@ -36,7 +36,7 @@ class SoapServer extends \SoapServer
      *
      * @var \BeSimple\SoapServer\SoapKernel
      */
-    protected $soapKernel = null;
+    protected $soapKernel;
 
     /**
      * Constructor.
@@ -44,7 +44,7 @@ class SoapServer extends \SoapServer
      * @param string               $wsdl    WSDL file
      * @param array(string=>mixed) $options Options array
      */
-    public function __construct($wsdl, array $options = array())
+    public function __construct($wsdl, array $options = [])
     {
         // store SOAP version
         if (isset($options['soap_version'])) {
@@ -131,9 +131,7 @@ class SoapServer extends \SoapServer
     /**
      * Configure filter and type converter for SwA/MTOM.
      *
-     * @param array &$options SOAP constructor options array.
-     *
-     * @return void
+     * @param array &$options SOAP constructor options array
      */
     private function configureMime(array &$options): void
     {
@@ -153,14 +151,14 @@ class SoapServer extends \SoapServer
             }
             // configure typemap
             if (!isset($options['typemap'])) {
-                $options['typemap'] = array();
+                $options['typemap'] = [];
             }
-            $options['typemap'][] = array(
+            $options['typemap'][] = [
                 'type_name' => $converter->getTypeName(),
-                'type_ns'   => $converter->getTypeNamespace(),
-                'from_xml'  => fn($input) => $converter->convertXmlToPhp($input),
-                'to_xml'    => fn($input) => $converter->convertPhpToXml($input),
-            );
+                'type_ns' => $converter->getTypeNamespace(),
+                'from_xml' => fn ($input) => $converter->convertXmlToPhp($input),
+                'to_xml' => fn ($input) => $converter->convertPhpToXml($input),
+            ];
         }
     }
 }

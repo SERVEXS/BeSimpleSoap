@@ -21,8 +21,10 @@
     ],
     "require": {
         "php": ">=7.4",
-        "ext-soap": "*",
         "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-iconv": "*",
+        "ext-soap": "*",
         "ass/xmlsecurity": "~1.0",
         "symfony/framework-bundle": "^4.4|^5.4",
         "symfony/twig-bundle": "^4.4|^5.4",

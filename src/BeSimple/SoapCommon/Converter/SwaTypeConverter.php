@@ -14,8 +14,6 @@ namespace BeSimple\SoapCommon\Converter;
 
 use BeSimple\SoapCommon\Mime\Part as MimePart;
 use BeSimple\SoapCommon\SoapKernel;
-use BeSimple\SoapCommon\Converter\SoapKernelAwareInterface;
-use BeSimple\SoapCommon\Converter\TypeConverterInterface;
 
 /**
  * SwA type converter.
@@ -25,29 +23,20 @@ use BeSimple\SoapCommon\Converter\TypeConverterInterface;
 class SwaTypeConverter implements TypeConverterInterface, SoapKernelAwareInterface
 {
     /**
-    * @var \BeSimple\SoapCommon\SoapKernel $soapKernel SoapKernel instance
-    */
-    protected $soapKernel = null;
-
-    /**
-     * {@inheritDoc}
+     * @var \BeSimple\SoapCommon\SoapKernel SoapKernel instance
      */
+    protected $soapKernel;
+
     public function getTypeNamespace()
     {
         return 'http://www.w3.org/2001/XMLSchema';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getTypeName()
     {
         return 'base64Binary';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function convertXmlToPhp($data)
     {
         $doc = new \DOMDocument();
@@ -61,20 +50,15 @@ class SwaTypeConverter implements TypeConverterInterface, SoapKernelAwareInterfa
             $contentId = urldecode(substr($ref, 4));
 
             if (null !== ($part = $this->soapKernel->getAttachment($contentId))) {
-
                 return $part->getContent();
-            } else {
-
-                return null;
             }
+
+            return null;
         }
 
         return $data;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function convertPhpToXml($data)
     {
         $part = new MimePart($data);
@@ -85,9 +69,6 @@ class SwaTypeConverter implements TypeConverterInterface, SoapKernelAwareInterfa
         return sprintf('<%s href="%s"/>', $this->getTypeName(), 'cid:' . $contentId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setKernel(SoapKernel $soapKernel): void
     {
         $this->soapKernel = $soapKernel;

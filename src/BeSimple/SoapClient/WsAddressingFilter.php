@@ -47,7 +47,7 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @see http://www.w3.org/TR/2006/REC-ws-addr-core-20060509/#predefaddr
      */
-    const ENDPOINT_REFERENCE_ANONYMOUS = 'http://www.w3.org/2005/08/addressing/anonymous';
+    public const ENDPOINT_REFERENCE_ANONYMOUS = 'http://www.w3.org/2005/08/addressing/anonymous';
 
     /**
      * (2.1) Endpoint reference (EPR) address for discarting messages.
@@ -59,7 +59,7 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @see http://www.w3.org/TR/2006/REC-ws-addr-core-20060509/#predefaddr
      */
-    const ENDPOINT_REFERENCE_NONE = 'http://www.w3.org/2005/08/addressing/none';
+    public const ENDPOINT_REFERENCE_NONE = 'http://www.w3.org/2005/08/addressing/none';
 
     /**
      * (3.1) Predefined value for reply.
@@ -68,7 +68,7 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * see http://www.w3.org/TR/2006/REC-ws-addr-core-20060509/#predefrels
      */
-    const RELATIONSHIP_TYPE_REPLY = 'http://www.w3.org/2005/08/addressing/reply';
+    public const RELATIONSHIP_TYPE_REPLY = 'http://www.w3.org/2005/08/addressing/reply';
 
     /**
      * FaultTo.
@@ -96,14 +96,14 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @var unknown_type
      */
-    protected $referenceParametersSet = array();
+    protected $referenceParametersSet = [];
 
     /**
      * List of reference parameters recieved with this soap message.
      *
      * @var unknown_type
      */
-    protected $referenceParametersRecieved = array();
+    protected $referenceParametersRecieved = [];
 
     /**
      * RelatesTo.
@@ -133,17 +133,15 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      * @param string $pfx       Namespace prefix
      * @param string $parameter Parameter name
      * @param string $value     Parameter value
-     *
-     * @return void
      */
-    public function addReferenceParameter($ns, $pfx, $parameter, $value)
+    public function addReferenceParameter($ns, $pfx, $parameter, $value): void
     {
-        $this->referenceParametersSet[] = array(
+        $this->referenceParametersSet[] = [
             'ns' => $ns,
             'pfx' => $pfx,
             'parameter' => $parameter,
             'value' => $value,
-        );
+        ];
     }
 
     /**
@@ -157,7 +155,6 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
     public function getReferenceParameter($ns, $parameter)
     {
         if (isset($this->referenceParametersRecieved[$ns][$parameter])) {
-
             return $this->referenceParametersRecieved[$ns][$parameter];
         }
 
@@ -167,26 +164,24 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
     /**
      * Reset all properties to default values.
      */
-    public function resetFilter()
+    public function resetFilter(): void
     {
-        $this->faultTo                     = null;
-        $this->from                        = null;
-        $this->messageId                   = null;
-        $this->referenceParametersRecieved = array();
-        $this->referenceParametersSet      = array();
-        $this->relatesTo                   = null;
-        $this->relatesToRelationshipType   = null;
-        $this->replyTo                     = null;
+        $this->faultTo = null;
+        $this->from = null;
+        $this->messageId = null;
+        $this->referenceParametersRecieved = [];
+        $this->referenceParametersSet = [];
+        $this->relatesTo = null;
+        $this->relatesToRelationshipType = null;
+        $this->replyTo = null;
     }
 
     /**
      * Set FaultTo address of type xs:anyURI.
      *
      * @param string $faultTo xs:anyURI
-     *
-     * @return void
      */
-    public function setFaultTo($faultTo)
+    public function setFaultTo($faultTo): void
     {
         $this->faultTo = $faultTo;
     }
@@ -195,10 +190,8 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      * Set From address of type xs:anyURI.
      *
      * @param string $from xs:anyURI
-     *
-     * @return void
      */
-    public function setFrom($from)
+    public function setFrom($from): void
     {
         $this->from = $from;
     }
@@ -208,10 +201,8 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      * Default: UUID v4 e.g. 'uuid:550e8400-e29b-11d4-a716-446655440000'
      *
      * @param string $messageId xs:anyURI
-     *
-     * @return void
      */
-    public function setMessageId($messageId = null)
+    public function setMessageId($messageId = null): void
     {
         if (null === $messageId) {
             $messageId = 'uuid:' . Helper::generateUUID();
@@ -225,10 +216,8 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @param string $relatesTo    xs:anyURI
      * @param string $relationType xs:anyURI
-     *
-     * @return void
      */
-    public function setRelatesTo($relatesTo, $relationType = null)
+    public function setRelatesTo($relatesTo, $relationType = null): void
     {
         $this->relatesTo = $relatesTo;
         if (null !== $relationType && $relationType != self::RELATIONSHIP_TYPE_REPLY) {
@@ -241,10 +230,8 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      * Default: self::ENDPOINT_REFERENCE_ANONYMOUS
      *
      * @param string $replyTo xs:anyURI
-     *
-     * @return void
      */
-    public function setReplyTo($replyTo = null)
+    public function setReplyTo($replyTo = null): void
     {
         if (null === $replyTo) {
             $replyTo = self::ENDPOINT_REFERENCE_ANONYMOUS;
@@ -256,10 +243,8 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      * Modify the given request XML.
      *
      * @param \BeSimple\SoapCommon\SoapRequest $request SOAP request
-     *
-     * @return void
      */
-    public function filterRequest(CommonSoapRequest $request)
+    public function filterRequest(CommonSoapRequest $request): void
     {
         // get \DOMDocument from SOAP request
         $dom = $request->getContentDocument();
@@ -325,20 +310,18 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      * Modify the given response XML.
      *
      * @param \BeSimple\SoapCommon\SoapResponse $response SOAP response
-     *
-     * @return void
      */
-    public function filterResponse(CommonSoapResponse $response)
+    public function filterResponse(CommonSoapResponse $response): void
     {
         // get \DOMDocument from SOAP response
         $dom = $response->getContentDocument();
 
-        $this->referenceParametersRecieved = array();
+        $this->referenceParametersRecieved = [];
         $referenceParameters = $dom->getElementsByTagNameNS(Helper::NS_WSA, 'ReferenceParameters')->item(0);
         if (null !== $referenceParameters) {
             foreach ($referenceParameters->childNodes as $childNode) {
                 if (!isset($this->referenceParametersRecieved[$childNode->namespaceURI])) {
-                    $this->referenceParametersRecieved[$childNode->namespaceURI] = array();
+                    $this->referenceParametersRecieved[$childNode->namespaceURI] = [];
                 }
                 $this->referenceParametersRecieved[$childNode->namespaceURI][$childNode->localName] = $childNode->nodeValue;
             }

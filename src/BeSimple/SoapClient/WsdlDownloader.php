@@ -56,7 +56,7 @@ class WsdlDownloader
     /**
      * Resolve WSDl/XSD includes.
      *
-     * @var boolean
+     * @var bool
      */
     protected $resolveRemoteIncludes = true;
 
@@ -64,13 +64,13 @@ class WsdlDownloader
      * Constructor.
      *
      * @param \BeSimple\SoapClient\Curl $curl                  Curl instance
-     * @param boolean                   $resolveRemoteIncludes WSDL/XSD include enabled?
-     * @param boolean                   $cacheWsdl             Cache constant
+     * @param bool                   $resolveRemoteIncludes WSDL/XSD include enabled?
+     * @param bool                   $cacheWsdl             Cache constant
      */
     public function __construct(Curl $curl, $resolveRemoteIncludes = true, $cacheWsdl = Cache::TYPE_DISK)
     {
-        $this->curl                  = $curl;
-        $this->resolveRemoteIncludes = (Boolean) $resolveRemoteIncludes;
+        $this->curl = $curl;
+        $this->resolveRemoteIncludes = (bool) $resolveRemoteIncludes;
 
         // get current WSDL caching config
         $this->cacheEnabled = $cacheWsdl === Cache::TYPE_NONE ? Cache::DISABLED : Cache::ENABLED == Cache::isEnabled();
@@ -91,7 +91,7 @@ class WsdlDownloader
         // resolve remote XSD includes
         $isRemoteFile = $this->isRemoteFile($wsdl);
         if ($isRemoteFile || $this->resolveRemoteIncludes) {
-            $cacheFilePath = $this->cacheDir.DIRECTORY_SEPARATOR.'wsdl_'.md5($wsdl).'.cache';
+            $cacheFilePath = $this->cacheDir . \DIRECTORY_SEPARATOR . 'wsdl_' . md5($wsdl) . '.cache';
 
             if (!$this->cacheEnabled || !file_exists($cacheFilePath) || (filemtime($cacheFilePath) + $this->cacheTtl) < time()) {
                 if ($isRemoteFile) {
@@ -107,22 +107,23 @@ class WsdlDownloader
                             file_put_contents($cacheFilePath, $response);
                         }
                     } else {
-                        throw new \ErrorException("SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl ."'");
+                        throw new \ErrorException("SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl . "'");
                     }
                 } elseif (file_exists($wsdl)) {
                     $response = file_get_contents($wsdl);
                     $this->resolveRemoteIncludes($response, $cacheFilePath);
                 } else {
-                    throw new \ErrorException("SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl ."'");
+                    throw new \ErrorException("SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl . "'");
                 }
             }
 
             return $cacheFilePath;
-        } elseif (file_exists($wsdl)) {
+        }
+        if (file_exists($wsdl)) {
             return realpath($wsdl);
         }
 
-        throw new \ErrorException("SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl ."'");
+        throw new \ErrorException("SOAP-ERROR: Parsing WSDL: Couldn't load from '" . $wsdl . "'");
     }
 
     /**
@@ -130,7 +131,7 @@ class WsdlDownloader
      *
      * @param string $file File URL/path
      *
-     * @return boolean
+     * @return bool
      */
     private function isRemoteFile($file)
     {
@@ -149,11 +150,9 @@ class WsdlDownloader
      *
      * @param string  $xml            XML file
      * @param string  $cacheFilePath  Cache file name
-     * @param boolean $parentFilePath Parent file name
-     *
-     * @return void
+     * @param bool $parentFilePath Parent file name
      */
-    private function resolveRemoteIncludes($xml, $cacheFilePath, $parentFilePath = null)
+    private function resolveRemoteIncludes($xml, $cacheFilePath, $parentFilePath = null): void
     {
         $doc = new \DOMDocument();
         $doc->loadXML($xml);
@@ -163,7 +162,7 @@ class WsdlDownloader
         $xpath->registerNamespace(Helper::PFX_WSDL, Helper::NS_WSDL);
 
         // WSDL include/import
-        $query = './/'.Helper::PFX_WSDL.':include | .//'.Helper::PFX_WSDL.':import';
+        $query = './/' . Helper::PFX_WSDL . ':include | .//' . Helper::PFX_WSDL . ':import';
         $nodes = $xpath->query($query);
         if ($nodes->length > 0) {
             foreach ($nodes as $node) {
@@ -180,7 +179,7 @@ class WsdlDownloader
         }
 
         // XML schema include/import
-        $query = './/'.Helper::PFX_XML_SCHEMA.':include | .//'.Helper::PFX_XML_SCHEMA.':import';
+        $query = './/' . Helper::PFX_XML_SCHEMA . ':include | .//' . Helper::PFX_XML_SCHEMA . ':import';
         $nodes = $xpath->query($query);
         if ($nodes->length > 0) {
             foreach ($nodes as $node) {
@@ -214,23 +213,23 @@ class WsdlDownloader
         $urlParts = parse_url($base);
 
         // combine base path with relative path
-        if (isset($urlParts['path']) && '/' === $relative{0}) {
+        if (isset($urlParts['path']) && '/' === $relative[0]) {
             // $relative is absolute path from domain (starts with /)
             $path = $relative;
-        } elseif (isset($urlParts['path']) && strrpos($urlParts['path'], '/') === (strlen($urlParts['path']) )) {
+        } elseif (isset($urlParts['path']) && strrpos($urlParts['path'], '/') === \strlen($urlParts['path'])) {
             // base path is directory
-            $path = $urlParts['path'].$relative;
+            $path = $urlParts['path'] . $relative;
         } elseif (isset($urlParts['path'])) {
             // strip filename from base path
-            $path = substr($urlParts['path'], 0, strrpos($urlParts['path'], '/')).'/'.$relative;
+            $path = substr($urlParts['path'], 0, strrpos($urlParts['path'], '/')) . '/' . $relative;
         } else {
             // no base path
-            $path = '/'.$relative;
+            $path = '/' . $relative;
         }
 
         // foo/./bar ==> foo/bar
         // remove double slashes
-        $path = preg_replace(array('#/\./#', '#/+#'), '/', $path);
+        $path = preg_replace(['#/\./#', '#/+#'], '/', $path);
 
         // split path by '/'
         $parts = explode('/', $path);
@@ -247,18 +246,18 @@ class WsdlDownloader
                         break;
                     }
 
-                    $keyToDelete--;
+                    --$keyToDelete;
                 }
 
                 unset($parts[$key]);
             }
         }
 
-        $hostname = $urlParts['scheme'].'://'.$urlParts['host'];
+        $hostname = $urlParts['scheme'] . '://' . $urlParts['host'];
         if (isset($urlParts['port'])) {
-            $hostname .= ':'.$urlParts['port'];
+            $hostname .= ':' . $urlParts['port'];
         }
 
-        return $hostname.implode('/', $parts);
+        return $hostname . implode('/', $parts);
     }
 }

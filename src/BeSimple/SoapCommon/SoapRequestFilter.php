@@ -13,8 +13,6 @@
 
 namespace BeSimple\SoapCommon;
 
-use BeSimple\SoapCommon\SoapRequest;
-
 /**
  * SOAP request filter interface.
  *

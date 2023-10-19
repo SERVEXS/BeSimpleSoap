@@ -15,8 +15,6 @@ namespace BeSimple\SoapCommon\Converter;
 use BeSimple\SoapCommon\Helper;
 use BeSimple\SoapCommon\Mime\Part as MimePart;
 use BeSimple\SoapCommon\SoapKernel;
-use BeSimple\SoapCommon\Converter\SoapKernelAwareInterface;
-use BeSimple\SoapCommon\Converter\TypeConverterInterface;
 
 /**
  * MTOM type converter.
@@ -26,29 +24,20 @@ use BeSimple\SoapCommon\Converter\TypeConverterInterface;
 class MtomTypeConverter implements TypeConverterInterface, SoapKernelAwareInterface
 {
     /**
-     * @var \BeSimple\SoapCommon\SoapKernel $soapKernel SoapKernel instance
+     * @var \BeSimple\SoapCommon\SoapKernel SoapKernel instance
      */
-    protected $soapKernel = null;
+    protected $soapKernel;
 
-    /**
-     * {@inheritDoc}
-     */
     public function getTypeNamespace()
     {
         return 'http://www.w3.org/2001/XMLSchema';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getTypeName()
     {
         return 'base64Binary';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function convertXmlToPhp($data)
     {
         $doc = new \DOMDocument();
@@ -65,7 +54,6 @@ class MtomTypeConverter implements TypeConverterInterface, SoapKernelAwareInterf
             $contentId = urldecode(substr($ref, 4));
 
             if (null !== ($part = $this->soapKernel->getAttachment($contentId))) {
-
                 return $part->getContent();
             }
 
@@ -75,9 +63,6 @@ class MtomTypeConverter implements TypeConverterInterface, SoapKernelAwareInterf
         return $data;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function convertPhpToXml($data)
     {
         $part = new MimePart($data);
@@ -97,9 +82,6 @@ class MtomTypeConverter implements TypeConverterInterface, SoapKernelAwareInterf
         return $doc->saveXML();
     }
 
-    /**
-    * {@inheritDoc}
-    */
     public function setKernel(SoapKernel $soapKernel): void
     {
         $this->soapKernel = $soapKernel;

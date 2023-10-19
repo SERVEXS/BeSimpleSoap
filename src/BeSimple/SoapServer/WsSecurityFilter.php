@@ -46,8 +46,6 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      * Set username/password callback that returns password or null.
      *
      * @param callable $callback Username/password callback function
-     *
-     * @return void
      */
     public function setUsernamePasswordCallback($callback): void
     {
@@ -67,8 +65,6 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      * Modify the given request XML.
      *
      * @param \BeSimple\SoapCommon\SoapRequest $request SOAP request
-     *
-     * @return void
      */
     public function filterRequest(CommonSoapRequest $request): void
     {
@@ -78,9 +74,8 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
         // locate security header
         $security = $dom->getElementsByTagNameNS(Helper::NS_WSS, 'Security')->item(0);
         if (null !== $security) {
-
             // is security header still valid?
-            $query = '//'.Helper::PFX_WSU.':Timestamp/'.Helper::PFX_WSU.':Expires';
+            $query = '//' . Helper::PFX_WSU . ':Timestamp/' . Helper::PFX_WSU . ':Expires';
             $xpath = new \DOMXPath($dom);
             $xpath->registerNamespace(Helper::PFX_WSU, Helper::NS_WSU);
             $expires = $xpath->query($query, $security)->item(0);
@@ -113,7 +108,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
             }
 
             // add SecurityTokenReference resolver for KeyInfo
-            $keyResolver = array($this, 'keyInfoSecurityTokenReferenceResolver');
+            $keyResolver = [$this, 'keyInfoSecurityTokenReferenceResolver'];
             XmlSecurityDSig::addKeyInfoResolver(Helper::NS_WSS, 'SecurityTokenReference', $keyResolver);
 
             // do we have a reference list in header
@@ -131,10 +126,10 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
             $signature = XmlSecurityDSig::locateSignature($security);
             if (null !== $signature) {
                 // verify references
-                $options = array(
+                $options = [
                     'id_ns_prefix' => Helper::PFX_WSU,
                     'id_prefix_ns' => Helper::NS_WSU,
-                );
+                ];
                 if (XmlSecurityDSig::verifyReferences($signature, $options) !== true) {
                     throw new \SoapFault('wsse:FailedCheck', 'The signature or decryption was invalid');
                 }
@@ -152,8 +147,6 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      * Modify the given request XML.
      *
      * @param \BeSimple\SoapCommon\SoapResponse $response SOAP response
-     *
-     * @return void
      */
     public function filterResponse(CommonSoapResponse $response): void
     {
@@ -198,10 +191,10 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
             }
             $nodes = $this->createNodeListForSigning($dom, $security);
             $signature = XmlSecurityDSig::createSignature($this->userSecurityKey->getPrivateKey(), XmlSecurityDSig::EXC_C14N, $security, null, $keyInfo);
-            $options = array(
+            $options = [
                 'id_ns_prefix' => Helper::PFX_WSU,
                 'id_prefix_ns' => Helper::NS_WSU,
-            );
+            ];
             foreach ($nodes as $node) {
                 XmlSecurityDSig::addNodeToSignature($signature, $node, XmlSecurityDSig::SHA1, XmlSecurityDSig::EXC_C14N, $options);
             }

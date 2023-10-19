@@ -19,11 +19,8 @@ use BeSimple\SoapCommon\Classmap as BaseClassmap;
  */
 class Classmap extends BaseClassmap
 {
-    protected $classmapInversed = array();
+    protected $classmapInversed = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function add($type, $classname): void
     {
         parent::add($type, $classname);

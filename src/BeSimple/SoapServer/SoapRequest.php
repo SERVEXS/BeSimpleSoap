@@ -12,8 +12,8 @@
 
 namespace BeSimple\SoapServer;
 
-use BeSimple\SoapCommon\SoapRequest as CommonSoapRequest;
 use BeSimple\SoapCommon\SoapMessage;
+use BeSimple\SoapCommon\SoapRequest as CommonSoapRequest;
 
 /**
  * SoapRequest class for SoapClient. Provides factory function for request object.
@@ -35,7 +35,7 @@ class SoapRequest extends CommonSoapRequest
         $request = new self();
 
         // $content is if unmodified from SoapClient not a php string type!
-        $request->setContent((string) (null === $content ? file_get_contents("php://input") : $content));
+        $request->setContent((string) (null === $content ? file_get_contents('php://input') : $content));
         $request->setLocation(self::getCurrentUrl());
         $request->setAction($_SERVER[SoapMessage::SOAP_ACTION_HEADER] ?? null);
         $request->setVersion($version);
@@ -67,6 +67,7 @@ class SoapRequest extends CommonSoapRequest
             $url .= ":{$_SERVER['SERVER_PORT']}";
         }
         $url .= $_SERVER['REQUEST_URI'] ?? '';
+
         return $url;
     }
 }

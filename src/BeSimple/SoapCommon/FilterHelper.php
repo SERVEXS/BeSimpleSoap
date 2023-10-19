@@ -24,14 +24,14 @@ class FilterHelper
      *
      * @var \DOMDocument
      */
-    protected $domDocument = null;
+    protected $domDocument;
 
     /**
      * Namespaces added.
      *
      * @var array(string=>string)
      */
-    protected $namespaces = array();
+    protected $namespaces = [];
 
     /**
      * Constructor.
@@ -47,11 +47,9 @@ class FilterHelper
      * Add new soap header.
      *
      * @param \DOMElement $node           DOMElement to add
-     * @param boolean     $mustUnderstand SOAP header mustUnderstand attribute
+     * @param bool     $mustUnderstand SOAP header mustUnderstand attribute
      * @param string      $actor          SOAP actor/role
      * @param string      $soapVersion    SOAP version SOAP_1_1|SOAP_1_2
-     *
-     * @return void
      */
     public function addHeaderElement(\DOMElement $node, $mustUnderstand = null, $actor = null, $soapVersion = \SOAP_1_1): void
     {
@@ -88,8 +86,6 @@ class FilterHelper
      * Add new soap body element.
      *
      * @param \DOMElement $node DOMElement to add
-     *
-     * @return void
      */
     public function addBodyElement(\DOMElement $node): void
     {
@@ -113,8 +109,6 @@ class FilterHelper
      *
      * @param string $prefix       Namespace prefix
      * @param string $namespaceURI Namespace URI
-     *
-     * @return void
      */
     public function addNamespace($prefix, $namespaceURI): void
     {
@@ -148,8 +142,6 @@ class FilterHelper
      * @param string      $namespaceURI Namespace URI
      * @param string      $name         Attribute name
      * @param string      $value        Attribute value
-     *
-     * @return void
      */
     public function setAttribute(\DOMElement $element, $namespaceURI, $name, $value): void
     {
@@ -166,8 +158,6 @@ class FilterHelper
      *
      * @param string $prefix       Namespace prefix
      * @param string $namespaceURI Namespace URI
-     *
-     * @return void
      */
     public function registerNamespace($prefix, $namespaceURI): void
     {

@@ -13,12 +13,6 @@
 namespace BeSimple\SoapCommon\Definition;
 
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
-use Exception;
-use InvalidArgumentException;
-
-use const SOAP_1_1;
-use const SOAP_LITERAL;
-use const SOAP_RPC;
 
 /**
  * @author Francis Besset <francis.besset@gmail.com>
@@ -51,9 +45,9 @@ class Definition
     public function setOptions(array $options)
     {
         $this->options = [
-            'version' => SOAP_1_1,
-            'style' => SOAP_RPC,
-            'use' => SOAP_LITERAL,
+            'version' => \SOAP_1_1,
+            'style' => \SOAP_RPC,
+            'use' => \SOAP_LITERAL,
             'location' => null,
         ];
 
@@ -67,7 +61,7 @@ class Definition
         }
 
         if ($invalid) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('The Definition does not support the following options: "%s"', implode('", "', $invalid))
             );
         }
@@ -78,7 +72,7 @@ class Definition
     public function setOption($key, $value)
     {
         if (!\array_key_exists($key, $this->options)) {
-            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         $this->options[$key] = $value;
@@ -89,7 +83,7 @@ class Definition
     public function getOption($key)
     {
         if (!\array_key_exists($key, $this->options)) {
-            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         return $this->options[$key];
@@ -113,7 +107,7 @@ class Definition
     public function addType($phpType, $xmlType): void
     {
         if (isset($this->types[$phpType])) {
-            throw new Exception();
+            throw new \Exception();
         }
 
         $this->types[$phpType] = $xmlType;
@@ -121,7 +115,7 @@ class Definition
 
     public function getMessages()
     {
-        $messages = array();
+        $messages = [];
         foreach ($this->methods as $method) {
             $messages[] = $method->getHeaders();
             $messages[] = $method->getInput();
@@ -145,7 +139,7 @@ class Definition
     {
         $name = $method->getName();
         if (isset($this->methods[$name])) {
-            throw new Exception(sprintf('The method "%s" already exists', $name));
+            throw new \Exception(sprintf('The method "%s" already exists', $name));
         }
 
         $this->methods[$name] = $method;

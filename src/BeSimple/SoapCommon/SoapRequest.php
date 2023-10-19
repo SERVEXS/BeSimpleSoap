@@ -13,8 +13,6 @@
 
 namespace BeSimple\SoapCommon;
 
-use BeSimple\SoapCommon\SoapMessage;
-
 /**
  * SOAP request message.
  *
@@ -22,5 +20,4 @@ use BeSimple\SoapCommon\SoapMessage;
  */
 class SoapRequest extends SoapMessage
 {
-
 }

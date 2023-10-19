@@ -89,15 +89,15 @@ class MultiPartTest extends TestCase
     {
         $mp = new MultiPart();
 
-        $result = array(
+        $result = [
             'Content-Type: multipart/related; type="text/xml"; charset=utf-8; boundary="' . $mp->getHeader('Content-Type', 'boundary') . '"',
-        );
+        ];
         $this->assertEquals($result, $mp->getHeadersForHttp());
 
-        $result = array(
+        $result = [
             'Content-Type: multipart/related; type="text/xml"; charset=utf-8; boundary="' . $mp->getHeader('Content-Type', 'boundary') . '"',
             'Content-Description: test',
-        );
+        ];
         $mp->setHeader('Content-Description', 'test');
         $this->assertEquals($result, $mp->getHeadersForHttp());
     }
@@ -130,15 +130,15 @@ class MultiPartTest extends TestCase
         $p2 = new Part('test');
         $mp->addPart($p2);
 
-        $withoutMain = array(
-            trim($p2->getHeader('Content-ID'),'<>') => $p2,
-        );
+        $withoutMain = [
+            trim($p2->getHeader('Content-ID'), '<>') => $p2,
+        ];
         $this->assertEquals($withoutMain, $mp->getParts());
 
-        $withMain = array(
-            trim($p1->getHeader('Content-ID'),'<>') => $p1,
-            trim($p2->getHeader('Content-ID'),'<>') => $p2,
-        );
+        $withMain = [
+            trim($p1->getHeader('Content-ID'), '<>') => $p1,
+            trim($p2->getHeader('Content-ID'), '<>') => $p2,
+        ];
         $this->assertEquals($withMain, $mp->getParts(true));
     }
 }

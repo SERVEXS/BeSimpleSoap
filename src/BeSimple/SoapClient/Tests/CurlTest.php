@@ -19,21 +19,21 @@ use BeSimple\SoapClient\Curl;
  */
 class CurlTest extends AbstractWebserverTest
 {
-    public function testExec()
+    public function testExec(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $this->assertTrue($curl->exec(sprintf('http://localhost:%d/curl.txt', WEBSERVER_PORT)));
         $this->assertTrue($curl->exec(sprintf('http://localhost:%d/404.txt', WEBSERVER_PORT)));
     }
 
-    public function testGetErrorMessage()
+    public function testGetErrorMessage(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $curl->exec('http://unknown/curl.txt');
         $this->assertEquals('Could not connect to host', $curl->getErrorMessage());
@@ -45,48 +45,48 @@ class CurlTest extends AbstractWebserverTest
         $this->assertEquals('Unable to parse URL', $curl->getErrorMessage());
     }
 
-    public function testGetRequestHeaders()
+    public function testGetRequestHeaders(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $curl->exec(sprintf('http://localhost:%d/curl.txt', WEBSERVER_PORT));
-        $this->assertEquals(132 + self::$websererPortLength, strlen($curl->getRequestHeaders()));
+        $this->assertEquals(132 + self::$websererPortLength, \strlen($curl->getRequestHeaders()));
 
         $curl->exec(sprintf('http://localhost:%s/404.txt', WEBSERVER_PORT));
-        $this->assertEquals(131 + self::$websererPortLength, strlen($curl->getRequestHeaders()));
+        $this->assertEquals(131 + self::$websererPortLength, \strlen($curl->getRequestHeaders()));
     }
 
-    public function testGetResponse()
+    public function testGetResponse(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $curl->exec(sprintf('http://localhost:%d/curl.txt', WEBSERVER_PORT));
         $this->assertSame('OK', $curl->getResponseStatusMessage());
-        $this->assertEquals(145 + self::$websererPortLength, strlen($curl->getResponse()));
+        $this->assertEquals(145 + self::$websererPortLength, \strlen($curl->getResponse()));
 
         $curl->exec(sprintf('http://localhost:%d/404.txt', WEBSERVER_PORT));
         $this->assertSame('Not Found', $curl->getResponseStatusMessage());
     }
 
-    public function testGetResponseBody()
+    public function testGetResponseBody(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $curl->exec(sprintf('http://localhost:%d/curl.txt', WEBSERVER_PORT));
         $this->assertEquals('This is a testfile for cURL.', $curl->getResponseBody());
     }
 
-    public function testGetResponseContentType()
+    public function testGetResponseContentType(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $curl->exec(sprintf('http://localhost:%d/curl.txt', WEBSERVER_PORT));
         $this->assertEquals('text/plain; charset=UTF-8', $curl->getResponseContentType());
@@ -95,24 +95,24 @@ class CurlTest extends AbstractWebserverTest
         $this->assertEquals('text/html; charset=UTF-8', $curl->getResponseContentType());
     }
 
-    public function testGetResponseHeaders()
+    public function testGetResponseHeaders(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $curl->exec(sprintf('http://localhost:%d/curl.txt', WEBSERVER_PORT));
-        $this->assertEquals(117 + self::$websererPortLength, strlen($curl->getResponseHeaders()));
+        $this->assertEquals(117 + self::$websererPortLength, \strlen($curl->getResponseHeaders()));
 
         $curl->exec(sprintf('http://localhost:%d/404.txt', WEBSERVER_PORT));
-        $this->assertEquals(124 + self::$websererPortLength, strlen($curl->getResponseHeaders()));
+        $this->assertEquals(124 + self::$websererPortLength, \strlen($curl->getResponseHeaders()));
     }
 
-    public function testGetResponseStatusCode()
+    public function testGetResponseStatusCode(): void
     {
-        $curl = new Curl(array(
+        $curl = new Curl([
             'proxy_host' => false,
-        ));
+        ]);
 
         $curl->exec(sprintf('http://localhost:%d/curl.txt', WEBSERVER_PORT));
         $this->assertEquals(200, $curl->getResponseStatusCode());

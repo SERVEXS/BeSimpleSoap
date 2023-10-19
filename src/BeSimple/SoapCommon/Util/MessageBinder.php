@@ -13,9 +13,6 @@
 namespace BeSimple\SoapCommon\Util;
 
 use BeSimple\SoapCommon\PropertyAccess\ReflectionPropertyAccessor;
-use InvalidArgumentException;
-use ReflectionClass;
-use RuntimeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -25,7 +22,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class MessageBinder
 {
     /**
-     * @var Object
+     * @var object
      */
     protected $message;
 
@@ -35,18 +32,18 @@ class MessageBinder
     protected $propertyAccessor;
 
     /**
-     * @var ReflectionClass
+     * @var \ReflectionClass
      */
     protected $reflectionClass;
 
     public function __construct($message)
     {
         if (!\is_object($message)) {
-            throw new InvalidArgumentException(sprintf('The message must be an object, %s given', \gettype($message)));
+            throw new \InvalidArgumentException(sprintf('The message must be an object, %s given', \gettype($message)));
         }
 
         $this->message = $message;
-        $this->reflectionClass = new ReflectionClass($this->message);
+        $this->reflectionClass = new \ReflectionClass($this->message);
         $this->propertyAccessor = new ReflectionPropertyAccessor(
             PropertyAccess::createPropertyAccessor()
         );
@@ -59,9 +56,9 @@ class MessageBinder
 
     public function writeProperty($property, $value): void
     {
-        if ($this->reflectionClass->hasMethod($setter = 'set'.$property)) {
+        if ($this->reflectionClass->hasMethod($setter = 'set' . $property)) {
             if (!$this->reflectionClass->getMethod($setter)->isPublic()) {
-                throw new RuntimeException(sprintf('Method "%s()" is not public in class "%s"', $setter, $this->reflectionClass->name));
+                throw new \RuntimeException(sprintf('Method "%s()" is not public in class "%s"', $setter, $this->reflectionClass->name));
             }
 
             $this->message->{$setter}($value);

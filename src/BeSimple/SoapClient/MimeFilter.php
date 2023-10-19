@@ -48,37 +48,33 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
     /**
      * Reset all properties to default values.
      */
-    public function resetFilter()
+    public function resetFilter(): void
     {
         $this->attachmentType = Helper::ATTACHMENTS_TYPE_SWA;
     }
 
     /**
      * Modify the given request XML.
-     *
-     * @param \BeSimple\SoapCommon\SoapRequest $request SOAP request
-     *
-     * @return void
      */
-    public function filterRequest(SoapRequest $request)
+    public function filterRequest(SoapRequest $request): void
     {
         // get attachments from request object
         $attachmentsToSend = $request->getAttachments();
 
         // build mime message if we have attachments
-        if (count($attachmentsToSend) > 0) {
+        if (\count($attachmentsToSend) > 0) {
             $multipart = new MimeMultiPart();
             $soapPart = new MimePart($request->getContent(), 'text/xml', 'utf-8', MimePart::ENCODING_EIGHT_BIT);
             $soapVersion = $request->getVersion();
             // change content type headers for MTOM with SOAP 1.1
-            if ($soapVersion == SOAP_1_1 && $this->attachmentType & Helper::ATTACHMENTS_TYPE_MTOM) {
+            if ($soapVersion == \SOAP_1_1 && $this->attachmentType & Helper::ATTACHMENTS_TYPE_MTOM) {
                 $multipart->setHeader('Content-Type', 'type', 'application/xop+xml');
                 $multipart->setHeader('Content-Type', 'start-info', 'text/xml');
                 $soapPart->setHeader('Content-Type', 'application/xop+xml');
                 $soapPart->setHeader('Content-Type', 'type', 'text/xml');
             }
             // change content type headers for SOAP 1.2
-            elseif ($soapVersion == SOAP_1_2) {
+            elseif ($soapVersion == \SOAP_1_2) {
                 $multipart->setHeader('Content-Type', 'type', 'application/soap+xml');
                 $soapPart->setHeader('Content-Type', 'application/soap+xml');
             }
@@ -90,7 +86,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
 
             // TODO
             $headers = $multipart->getHeadersForHttp();
-            list(, $contentType) = explode(': ', $headers[0]);
+            [, $contentType] = explode(': ', $headers[0]);
 
             $request->setContentType($contentType);
         }
@@ -98,23 +94,19 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
 
     /**
      * Modify the given response XML.
-     *
-     * @param \BeSimple\SoapCommon\SoapResponse $response SOAP response
-     *
-     * @return void
      */
-    public function filterResponse(SoapResponse $response)
+    public function filterResponse(SoapResponse $response): void
     {
         // array to store attachments
-        $attachmentsRecieved = array();
+        $attachmentsRecieved = [];
 
         // check content type if it is a multipart mime message
         $responseContentType = $response->getContentType();
         if (false !== stripos($responseContentType, 'multipart/related')) {
             // parse mime message
-            $headers = array(
+            $headers = [
                 'Content-Type' => trim($responseContentType),
-            );
+            ];
             $multipart = MimeParser::parseMimeMessage($response->getContent(), $headers);
             // get soap payload and update SoapResponse object
             $soapPart = $multipart->getPart();
@@ -131,7 +123,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
         }
 
         // add attachments to response object
-        if (count($attachmentsRecieved) > 0) {
+        if (\count($attachmentsRecieved) > 0) {
             $response->setAttachments($attachmentsRecieved);
         }
     }

@@ -54,8 +54,8 @@ class PartTest extends TestCase
         $messagePart = "Content-Type: text/xml; charset=utf-8\r\n" .
         "Content-Transfer-Encoding: binary\r\n" .
         "Content-ID: <urn:myuniqueresource>\r\n" .
-        "\r\n".
-        "<xml1/>";
+        "\r\n" .
+        '<xml1/>';
 
         $this->assertEquals($messagePart, $p->getMessagePart());
     }

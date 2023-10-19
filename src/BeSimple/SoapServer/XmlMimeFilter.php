@@ -35,8 +35,6 @@ class XmlMimeFilter implements SoapResponseFilter
      * Modify the given response XML.
      *
      * @param \BeSimple\SoapCommon\SoapResponse $response SOAP request
-     *
-     * @return void
      */
     public function filterResponse(SoapResponse $response): void
     {
@@ -65,6 +63,5 @@ class XmlMimeFilter implements SoapResponseFilter
                 }
             }
         }
-
     }
 }

@@ -30,11 +30,11 @@ class SoapResponse extends CommonSoapResponse
      * @param string $version     SOAP version
      * @param string $contentType Content type header
      *
-     * @return BeSimple\SoapClient\SoapResponse
+     * @return SoapResponse
      */
     public static function create($content, $location, $action, $version, $contentType)
     {
-        $response = new SoapResponse();
+        $response = new self();
         $response->setContent($content);
         $response->setLocation($location);
         $response->setAction($action);

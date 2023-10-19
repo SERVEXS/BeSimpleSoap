@@ -23,19 +23,18 @@
  */
 
 use BeSimple\SoapClient\SoapClient as BeSimpleSoapClient;
-use BeSimple\SoapClient\WsAddressingFilter as BeSimpleWsAddressingFilter;
-
 use BeSimple\SoapClient\Tests\AxisInterop\TestCase;
+use BeSimple\SoapClient\WsAddressingFilter as BeSimpleWsAddressingFilter;
 
 class WsAddressingAxisInteropTest extends TestCase
 {
-    private $options = array(
-        'soap_version' => SOAP_1_2,
-        'features'     => SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
+    private $options = [
+        'soap_version' => \SOAP_1_2,
+        'features' => \SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
         'proxy_host' => false,
-    );
+    ];
 
-    public function testSession()
+    public function testSession(): void
     {
         $sc = new BeSimpleSoapClient('http://localhost:8080/axis2/services/Version2?wsdl', $this->options);
         $soapKernel = $sc->getSoapKernel();

@@ -20,8 +20,7 @@ class Classmap
     /**
      * @var array
      */
-    protected $classmap = array();
-
+    protected $classmap = [];
 
     /**
      * @return array
@@ -62,12 +61,9 @@ class Classmap
         $this->classmap[$type] = $classname;
     }
 
-    /**
-     * @param array $classmap
-     */
     public function set(array $classmap): void
     {
-        $this->classmap = array();
+        $this->classmap = [];
 
         foreach ($classmap as $type => $classname) {
             $this->add($type, $classname);
@@ -77,7 +73,7 @@ class Classmap
     /**
      * @param string $type
      *
-     * @return boolean
+     * @return bool
      */
     public function has($type)
     {

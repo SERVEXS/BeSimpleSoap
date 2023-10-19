@@ -14,35 +14,33 @@
 *
 */
 
-use BeSimple\SoapCommon\Helper as BeSimpleSoapHelper;
 use BeSimple\SoapClient\SoapClient as BeSimpleSoapClient;
-
-use BeSimple\SoapClient\Tests\AxisInterop\Fixtures\uploadFile;
-use BeSimple\SoapClient\Tests\AxisInterop\Fixtures\uploadFileResponse;
 use BeSimple\SoapClient\Tests\AxisInterop\Fixtures\downloadFile;
 use BeSimple\SoapClient\Tests\AxisInterop\Fixtures\downloadFileResponse;
-
+use BeSimple\SoapClient\Tests\AxisInterop\Fixtures\uploadFile;
+use BeSimple\SoapClient\Tests\AxisInterop\Fixtures\uploadFileResponse;
 use BeSimple\SoapClient\Tests\AxisInterop\TestCase;
+use BeSimple\SoapCommon\Helper as BeSimpleSoapHelper;
 
 class SwaAxisInteropTest extends TestCase
 {
-    private $options = array(
-        'soap_version'    => SOAP_1_1,
-        'features'        => SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
+    private $options = [
+        'soap_version' => \SOAP_1_1,
+        'features' => \SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
         'attachment_type' => BeSimpleSoapHelper::ATTACHMENTS_TYPE_SWA,
-        'cache_wsdl'      => WSDL_CACHE_NONE,
-        'classmap'        => array(
-            'downloadFile'         => 'BeSimple\SoapClient\Tests\AxisInterop\Fixtures\downloadFile',
-            'downloadFileResponse' => 'BeSimple\SoapClient\Tests\AxisInterop\Fixtures\downloadFileResponse',
-            'uploadFile'           => 'BeSimple\SoapClient\Tests\AxisInterop\Fixtures\uploadFile',
-            'uploadFileResponse'   => 'BeSimple\SoapClient\Tests\AxisInterop\Fixtures\uploadFileResponse',
-        ),
+        'cache_wsdl' => \WSDL_CACHE_NONE,
+        'classmap' => [
+            'downloadFile' => downloadFile::class,
+            'downloadFileResponse' => downloadFileResponse::class,
+            'uploadFile' => uploadFile::class,
+            'uploadFileResponse' => uploadFileResponse::class,
+        ],
         'proxy_host' => false,
-    );
+    ];
 
-    public function testUploadDownloadText()
+    public function testUploadDownloadText(): void
     {
-        $sc = new BeSimpleSoapClient(__DIR__.'/Fixtures/SwA.wsdl', $this->options);
+        $sc = new BeSimpleSoapClient(__DIR__ . '/Fixtures/SwA.wsdl', $this->options);
 
         $upload = new uploadFile();
         $upload->name = 'upload.txt';
@@ -58,13 +56,13 @@ class SwaAxisInteropTest extends TestCase
         $this->assertEquals($upload->data, $result->data);
     }
 
-    public function testUploadDownloadImage()
+    public function testUploadDownloadImage(): void
     {
-        $sc = new BeSimpleSoapClient(__DIR__.'/Fixtures/SwA.wsdl', $this->options);
+        $sc = new BeSimpleSoapClient(__DIR__ . '/Fixtures/SwA.wsdl', $this->options);
 
         $upload = new uploadFile();
         $upload->name = 'image.jpg';
-        $upload->data = file_get_contents(__DIR__.'/Fixtures/image.jpg'); // source: http://www.freeimageslive.com/galleries/light/pics/swirl3768.jpg;
+        $upload->data = file_get_contents(__DIR__ . '/Fixtures/image.jpg'); // source: http://www.freeimageslive.com/galleries/light/pics/swirl3768.jpg;
         $result = $sc->uploadFile($upload);
 
         $this->assertEquals('File saved succesfully.', $result->return);

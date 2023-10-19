@@ -25,8 +25,6 @@ interface SoapKernelAwareInterface
      * Set SoapKernel instance.
      *
      * @param \BeSimple\SoapCommon\SoapKernel $soapKernel SoapKernel instance
-     *
-     * @return void
      */
-    function setKernel(SoapKernel $soapKernel): void;
+    public function setKernel(SoapKernel $soapKernel): void;
 }

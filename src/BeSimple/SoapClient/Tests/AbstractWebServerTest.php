@@ -24,29 +24,29 @@ abstract class AbstractWebServerTest extends TestCase
     /**
      * @var Process
      */
-    static protected $webserver;
-    static protected $websererPortLength;
+    protected static $webserver;
+    protected static $websererPortLength;
 
     public static function setUpBeforeClass(): void
     {
-        if (PHP_VERSION_ID < 50400) {
+        if (\PHP_VERSION_ID < 50400) {
             self::markTestSkipped('PHP Webserver is available from PHP 5.4');
         }
 
         $phpFinder = new PhpExecutableFinder();
-        self::$webserver = new Process(array(
+        self::$webserver = new Process([
             'exec', // used exec binary (https://github.com/symfony/symfony/issues/5759)
             $phpFinder->find(),
             '-S',
             sprintf('localhost:%d', WEBSERVER_PORT),
             '-t',
-            __DIR__.DIRECTORY_SEPARATOR.'Fixtures',
-        ));
+            __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures',
+        ]);
 
         self::$webserver->start();
         usleep(100000);
 
-        self::$websererPortLength = strlen(WEBSERVER_PORT);
+        self::$websererPortLength = \strlen(WEBSERVER_PORT);
     }
 
     public static function tearDownAfterClass(): void
