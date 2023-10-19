@@ -275,13 +275,13 @@ abstract class WsSecurityFilterClientServer
             $nodes[] = $body;
         }
         foreach ($security->childNodes as $node) {
-            if (XML_ELEMENT_NODE === $node->nodeType) {
+            if (\XML_ELEMENT_NODE === $node->nodeType) {
                 $nodes[] = $node;
             }
         }
         if ($this->signAllHeaders) {
             foreach ($security->parentNode->childNodes as $node) {
-                if (XML_ELEMENT_NODE === $node->nodeType &&
+                if (\XML_ELEMENT_NODE === $node->nodeType &&
                     Helper::NS_WSS !== $node->namespaceURI) {
                     $nodes[] = $node;
                 }

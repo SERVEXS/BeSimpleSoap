@@ -97,7 +97,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
      */
     public function withPersistanceRequest()
     {
-        $this->persistence = SOAP_PERSISTENCE_REQUEST;
+        $this->persistence = \SOAP_PERSISTENCE_REQUEST;
 
         return $this;
     }
@@ -109,7 +109,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
      */
     public function withPersistenceSession()
     {
-        $this->persistence = SOAP_PERSISTENCE_SESSION;
+        $this->persistence = \SOAP_PERSISTENCE_SESSION;
 
         return $this;
     }
@@ -173,10 +173,10 @@ class SoapServerBuilder extends AbstractSoapBuilder
      */
     public function withHandler($handler)
     {
-        if (is_string($handler) && class_exists($handler)) {
+        if (\is_string($handler) && class_exists($handler)) {
             $this->handlerClass  = $handler;
             $this->handlerObject = null;
-        } elseif (is_object($handler)) {
+        } elseif (\is_object($handler)) {
             $this->handlerClass  = null;
             $this->handlerObject = $handler;
         } else {

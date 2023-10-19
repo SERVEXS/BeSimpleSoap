@@ -55,7 +55,7 @@ class MultiPart extends PartHeader
         $this->setHeader('Content-Type', 'multipart/related');
         $this->setHeader('Content-Type', 'type', 'text/xml');
         $this->setHeader('Content-Type', 'charset', 'utf-8');
-        if (is_null($boundary)) {
+        if (null === $boundary) {
             $boundary = $this->generateBoundary();
         }
         $this->setHeader('Content-Type', 'boundary', $boundary);
@@ -94,7 +94,7 @@ class MultiPart extends PartHeader
         );
         $headers = array();
         foreach ($this->headers as $fieldName => $value) {
-            if (in_array($fieldName, $allowed)) {
+            if (\in_array($fieldName, $allowed)) {
                 $fieldValue = $this->generateHeaderFieldValue($value);
                 // for http only ISO-8859-1
                 $headers[] = $fieldName . ': '. iconv('utf-8', 'ISO-8859-1//TRANSLIT', $fieldValue);
@@ -132,7 +132,7 @@ class MultiPart extends PartHeader
      */
     public function getPart($contentId = null)
     {
-        if (is_null($contentId)) {
+        if (null === $contentId) {
             $contentId = $this->mainPartContentId;
         }
         if (isset($this->parts[$contentId])) {

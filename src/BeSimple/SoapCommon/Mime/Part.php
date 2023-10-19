@@ -75,13 +75,13 @@ class Part extends PartHeader
     {
         $this->content = $content;
         $this->setHeader('Content-Type', $contentType);
-        if (!is_null($charset)) {
+        if (null !== $charset) {
             $this->setHeader('Content-Type', 'charset', $charset);
         } else {
             $this->setHeader('Content-Type', 'charset', 'utf-8');
         }
         $this->setHeader('Content-Transfer-Encoding', $encoding);
-        if (is_null($contentId)) {
+        if (null === $contentId) {
             $contentId = $this->generateContentId();
         }
         $this->setHeader('Content-ID', '<' . $contentId . '>');

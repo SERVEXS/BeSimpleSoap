@@ -29,7 +29,7 @@ class SoapServer extends \SoapServer
      *
      * @var int
      */
-    protected $soapVersion = SOAP_1_1;
+    protected $soapVersion = \SOAP_1_1;
 
     /**
      * Soap kernel.

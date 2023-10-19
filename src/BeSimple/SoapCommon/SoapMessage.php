@@ -48,8 +48,8 @@ abstract class SoapMessage
      * @var array(string=>string)
      */
     static protected $versionToContentTypeMap = array(
-        SOAP_1_1 => 'text/xml; charset=utf-8',
-        SOAP_1_2 => 'application/soap+xml; charset=utf-8'
+        \SOAP_1_1 => 'text/xml; charset=utf-8',
+        \SOAP_1_2 => 'application/soap+xml; charset=utf-8'
     );
 
     /**
@@ -111,7 +111,7 @@ abstract class SoapMessage
     */
     public static function getContentTypeForVersion($version)
     {
-        if (!in_array($version, array(SOAP_1_1, SOAP_1_2))) {
+        if (!\in_array($version, array(\SOAP_1_1, \SOAP_1_2))) {
             throw new \InvalidArgumentException("The 'version' argument has to be either 'SOAP_1_1' or 'SOAP_1_2'!");
         }
 

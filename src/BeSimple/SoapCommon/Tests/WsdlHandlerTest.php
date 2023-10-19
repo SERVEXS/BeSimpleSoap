@@ -19,8 +19,8 @@ class WsdlHandlerTest extends TestCase
 {
     public function testIsValidMimeTypeType(): void
     {
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/WsdlMimeContent.wsdl';
-        $wh = new WsdlHandler($filename, SOAP_1_1);
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/WsdlMimeContent.wsdl';
+        $wh = new WsdlHandler($filename, \SOAP_1_1);
 
         $this->assertTrue($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'body', 'text/xml'));
         $this->assertFalse($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'body', 'image/gif'));
@@ -28,8 +28,8 @@ class WsdlHandlerTest extends TestCase
         $this->assertFalse($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'ClaimPhoto', 'image/gif'));
         $this->assertFalse($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'ClaimPhoto', 'text/xml'));
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/WsdlMimeContent2.wsdl';
-        $wh = new WsdlHandler($filename, SOAP_1_1);
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/WsdlMimeContent2.wsdl';
+        $wh = new WsdlHandler($filename, \SOAP_1_1);
 
         $this->assertTrue($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'body', 'text/xml'));
         $this->assertFalse($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'body', 'image/gif'));
@@ -37,8 +37,8 @@ class WsdlHandlerTest extends TestCase
         $this->assertTrue($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'ClaimPhoto', 'image/gif'));
         $this->assertFalse($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'ClaimPhoto', 'text/xml'));
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/WsdlMimeContent3.wsdl';
-        $wh = new WsdlHandler($filename, SOAP_1_1);
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/WsdlMimeContent3.wsdl';
+        $wh = new WsdlHandler($filename, \SOAP_1_1);
 
         $this->assertTrue($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'body', 'text/xml'));
         $this->assertFalse($wh->isValidMimeTypeType('http://example.com/soapaction', WsdlHandler::BINDING_OPERATION_INPUT, 'body', 'image/gif'));

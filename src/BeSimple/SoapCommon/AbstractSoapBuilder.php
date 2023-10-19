@@ -99,7 +99,7 @@ abstract class AbstractSoapBuilder
 
     public function withWsdlCache($cache)
     {
-        if (!in_array($cache, Cache::getTypes(), true)) {
+        if (!\in_array($cache, Cache::getTypes(), true)) {
             throw new \InvalidArgumentException();
         }
 

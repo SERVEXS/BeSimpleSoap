@@ -41,8 +41,8 @@ class MessageBinder
 
     public function __construct($message)
     {
-        if (!is_object($message)) {
-            throw new InvalidArgumentException(sprintf('The message must be an object, %s given', gettype($message)));
+        if (!\is_object($message)) {
+            throw new InvalidArgumentException(sprintf('The message must be an object, %s given', \gettype($message)));
         }
 
         $this->message = $message;

@@ -29,7 +29,7 @@ class PartHeaderTest extends TestCase
     {
         $ph = new MimePartHeader();
         $ph->setHeader('Content-Type', 'utf-8', 'charset');
-        $this->assertEquals(null, $ph->getHeader('Content-Type', 'charset'));
+        $this->assertNull($ph->getHeader('Content-Type', 'charset'));
 
         $ph->setHeader('Content-Type', 'text/xml');
         $ph->setHeader('Content-Type', 'charset', 'utf-8');

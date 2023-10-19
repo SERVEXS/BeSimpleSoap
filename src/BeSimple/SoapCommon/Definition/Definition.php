@@ -59,7 +59,7 @@ class Definition
 
         $invalid = [];
         foreach ($options as $key => $value) {
-            if (array_key_exists($key, $this->options)) {
+            if (\array_key_exists($key, $this->options)) {
                 $this->options[$key] = $value;
             } else {
                 $invalid[] = $key;
@@ -77,7 +77,7 @@ class Definition
 
     public function setOption($key, $value)
     {
-        if (!array_key_exists($key, $this->options)) {
+        if (!\array_key_exists($key, $this->options)) {
             throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
@@ -88,7 +88,7 @@ class Definition
 
     public function getOption($key)
     {
-        if (!array_key_exists($key, $this->options)) {
+        if (!\array_key_exists($key, $this->options)) {
             throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 

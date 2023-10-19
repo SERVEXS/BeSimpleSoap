@@ -88,7 +88,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
         }
 
         // add attachments to response object
-        if (count($attachmentsRecieved) > 0) {
+        if (\count($attachmentsRecieved) > 0) {
             $request->setAttachments($attachmentsRecieved);
         }
     }
@@ -106,19 +106,19 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
         $attachmentsToSend = $response->getAttachments();
 
         // build mime message if we have attachments
-        if (count($attachmentsToSend) > 0) {
+        if (\count($attachmentsToSend) > 0) {
             $multipart = new MimeMultiPart();
             $soapPart = new MimePart($response->getContent(), 'text/xml', 'utf-8', MimePart::ENCODING_EIGHT_BIT);
             $soapVersion = $response->getVersion();
             // change content type headers for MTOM with SOAP 1.1
-            if ($soapVersion == SOAP_1_1 && $this->attachmentType & Helper::ATTACHMENTS_TYPE_MTOM) {
+            if ($soapVersion == \SOAP_1_1 && $this->attachmentType & Helper::ATTACHMENTS_TYPE_MTOM) {
                 $multipart->setHeader('Content-Type', 'type', 'application/xop+xml');
                 $multipart->setHeader('Content-Type', 'start-info', 'text/xml');
                 $soapPart->setHeader('Content-Type', 'application/xop+xml');
                 $soapPart->setHeader('Content-Type', 'type', 'text/xml');
             }
             // change content type headers for SOAP 1.2
-            elseif ($soapVersion == SOAP_1_2) {
+            elseif ($soapVersion == \SOAP_1_2) {
                 $multipart->setHeader('Content-Type', 'type', 'application/soap+xml');
                 $soapPart->setHeader('Content-Type', 'application/soap+xml');
             }

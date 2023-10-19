@@ -196,11 +196,11 @@ class Helper
      */
     public static function getSoapNamespace($version)
     {
-        if ($version === SOAP_1_2) {
+        if ($version === \SOAP_1_2) {
             return self::NS_SOAP_1_2;
-        } else {
-            return self::NS_SOAP_1_1;
         }
+
+        return self::NS_SOAP_1_1;
     }
 
     /**
@@ -213,9 +213,9 @@ class Helper
     public static function getSoapVersionFromNamespace($namespace)
     {
         if ($namespace === self::NS_SOAP_1_2) {
-            return SOAP_1_2;
-        } else {
-            return SOAP_1_1;
+            return \SOAP_1_2;
         }
+
+        return \SOAP_1_1;
     }
 }

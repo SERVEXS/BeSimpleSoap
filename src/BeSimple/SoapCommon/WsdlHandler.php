@@ -76,7 +76,7 @@ class WsdlHandler
     public function __construct($wsdlFile, $soapVersion)
     {
         $this->wsdlFile = $wsdlFile;
-        if ($soapVersion == SOAP_1_1) {
+        if ($soapVersion == \SOAP_1_1) {
             $this->wsdlSoapNamespace = Helper::NS_WSDL_SOAP_1_1;
         } else {
             $this->wsdlSoapNamespace = Helper::NS_WSDL_SOAP_1_2;
@@ -170,16 +170,16 @@ class WsdlHandler
         }
         $mimeTypes = $this->mimeTypes[$soapAction][$operationType][$part];
         // wildcard or exact match
-        if (in_array('*/*', $mimeTypes) || in_array($currentMimeType, $mimeTypes)) {
+        if (\in_array('*/*', $mimeTypes, true) || \in_array($currentMimeType, $mimeTypes, true)) {
             return true;
         // type/* match
-        } else {
-            list($ctype) = explode('/', $currentMimeType);
-            foreach ($mimeTypes as $mimeType) {
-                list($type, $subtype) = explode('/', $mimeType);
-                if ($subtype == '*' && $type == $ctype) {
-                    return true;
-                }
+        }
+
+        [$ctype] = explode('/', $currentMimeType);
+        foreach ($mimeTypes as $mimeType) {
+            [$type, $subtype] = explode('/', $mimeType);
+            if ($subtype === '*' && $type === $ctype) {
+                return true;
             }
         }
 

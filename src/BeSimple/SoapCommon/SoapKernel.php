@@ -99,7 +99,7 @@ class SoapKernel
         }
 
         if ($filter instanceof SoapResponseFilter) {
-            array_push($this->responseFilters, $filter);
+            $this->responseFilters[] = $filter;
         }
     }
 

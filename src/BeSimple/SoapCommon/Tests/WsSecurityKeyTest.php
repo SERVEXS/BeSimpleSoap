@@ -22,9 +22,9 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
         $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, $filename);
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
         $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertTrue($wsk->hasKeys());
@@ -45,7 +45,7 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
         $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertFalse($wsk->hasKeys());
@@ -56,7 +56,7 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
         $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertFalse($wsk->hasKeys());
@@ -67,7 +67,7 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
         $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertTrue($wsk->hasPrivateKey());
@@ -78,7 +78,7 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
         $wsk->addPrivateKey(XmlSecurityKey::TRIPLEDES_CBC);
 
         $this->assertTrue($wsk->hasPrivateKey());
@@ -89,7 +89,7 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientkey.pem';
         $wsk->addPrivateKey(XmlSecurityKey::RSA_SHA1, file_get_contents($filename), false);
 
         $this->assertTrue($wsk->hasPrivateKey());
@@ -100,7 +100,7 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
         $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, $filename);
 
         $this->assertTrue($wsk->hasPublicKey());
@@ -111,7 +111,7 @@ class WsSecurityKeyTest extends TestCase
     {
         $wsk = new WsSecurityKey();
 
-        $filename = __DIR__.DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
+        $filename = __DIR__.\DIRECTORY_SEPARATOR.'Fixtures/clientcert.pem';
         $wsk->addPublicKey(XmlSecurityKey::RSA_SHA1, file_get_contents($filename), false);
 
         $this->assertTrue($wsk->hasPublicKey());

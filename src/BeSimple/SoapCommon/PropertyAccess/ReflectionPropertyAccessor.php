@@ -127,7 +127,7 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
         $objectOrArray,
         $propertyPath
     ): ?ReflectionProperty {
-        if (false === is_object($objectOrArray)) {
+        if (false === \is_object($objectOrArray)) {
             return null;
         }
 

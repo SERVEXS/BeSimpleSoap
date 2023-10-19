@@ -99,7 +99,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
                 $usernameTokenUsername = $usernameToken->getElementsByTagNameNS(Helper::NS_WSS, 'Username')->item(0);
                 $usernameTokenPassword = $usernameToken->getElementsByTagNameNS(Helper::NS_WSS, 'Password')->item(0);
 
-                $password = call_user_func($this->usernamePasswordCallback, $usernameTokenUsername->textContent);
+                $password = \call_user_func($this->usernamePasswordCallback, $usernameTokenUsername->textContent);
 
                 if ($usernameTokenPassword->getAttribute('Type') == Helper::NAME_WSS_UTP . '#PasswordDigest') {
                     $nonce = $usernameToken->getElementsByTagNameNS(Helper::NS_WSS, 'Nonce')->item(0);

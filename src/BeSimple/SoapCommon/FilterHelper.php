@@ -53,7 +53,7 @@ class FilterHelper
      *
      * @return void
      */
-    public function addHeaderElement(\DOMElement $node, $mustUnderstand = null, $actor = null, $soapVersion = SOAP_1_1): void
+    public function addHeaderElement(\DOMElement $node, $mustUnderstand = null, $actor = null, $soapVersion = \SOAP_1_1): void
     {
         $root = $this->domDocument->documentElement;
         $namespace = $root->namespaceURI;
@@ -62,7 +62,7 @@ class FilterHelper
             $node->appendChild(new \DOMAttr($prefix . ':mustUnderstand', (int) $mustUnderstand));
         }
         if (null !== $actor) {
-            $attributeName = ($soapVersion == SOAP_1_1) ? 'actor' : 'role';
+            $attributeName = ($soapVersion == \SOAP_1_1) ? 'actor' : 'role';
             $node->appendChild(new \DOMAttr($prefix . ':' . $attributeName, $actor));
         }
         $nodeListHeader = $root->getElementsByTagNameNS($namespace, 'Header');

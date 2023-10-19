@@ -56,7 +56,7 @@ class TypeConverterCollection
         return isset($this->converters[$namespace.':'.$name]);
     }
 
-    public function addCollection(TypeConverterCollection $converterCollection): void
+    public function addCollection(self $converterCollection): void
     {
         foreach ($converterCollection->all() as $converter) {
             $this->add($converter);

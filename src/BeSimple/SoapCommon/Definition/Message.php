@@ -45,7 +45,7 @@ class Message
 
     public function isEmpty()
     {
-        return 0 === count($this->parts) ? true : false;
+        return 0 === \count($this->parts) ? true : false;
     }
 
     public function add($name, $phpType, $nillable = false, $attribute = false)
