@@ -163,14 +163,9 @@ class AnnotationClassLoader extends Loader
     }
 
     /**
-     * Returns true if this class supports the given resource.
-     *
-     * @param mixed  $resource A resource
-     * @param string|null $type     The resource type
-     *
-     * @return bool True if this class supports the given resource, false otherwise
+     * @inheritDoc
      */
-    public function supports($resource, ?string $type = null): bool
+    public function supports($resource, ?string $type = null)
     {
         return \is_string($resource) && preg_match('/^(?:\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/', $resource) && (!$type || 'annotation' === $type);
     }
