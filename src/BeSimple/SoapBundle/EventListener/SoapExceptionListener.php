@@ -53,7 +53,7 @@ class SoapExceptionListener extends ErrorListener
         }
 
         $request = $event->getRequest();
-        if (!in_array($request->getRequestFormat(), array('soap', 'xml'))) {
+        if (!in_array($request->getRequestFormat(), ['soap', 'xml'])) {
             return;
         }
 
@@ -83,9 +83,9 @@ class SoapExceptionListener extends ErrorListener
 
     public static function getSubscribedEvents(): array
     {
-        return array(
+        return [
             // Must be called before ExceptionListener of HttpKernel component
-            KernelEvents::EXCEPTION => array('onKernelException', -64),
-        );
+            KernelEvents::EXCEPTION => ['onKernelException', -64],
+        ];
     }
 }

@@ -49,15 +49,15 @@ class SoapClientBuilder extends BaseSoapClientBuilder
 
     protected function checkOptions(array $options)
     {
-        $checkOptions = array(
+        $checkOptions = [
             'debug'      => false,
             'cache_type' => null,
             'exceptions' => true,
             'user_agent' => 'BeSimpleSoap',
-        );
+        ];
 
         // check option names and live merge, if errors are encountered Exception will be thrown
-        $invalid   = array();
+        $invalid   = [];
         $isInvalid = false;
         foreach ($options as $key => $value) {
             if (!array_key_exists($key, $checkOptions)) {

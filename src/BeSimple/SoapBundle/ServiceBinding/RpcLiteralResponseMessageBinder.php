@@ -17,6 +17,7 @@ use BeSimple\SoapCommon\Definition\Type\ArrayOfType;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use BeSimple\SoapCommon\Util\MessageBinder;
+use BeSimple\SoapCommon\Type\AbstractKeyValue;
 
 /**
  * @author Christian Kerl <christian-kerl@web.de>
@@ -24,9 +25,9 @@ use BeSimple\SoapCommon\Util\MessageBinder;
  */
 class RpcLiteralResponseMessageBinder implements MessageBinderInterface
 {
-    protected $typeRepository;
+    protected TypeRepository $typeRepository;
 
-    private $messageRefs = array();
+    private array $messageRefs = [];
 
     public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository)
     {
@@ -53,11 +54,11 @@ class RpcLiteralResponseMessageBinder implements MessageBinderInterface
             $phpType = $type->getPhpType();
 
             if ($isArray) {
-                $array = array();
+                $array = [];
 
                 // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
-                if (is_array($message) && in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
-                    $keyValue = array();
+                if (is_array($message) && in_array(AbstractKeyValue::class, class_parents($phpType), true)) {
+                    $keyValue = [];
                     foreach ($message as $key => $value) {
                         $keyValue[] = new $phpType($key, $value);
                     }

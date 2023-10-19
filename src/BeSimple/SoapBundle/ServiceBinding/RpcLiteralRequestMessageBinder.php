@@ -24,15 +24,15 @@ use BeSimple\SoapCommon\Util\MessageBinder;
  */
 class RpcLiteralRequestMessageBinder implements MessageBinderInterface
 {
-    protected $typeRepository;
+    protected TypeRepository $typeRepository;
 
-    private $messageRefs = array();
+    private array $messageRefs = [];
 
     public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository)
     {
         $this->typeRepository = $typeRepository;
 
-        $result = array();
+        $result = [];
         $i      = 0;
 
         foreach ($messageDefinition->getInput()->all() as $argument) {
@@ -53,7 +53,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
         $type = $this->typeRepository->getType($phpType);
         if ($type instanceof ArrayOfType) {
             $isArray = true;
-            $array = array();
+            $array = [];
 
             $phpType = substr($type->getPhpType(), 0, strlen($type->getPhpType()) - 2);
             $type = $this->typeRepository->getType($phpType);
@@ -71,7 +71,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
 
                     // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
                     if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
-                        $assocArray = array();
+                        $assocArray = [];
                         foreach ($array as $keyValue) {
                             $assocArray[$keyValue->getKey()] = $keyValue->getValue();
                         }
@@ -86,7 +86,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
 
                     // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
                     if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
-                        $assocArray = array();
+                        $assocArray = [];
                         foreach ($array as $keyValue) {
                             $assocArray[$keyValue->getKey()] = $keyValue->getValue();
                         }

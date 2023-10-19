@@ -30,7 +30,7 @@ class TypeConverterPass implements CompilerPassInterface
         $definition = $container->getDefinition('besimple.soap.converter.collection');
 
         foreach ($container->findTaggedServiceIds('besimple.soap.converter') as $id => $attributes) {
-            $definition->addMethodCall('add', array(new Reference($id)));
+            $definition->addMethodCall('add', [new Reference($id)]);
         }
     }
 }

@@ -88,7 +88,7 @@ class SoapWebServiceController implements ContainerAwareInterface
             $this->getWebServiceContext($webservice)->getWsdlFileContent(
                 $this->container->get('router')->generate(
                     $routeName,
-                    array('webservice' => $webservice),
+                    ['webservice' => $webservice],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 )
             )
@@ -116,18 +116,20 @@ class SoapWebServiceController implements ContainerAwareInterface
                 sprintf(
                     'The parameter "%s" is required in Request::$query parameter bag to generate the SoapFault.',
                     '_besimple_soap_webservice'
-                ), null, $e
+                ),
+                null,
+                $exception
             );
         }
 
         $view = '@Twig/Exception/' . ($this->container->get('kernel')->isDebug() ? 'exception' : 'error') . '.txt.twig';
         $code = $exception->getStatusCode();
-        $details = $this->container->get('twig')->render($view, array(
+        $details = $this->container->get('twig')->render($view, [
             'status_code' => $code,
-            'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
+            'status_text' => Response::$statusTexts[$code] ?? '',
             'exception' => $exception,
             'logger' => $logger,
-        ));
+        ]);
 
         $handler = new ExceptionHandler($exception, $details);
         if ($soapFault = $request->query->get('_besimple_soap_fault')) {

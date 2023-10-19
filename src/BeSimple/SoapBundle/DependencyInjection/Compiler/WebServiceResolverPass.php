@@ -30,7 +30,7 @@ class WebServiceResolverPass implements CompilerPassInterface
         $definition = $container->getDefinition('besimple.soap.definition.loader.resolver');
 
         foreach ($container->findTaggedServiceIds('besimple.soap.definition.loader') as $id => $attributes) {
-            $definition->addMethodCall('addLoader', array(new Reference($id)));
+            $definition->addMethodCall('addLoader', [new Reference($id)]);
         }
     }
 }

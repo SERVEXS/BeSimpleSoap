@@ -78,7 +78,7 @@ class WebServiceContext
                 $definition->setOption('location', $endpoint);
             }
 
-            $dumper = new Dumper($definition, array('stylesheet' => $this->options['wsdl_stylesheet']));
+            $dumper = new Dumper($definition, ['stylesheet' => $this->options['wsdl_stylesheet']]);
 
             $wsdl = $dumper->dump();
 

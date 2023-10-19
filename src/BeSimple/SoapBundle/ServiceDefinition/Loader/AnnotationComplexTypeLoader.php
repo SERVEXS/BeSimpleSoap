@@ -46,14 +46,14 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-        $annotations = array();
+        $annotations = [];
 
         $class = new \ReflectionClass($class);
         if ($alias = $this->reader->getClassAnnotation($class, $this->aliasClass)) {
             $annotations['alias'] = $alias->getValue();
         }
 
-        $annotations['properties'] = new Collection('getName', 'BeSimple\SoapBundle\ServiceDefinition\ComplexType');
+        $annotations['properties'] = new Collection('getName', ComplexType::class);
         foreach ($class->getProperties() as $property) {
             $complexType = $this->reader->getPropertyAnnotation($property, $this->complexTypeClass);
 

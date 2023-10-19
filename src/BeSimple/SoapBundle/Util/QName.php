@@ -27,7 +27,7 @@ class QName
     {
         Assert::thatArgument('qname', self::isPrefixedQName($qname));
 
-        list($prefix, $name) = explode(':', $qname);
+        [$prefix, $name] = explode(':', $qname);
 
         return new self(call_user_func($resolveNamespacePrefixCallable, $prefix), $name);
     }

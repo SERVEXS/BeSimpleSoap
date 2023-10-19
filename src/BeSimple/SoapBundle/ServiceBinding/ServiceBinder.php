@@ -94,7 +94,7 @@ class ServiceBinder
         $methodDefinition = $this->definition->getMethod($method);
 
         return array_merge(
-            array('_controller' => $methodDefinition->getController()),
+            ['_controller' => $methodDefinition->getController()],
             $this->requestMessageBinder->processMessage($methodDefinition, $arguments, $this->definition->getTypeRepository())
         );
     }

@@ -147,7 +147,7 @@ class SoapRequest extends Request
 
     protected function splitContentTypeHeader($header)
     {
-        $result = array();
+        $result = [];
         $parts = explode(';', strtolower($header));
 
         $result['_type'] = array_shift($parts);
