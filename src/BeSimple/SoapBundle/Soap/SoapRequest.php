@@ -51,7 +51,7 @@ class SoapRequest extends Request
         array $files = [],
         array $server = [],
         $content = null
-    ) {
+    ): void {
         parent::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
 
         $this->soapMessage = null;

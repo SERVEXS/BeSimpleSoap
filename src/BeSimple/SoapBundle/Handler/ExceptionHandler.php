@@ -39,7 +39,7 @@ class ExceptionHandler
         $this->soapFault = $soapFault;
     }
 
-    public function __call($method, $arguments)
+    public function __call($method, $arguments): void
     {
         if (isset($this->soapFault)) {
             throw $this->soapFault;

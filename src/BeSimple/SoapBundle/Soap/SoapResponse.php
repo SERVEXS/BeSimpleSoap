@@ -35,7 +35,7 @@ class SoapResponse extends Response
         $this->setReturnValue($returnValue);
     }
 
-    public function addSoapHeader(SoapHeader $soapHeader)
+    public function addSoapHeader(SoapHeader $soapHeader): void
     {
         $this->soapHeaders->add($soapHeader);
     }

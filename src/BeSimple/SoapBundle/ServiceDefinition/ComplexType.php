@@ -37,12 +37,12 @@ class ComplexType
         return $this->isNillable;
     }
 
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
 
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->value = $value;
     }
@@ -67,7 +67,7 @@ class ComplexType
         return $this;
     }
 
-    public function setNillable($isNillable)
+    public function setNillable($isNillable): void
     {
         $this->isNillable = (bool) $isNillable;
     }

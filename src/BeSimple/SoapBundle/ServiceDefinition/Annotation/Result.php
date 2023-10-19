@@ -28,12 +28,12 @@ class Result extends Configuration implements TypedElementInterface
         return $this->xmlType;
     }
 
-    public function setPhpType($phpType)
+    public function setPhpType($phpType): void
     {
         $this->phpType = $phpType;
     }
 
-    public function setXmlType($xmlType)
+    public function setXmlType($xmlType): void
     {
         $this->xmlType = $xmlType;
     }

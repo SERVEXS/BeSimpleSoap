@@ -40,7 +40,7 @@ class BeSimpleSoapExtension extends Extension
     /**
      * @inheritDoc
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
@@ -71,7 +71,7 @@ class BeSimpleSoapExtension extends Extension
         $container->setParameter('besimple.soap.exception_listener.controller', $config['exception_controller']);
     }
 
-    private function registerCacheConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    private function registerCacheConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader): void
     {
         $loader->load('soap.xml');
 
@@ -82,7 +82,7 @@ class BeSimpleSoapExtension extends Extension
         }
     }
 
-    private function registerClientConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
+    private function registerClientConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader): void
     {
         if (3 === Kernel::MAJOR_VERSION) {
             $loader->load('client3.xml');
@@ -152,7 +152,7 @@ class BeSimpleSoapExtension extends Extension
         return sprintf('besimple.soap.classmap.%s', $client);
     }
 
-    private function createClient($client, ContainerBuilder $container)
+    private function createClient($client, ContainerBuilder $container): void
     {
         $definition = new ChildDefinition('besimple.soap.client');
         $container->setDefinition(sprintf('besimple.soap.client.%s', $client), $definition);
@@ -163,7 +163,7 @@ class BeSimpleSoapExtension extends Extension
         ]);
     }
 
-    private function createWebServiceContext(array $config, ContainerBuilder $container)
+    private function createWebServiceContext(array $config, ContainerBuilder $container): void
     {
         $bindingSuffix = $this->bindingConfigToServiceSuffixMap[$config['binding']];
         unset($config['binding']);

@@ -47,7 +47,7 @@ class SoapClientBuilder extends BaseSoapClientBuilder
         return $this->soapClient;
     }
 
-    protected function checkOptions(array $options)
+    protected function checkOptions(array $options): void
     {
         $checkOptions = [
             'debug'      => false,

@@ -38,7 +38,7 @@ class Collection implements \IteratorAggregate, \Countable
      *
      * @return void
      */
-    public function add($element)
+    public function add($element): void
     {
         if ($this->class && !$element instanceof $this->class) {
             throw new \InvalidArgumentException(sprintf('Cannot add class "%s" because it is not an instance of "%s"', get_class($element), $this->class));
@@ -52,7 +52,7 @@ class Collection implements \IteratorAggregate, \Countable
      *
      * @return void
      */
-    public function addAll($elements)
+    public function addAll($elements): void
     {
         foreach ($elements as $element) {
             $this->add($element);

@@ -40,22 +40,22 @@ class ComplexType extends Configuration
         return $this->isNillable;
     }
 
-    public function setName($name)
+    public function setName($name): void
     {
         $this->name = $name;
     }
 
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->value = $value;
     }
 
-    public function setNillable($isNillable)
+    public function setNillable($isNillable): void
     {
         $this->isNillable = (bool) $isNillable;
     }
 
-    public function setIsNillable($isNillable)
+    public function setIsNillable($isNillable): void
     {
         $this->isNillable = (bool) $isNillable;
     }

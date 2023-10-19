@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
  */
 class WebServiceResolverPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (false === $container->hasDefinition('besimple.soap.definition.loader.resolver')) {
             return;

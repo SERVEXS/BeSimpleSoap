@@ -20,7 +20,7 @@ class RpcLiteralRequestHeaderMessageBinder extends RpcLiteralRequestMessageBinde
 {
     private $header;
 
-    public function setHeader($header)
+    public function setHeader($header): void
     {
         $this->header = $header;
     }

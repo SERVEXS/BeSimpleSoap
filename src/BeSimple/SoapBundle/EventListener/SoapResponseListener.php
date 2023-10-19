@@ -33,7 +33,7 @@ class SoapResponseListener
     /**
      * Set the controller result in SoapResponse.
      */
-    public function onKernelView(ViewEvent $event)
+    public function onKernelView(ViewEvent $event): void
     {
         $request = $event->getRequest();
         if (!$request instanceof SoapRequest) {

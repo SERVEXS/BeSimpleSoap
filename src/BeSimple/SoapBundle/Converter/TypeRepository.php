@@ -23,7 +23,7 @@ class TypeRepository
     private array $xmlNamespaces  = [];
     private array $defaultTypeMap = [];
 
-    public function addXmlNamespace($prefix, $url)
+    public function addXmlNamespace($prefix, $url): void
     {
         $this->xmlNamespaces[$prefix] = $url;
     }
@@ -33,7 +33,7 @@ class TypeRepository
         return $this->xmlNamespaces[$prefix];
     }
 
-    public function addDefaultTypeMapping($phpType, $xmlType)
+    public function addDefaultTypeMapping($phpType, $xmlType): void
     {
         Assert::thatArgumentNotNull('phpType', $phpType);
         Assert::thatArgumentNotNull('xmlType', $xmlType);
@@ -46,7 +46,7 @@ class TypeRepository
         return $this->defaultTypeMap[$phpType] ?? null;
     }
 
-    public function fixTypeInformation(Definition $definition)
+    public function fixTypeInformation(Definition $definition): void
     {
         foreach($definition->getAllTypes() as $type) {
             $phpType = $type->getPhpType();
