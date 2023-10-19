@@ -16,8 +16,10 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\EventListener\ErrorListener;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -45,7 +47,8 @@ class SoapExceptionListener extends ErrorListener
 
     public function onKernelException(ExceptionEvent $event, ?string $eventName = null, ?EventDispatcherInterface $eventDispatcher = null): void
     {
-        if (Request::class::MASTER_REQUEST !== $event->getRequestType()) {
+
+        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
             return;
         }
 
