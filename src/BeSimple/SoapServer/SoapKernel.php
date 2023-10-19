@@ -27,7 +27,7 @@ class SoapKernel extends CommonSoapKernel
     /**
      * {@inheritDoc}
      */
-    public function filterRequest(CommonSoapRequest $request)
+    public function filterRequest(CommonSoapRequest $request): void
     {
         parent::filterRequest($request);
 
@@ -37,7 +37,7 @@ class SoapKernel extends CommonSoapKernel
     /**
      * {@inheritDoc}
      */
-    public function filterResponse(CommonSoapResponse $response)
+    public function filterResponse(CommonSoapResponse $response): void
     {
         $response->setAttachments($this->attachments);
         $this->attachments = array();

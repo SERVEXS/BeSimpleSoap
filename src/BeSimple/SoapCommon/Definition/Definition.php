@@ -110,7 +110,7 @@ class Definition
         return $this->types[$phpType];
     }
 
-    public function addType($phpType, $xmlType)
+    public function addType($phpType, $xmlType): void
     {
         if (isset($this->types[$phpType])) {
             throw new Exception();

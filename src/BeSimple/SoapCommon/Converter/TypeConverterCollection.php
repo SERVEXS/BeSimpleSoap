@@ -33,7 +33,7 @@ class TypeConverterCollection
         return $this->converters[$namespace.':'.$name];
     }
 
-    public function add(TypeConverterInterface $converter)
+    public function add(TypeConverterInterface $converter): void
     {
         if ($this->has($converter->getTypeNamespace(), $converter->getTypeName())) {
             throw new \InvalidArgumentException(sprintf('The converter "%s %s" already exists', $converter->getTypeNamespace(), $converter->getTypeName()));
@@ -42,7 +42,7 @@ class TypeConverterCollection
         $this->converters[$converter->getTypeNamespace().':'.$converter->getTypeName()] = $converter;
     }
 
-    public function set(array $converters)
+    public function set(array $converters): void
     {
         $this->converters = array();
 
@@ -56,7 +56,7 @@ class TypeConverterCollection
         return isset($this->converters[$namespace.':'.$name]);
     }
 
-    public function addCollection(TypeConverterCollection $converterCollection)
+    public function addCollection(TypeConverterCollection $converterCollection): void
     {
         foreach ($converterCollection->all() as $converter) {
             $this->add($converter);
@@ -74,12 +74,8 @@ class TypeConverterCollection
             $typemap[] = array(
                 'type_name' => $converter->getTypeName(),
                 'type_ns'   => $converter->getTypeNamespace(),
-                'from_xml'  => function($input) use ($converter) {
-                    return $converter->convertXmlToPhp($input);
-                },
-                'to_xml'    => function($input) use ($converter) {
-                    return $converter->convertPhpToXml($input);
-                },
+                'from_xml'  => fn($input) => $converter->convertXmlToPhp($input),
+                'to_xml'    => fn($input) => $converter->convertPhpToXml($input),
             );
         }
 

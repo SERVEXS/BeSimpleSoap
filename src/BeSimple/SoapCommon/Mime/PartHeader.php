@@ -35,7 +35,7 @@ abstract class PartHeader
      *
      * @return void
      */
-    public function setHeader($name, $value, $subValue = null)
+    public function setHeader($name, $value, $subValue = null): void
     {
         if (isset($this->headers[$name]) && !is_null($subValue)) {
             if (!is_array($this->headers[$name])) {

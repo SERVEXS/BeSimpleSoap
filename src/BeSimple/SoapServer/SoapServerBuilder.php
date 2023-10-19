@@ -189,7 +189,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
     /**
      * Validate options.
      */
-    protected function validateOptions()
+    protected function validateOptions(): void
     {
         $this->validateWsdl();
 

@@ -111,7 +111,7 @@ class MultiPart extends PartHeader
      *
      * @return void
      */
-    public function addPart(Part $part, $isMain = false)
+    public function addPart(Part $part, $isMain = false): void
     {
         $contentId = trim($part->getHeader('Content-ID'), '<>');
         if ($isMain === true) {

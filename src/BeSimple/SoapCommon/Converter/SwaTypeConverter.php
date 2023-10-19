@@ -88,7 +88,7 @@ class SwaTypeConverter implements TypeConverterInterface, SoapKernelAwareInterfa
     /**
      * {@inheritDoc}
      */
-    public function setKernel(SoapKernel $soapKernel)
+    public function setKernel(SoapKernel $soapKernel): void
     {
         $this->soapKernel = $soapKernel;
     }

@@ -28,5 +28,5 @@ interface SoapKernelAwareInterface
      *
      * @return void
      */
-    function setKernel(SoapKernel $soapKernel);
+    function setKernel(SoapKernel $soapKernel): void;
 }

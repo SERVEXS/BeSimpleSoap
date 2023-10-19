@@ -53,7 +53,7 @@ class Classmap
      *
      * @throws \InvalidArgumentException
      */
-    public function add($type, $classname)
+    public function add($type, $classname): void
     {
         if ($this->has($type)) {
             throw new \InvalidArgumentException(sprintf('The type "%s" already exists', $type));
@@ -65,7 +65,7 @@ class Classmap
     /**
      * @param array $classmap
      */
-    public function set(array $classmap)
+    public function set(array $classmap): void
     {
         $this->classmap = array();
 
@@ -84,7 +84,7 @@ class Classmap
         return isset($this->classmap[$type]);
     }
 
-    public function addClassmap(Classmap $classmap)
+    public function addClassmap(Classmap $classmap): void
     {
         foreach ($classmap->all() as $type => $classname) {
             $this->add($type, $classname);

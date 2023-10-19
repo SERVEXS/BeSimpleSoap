@@ -60,7 +60,7 @@ class Part
         return $this->type;
     }
 
-    public function setType($type)
+    public function setType($type): void
     {
         $this->type = $type;
     }
@@ -70,7 +70,7 @@ class Part
         return $this->nillable;
     }
 
-    public function setNillable($nillable)
+    public function setNillable($nillable): void
     {
         $this->nillable = (boolean) $nillable;
     }

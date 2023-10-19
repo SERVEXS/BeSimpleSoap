@@ -49,7 +49,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      *
      * @return void
      */
-    public function setUsernamePasswordCallback($callback)
+    public function setUsernamePasswordCallback($callback): void
     {
         $this->usernamePasswordCallback = $callback;
     }
@@ -57,7 +57,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
     /**
      * Reset all properties to default values.
      */
-    public function resetFilter()
+    public function resetFilter(): void
     {
         parent::resetFilter();
         $this->usernamePasswordCallback = null;
@@ -70,7 +70,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      *
      * @return void
      */
-    public function filterRequest(CommonSoapRequest $request)
+    public function filterRequest(CommonSoapRequest $request): void
     {
         // get \DOMDocument from SOAP request
         $dom = $request->getContentDocument();
@@ -155,7 +155,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
      *
      * @return void
      */
-    public function filterResponse(CommonSoapResponse $response)
+    public function filterResponse(CommonSoapResponse $response): void
     {
         // get \DOMDocument from SOAP response
         $dom = $response->getContentDocument();

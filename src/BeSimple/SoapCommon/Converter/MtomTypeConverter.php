@@ -67,10 +67,9 @@ class MtomTypeConverter implements TypeConverterInterface, SoapKernelAwareInterf
             if (null !== ($part = $this->soapKernel->getAttachment($contentId))) {
 
                 return $part->getContent();
-            } else {
-
-                return null;
             }
+
+            return null;
         }
 
         return $data;
@@ -101,7 +100,7 @@ class MtomTypeConverter implements TypeConverterInterface, SoapKernelAwareInterf
     /**
     * {@inheritDoc}
     */
-    public function setKernel(SoapKernel $soapKernel)
+    public function setKernel(SoapKernel $soapKernel): void
     {
         $this->soapKernel = $soapKernel;
     }

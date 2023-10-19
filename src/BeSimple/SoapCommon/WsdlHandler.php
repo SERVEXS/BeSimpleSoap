@@ -191,7 +191,7 @@ class WsdlHandler
      *
      * @return void
      */
-    private function loadWsdlInDom()
+    private function loadWsdlInDom(): void
     {
         if (null === $this->domDocument) {
             $this->domDocument = new \DOMDocument('1.0', 'utf-8');

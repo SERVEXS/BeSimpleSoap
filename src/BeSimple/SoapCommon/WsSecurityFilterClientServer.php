@@ -127,7 +127,7 @@ abstract class WsSecurityFilterClientServer
     /**
      * Reset all properties to default values.
      */
-    public function resetFilter()
+    public function resetFilter(): void
     {
         $this->actor                    = null;
         $this->addTimestamp             = null;
@@ -147,7 +147,7 @@ abstract class WsSecurityFilterClientServer
      *
      * @return void
      */
-    public function setServiceSecurityKeyObject(WsSecurityKey $serviceSecurityKey)
+    public function setServiceSecurityKeyObject(WsSecurityKey $serviceSecurityKey): void
     {
         $this->serviceSecurityKey = $serviceSecurityKey;
     }
@@ -159,7 +159,7 @@ abstract class WsSecurityFilterClientServer
      *
      * @return void
      */
-    public function setUserSecurityKeyObject(WsSecurityKey $userSecurityKey)
+    public function setUserSecurityKeyObject(WsSecurityKey $userSecurityKey): void
     {
         $this->userSecurityKey = $userSecurityKey;
     }
@@ -172,7 +172,7 @@ abstract class WsSecurityFilterClientServer
      *
      * @return void
      */
-    public function setSecurityOptionsEncryption($tokenReference, $encryptSignature = false)
+    public function setSecurityOptionsEncryption($tokenReference, $encryptSignature = false): void
     {
         $this->tokenReferenceEncryption = $tokenReference;
         $this->encryptSignature         = $encryptSignature;
@@ -186,7 +186,7 @@ abstract class WsSecurityFilterClientServer
      *
      * @return void
      */
-    public function setSecurityOptionsSignature($tokenReference, $signAllHeaders = false)
+    public function setSecurityOptionsSignature($tokenReference, $signAllHeaders = false): void
     {
         $this->tokenReferenceSignature = $tokenReference;
         $this->signAllHeaders          = $signAllHeaders;

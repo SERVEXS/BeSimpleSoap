@@ -48,7 +48,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
     /**
      * Reset all properties to default values.
      */
-    public function resetFilter()
+    public function resetFilter(): void
     {
         $this->attachmentType = Helper::ATTACHMENTS_TYPE_SWA;
     }
@@ -60,7 +60,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @return void
      */
-    public function filterRequest(SoapRequest $request)
+    public function filterRequest(SoapRequest $request): void
     {
         // array to store attachments
         $attachmentsRecieved = array();
@@ -100,7 +100,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @return void
      */
-    public function filterResponse(SoapResponse $response)
+    public function filterResponse(SoapResponse $response): void
     {
         // get attachments from request object
         $attachmentsToSend = $response->getAttachments();

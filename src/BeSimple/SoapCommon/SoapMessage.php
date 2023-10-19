@@ -133,7 +133,7 @@ abstract class SoapMessage
      *
      * @param string $action SOAP action
      */
-    public function setAction($action)
+    public function setAction($action): void
     {
         $this->action = $action;
     }
@@ -153,7 +153,7 @@ abstract class SoapMessage
      *
      * @param array(\BeSimple\SoapCommon\Mime\Part) $attachments Attachment array
      */
-    public function setAttachments(array $attachments)
+    public function setAttachments(array $attachments): void
     {
         $this->attachments = $attachments;
     }
@@ -177,7 +177,7 @@ abstract class SoapMessage
      *
      * @param string $content SOAP message
      */
-    public function setContent($content)
+    public function setContent($content): void
     {
         $this->content = $content;
         if (null !== $this->contentDomDocument) {
@@ -215,7 +215,7 @@ abstract class SoapMessage
      *
      * @param string $contentType Content type header
      */
-    public function setContentType($contentType)
+    public function setContentType($contentType): void
     {
         $this->contentType = $contentType;
     }
@@ -235,7 +235,7 @@ abstract class SoapMessage
      *
      * @param string $location Location string
      */
-    public function setLocation($location)
+    public function setLocation($location): void
     {
         $this->location = $location;
     }
@@ -255,7 +255,7 @@ abstract class SoapMessage
      *
      * @param string $version SOAP version SOAP_1_1|SOAP_1_2
      */
-    public function setVersion($version)
+    public function setVersion($version): void
     {
         $this->version = $version;
     }

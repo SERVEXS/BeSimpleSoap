@@ -57,7 +57,7 @@ class MessageBinder
         return $this->propertyAccessor->getValue($this->message, $property);
     }
 
-    public function writeProperty($property, $value)
+    public function writeProperty($property, $value): void
     {
         if ($this->reflectionClass->hasMethod($setter = 'set'.$property)) {
             if (!$this->reflectionClass->getMethod($setter)->isPublic()) {

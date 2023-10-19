@@ -237,7 +237,7 @@ abstract class AbstractSoapBuilder
         return $this;
     }
 
-    protected function validateWsdl()
+    protected function validateWsdl(): void
     {
         if (null === $this->wsdl) {
             throw new \InvalidArgumentException('The WSDL has to be configured!');

@@ -114,7 +114,7 @@ class Part extends PartHeader
      *
      * @return void
      */
-    public function setContent($content)
+    public function setContent($content): void
     {
         $this->content = $content;
     }

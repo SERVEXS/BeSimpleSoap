@@ -41,7 +41,7 @@ class TypeRepository
         return $this->xmlNamespaces[$prefix];
     }
 
-    public function addXmlNamespace($prefix, $url)
+    public function addXmlNamespace($prefix, $url): void
     {
         $this->xmlNamespaces[$prefix] = $url;
     }
@@ -75,7 +75,7 @@ class TypeRepository
         return $this->types[$phpType] = $xmlType;
     }
 
-    public function addComplexType(ComplexType $type)
+    public function addComplexType(ComplexType $type): void
     {
         $phpType = $type->getPhpType();
 
@@ -127,7 +127,7 @@ class TypeRepository
         return $this->classmap;
     }
 
-    protected function addClassmap($xmlType, $phpType)
+    protected function addClassmap($xmlType, $phpType): void
     {
         if (!$this->classmap) {
             return;

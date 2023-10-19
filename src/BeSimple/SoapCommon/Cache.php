@@ -42,7 +42,7 @@ class Cache
         return self::iniGet('soap.wsdl_cache_enabled');
     }
 
-    static public function setEnabled($enabled)
+    static public function setEnabled($enabled): void
     {
         if (!in_array($enabled, array(self::ENABLED, self::DISABLED), true)) {
             throw new \InvalidArgumentException();
@@ -56,7 +56,7 @@ class Cache
         return self::iniGet('soap.wsdl_cache');
     }
 
-    static public function setType($type)
+    static public function setType($type): void
     {
         if (!in_array($type, self::getTypes(), true)) {
             throw new \InvalidArgumentException('The cache type has to be either Cache::TYPE_NONE, Cache::TYPE_DISK, Cache::TYPE_MEMORY or Cache::TYPE_DISK_MEMORY');
@@ -70,7 +70,7 @@ class Cache
         return self::iniGet('soap.wsdl_cache_dir');
     }
 
-    static public function setDirectory($directory)
+    static public function setDirectory($directory): void
     {
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
@@ -84,7 +84,7 @@ class Cache
         return self::iniGet('soap.wsdl_cache_ttl');
     }
 
-    static public function setLifetime($lifetime)
+    static public function setLifetime($lifetime): void
     {
         self::iniSet('soap.wsdl_cache_ttl', $lifetime);
     }
@@ -94,7 +94,7 @@ class Cache
         return self::iniGet('soap.wsdl_cache_limit');
     }
 
-    static public function setLimit($limit)
+    static public function setLimit($limit): void
     {
         self::iniSet('soap.wsdl_cache_limit', $limit);
     }
@@ -104,7 +104,7 @@ class Cache
         return ini_get($key);
     }
 
-    static protected function iniSet($key, $value)
+    static protected function iniSet($key, $value): void
     {
         ini_set($key, $value);
     }

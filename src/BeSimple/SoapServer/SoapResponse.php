@@ -48,7 +48,7 @@ class SoapResponse extends CommonSoapResponse
     /**
      * Send SOAP response to client.
      */
-    public function send()
+    public function send(): void
     {
         // set Content-Type header
         header('Content-Type: '.$this->getContentType());

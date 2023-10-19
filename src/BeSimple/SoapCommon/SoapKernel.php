@@ -56,7 +56,7 @@ class SoapKernel
     *
     * @return void
     */
-    public function addAttachment(MimePart $attachment)
+    public function addAttachment(MimePart $attachment): void
     {
         $contentId = trim($attachment->getHeader('Content-ID'), '<>');
 
@@ -92,7 +92,7 @@ class SoapKernel
      *
      * @param SoapRequestFilter|SoapResponseFilter $filter Filter to register
      */
-    public function registerFilter($filter)
+    public function registerFilter($filter): void
     {
         if ($filter instanceof SoapRequestFilter) {
             array_unshift($this->requestFilters, $filter);
@@ -108,7 +108,7 @@ class SoapKernel
      *
      * @param SoapRequest $request Soap request
      */
-    public function filterRequest(SoapRequest $request)
+    public function filterRequest(SoapRequest $request): void
     {
         foreach ($this->requestFilters as $filter) {
             $filter->filterRequest($request);
@@ -120,7 +120,7 @@ class SoapKernel
      *
      * @param SoapResponse $response SOAP response
      */
-    public function filterResponse(SoapResponse $response)
+    public function filterResponse(SoapResponse $response): void
     {
         foreach ($this->responseFilters as $filter) {
             $filter->filterResponse($response);

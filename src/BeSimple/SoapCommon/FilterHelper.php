@@ -53,7 +53,7 @@ class FilterHelper
      *
      * @return void
      */
-    public function addHeaderElement(\DOMElement $node, $mustUnderstand = null, $actor = null, $soapVersion = SOAP_1_1)
+    public function addHeaderElement(\DOMElement $node, $mustUnderstand = null, $actor = null, $soapVersion = SOAP_1_1): void
     {
         $root = $this->domDocument->documentElement;
         $namespace = $root->namespaceURI;
@@ -91,7 +91,7 @@ class FilterHelper
      *
      * @return void
      */
-    public function addBodyElement(\DOMElement $node)
+    public function addBodyElement(\DOMElement $node): void
     {
         $root = $this->domDocument->documentElement;
         $namespace = $root->namespaceURI;
@@ -116,7 +116,7 @@ class FilterHelper
      *
      * @return void
      */
-    public function addNamespace($prefix, $namespaceURI)
+    public function addNamespace($prefix, $namespaceURI): void
     {
         if (!isset($this->namespaces[$namespaceURI])) {
             $root = $this->domDocument->documentElement;
@@ -151,7 +151,7 @@ class FilterHelper
      *
      * @return void
      */
-    public function setAttribute(\DOMElement $element, $namespaceURI, $name, $value)
+    public function setAttribute(\DOMElement $element, $namespaceURI, $name, $value): void
     {
         if (null !== $namespaceURI) {
             $prefix = $this->namespaces[$namespaceURI];
@@ -169,7 +169,7 @@ class FilterHelper
      *
      * @return void
      */
-    public function registerNamespace($prefix, $namespaceURI)
+    public function registerNamespace($prefix, $namespaceURI): void
     {
         if (!isset($this->namespaces[$namespaceURI])) {
             $this->namespaces[$namespaceURI] = $prefix;

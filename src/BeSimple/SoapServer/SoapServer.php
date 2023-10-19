@@ -64,7 +64,7 @@ class SoapServer extends \SoapServer
      *
      * @param string $request Request string
      */
-    public function handle($request = null)
+    public function handle($request = null): void
     {
         // wrap request data in SoapRequest object
         $soapRequest = SoapRequest::create($request, $this->soapVersion);
@@ -135,7 +135,7 @@ class SoapServer extends \SoapServer
      *
      * @return void
      */
-    private function configureMime(array &$options)
+    private function configureMime(array &$options): void
     {
         if (isset($options['attachment_type']) && Helper::ATTACHMENTS_TYPE_BASE64 !== $options['attachment_type']) {
             // register mime filter in SoapKernel
@@ -158,12 +158,8 @@ class SoapServer extends \SoapServer
             $options['typemap'][] = array(
                 'type_name' => $converter->getTypeName(),
                 'type_ns'   => $converter->getTypeNamespace(),
-                'from_xml'  => function($input) use ($converter) {
-                    return $converter->convertXmlToPhp($input);
-                },
-                'to_xml'    => function($input) use ($converter) {
-                    return $converter->convertPhpToXml($input);
-                },
+                'from_xml'  => fn($input) => $converter->convertXmlToPhp($input),
+                'to_xml'    => fn($input) => $converter->convertPhpToXml($input),
             );
         }
     }

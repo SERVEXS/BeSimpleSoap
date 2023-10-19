@@ -56,17 +56,17 @@ class Method
         return \SOAP_LITERAL;
     }
 
-    public function addHeader($name, $type)
+    public function addHeader($name, $type): void
     {
         $this->headers->add($name, $type);
     }
 
-    public function addInput($name, $type)
+    public function addInput($name, $type): void
     {
         $this->input->add($name, $type);
     }
 
-    public function setOutput($type, $name = 'return')
+    public function setOutput($type, $name = 'return'): void
     {
         $this->output->add($name, $type);
     }

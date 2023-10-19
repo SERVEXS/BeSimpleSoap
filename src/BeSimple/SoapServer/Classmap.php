@@ -24,7 +24,7 @@ class Classmap extends BaseClassmap
     /**
      * {@inheritdoc}
      */
-    public function add($type, $classname)
+    public function add($type, $classname): void
     {
         parent::add($type, $classname);
 
