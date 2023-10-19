@@ -19,6 +19,7 @@ use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Config\Loader\Loader;
+use Symfony\Component\Config\Loader\LoaderResolverInterface;
 
 /**
  * AnnotationClassLoader loads ServiceDefinition from a PHP class and its methods.
@@ -71,7 +72,7 @@ class AnnotationClassLoader extends Loader
         foreach ($class->getMethods() as $method) {
             $serviceHeaders = $sharedHeaders;
             $serviceArguments = [];
-            $serviceMethod =
+            $serviceMethod = null;
             $serviceReturn = null;
 
             foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
@@ -103,12 +104,12 @@ class AnnotationClassLoader extends Loader
             }
 
             if ($serviceMethod) {
-                foreach ($serviceHeaders as $name => $type) {
-                    $serviceMethod->addHeader($name, $type);
+                foreach ($serviceHeaders as $name => $headerType) {
+                    $serviceMethod->addHeader($name, $headerType);
                 }
 
-                foreach ($serviceArguments as $name => $type) {
-                    $serviceMethod->addInput($name, $type);
+                foreach ($serviceArguments as $name => $serviceType) {
+                    $serviceMethod->addInput($name, $serviceType);
                 }
 
                 if (!$serviceReturn) {
@@ -177,7 +178,7 @@ class AnnotationClassLoader extends Loader
     /**
      * @return null
      */
-    public function getResolver()
+    public function getResolver(): LoaderResolverInterface
     {
     }
 }
