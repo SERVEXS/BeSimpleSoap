@@ -15,17 +15,16 @@ namespace BeSimple\SoapBundle\Tests\ServiceBinding;
 use BeSimple\SoapBundle\ServiceBinding\RpcLiteralRequestMessageBinder;
 use BeSimple\SoapBundle\ServiceDefinition as Definition;
 use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding as Fixtures;
+use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\Bar;
+use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\BarRecursive;
+use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\Foo;
+use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\FooBar;
+use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\FooRecursive;
+use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\SimpleArrays;
 use BeSimple\SoapBundle\Util\Collection;
 use BeSimple\SoapClient\Tests\AxisInterop\TestCase;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
-use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\FooRecursive;
-use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\BarRecursive;
-use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\SimpleArrays;
-use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\Bar;
-use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\Foo;
-use BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\FooBar;
-use stdClass;
 
 class RpcLiteralRequestMessageBinderTest extends TestCase
 {
@@ -35,7 +34,7 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
     public function testProcessMessage(Definition\Method $method, array $message, array $assert): void
     {
         $messageBinder = new RpcLiteralRequestMessageBinder();
-        $result        = $messageBinder->processMessage($method, $message, $this->getTypeRepository());
+        $result = $messageBinder->processMessage($method, $message, $this->getTypeRepository());
 
         $this->assertSame($assert, $result);
     }
@@ -48,7 +47,7 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
         $method = new Definition\Method('complextype_argument', null);
         $method->addInput('foo', Foo::class);
 
-        $foo    = new Fixtures\Foo('foobar', 19395);
+        $foo = new Fixtures\Foo('foobar', 19395);
         $result = $messageBinder->processMessage(
             $method,
             [$foo],
@@ -59,7 +58,7 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
 
         $foo1 = new Fixtures\Foo('foobar', 29291);
         $foo2 = new Fixtures\Foo('barfoo', 39392);
-        $foos = new stdClass();
+        $foos = new \stdClass();
         $foos->item = [$foo1, $foo2];
 
         $method = new Definition\Method('complextype_argument', null);
@@ -98,8 +97,8 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
         $method = new Definition\Method('complextype_argument', null);
         $method->addInput('foos', 'BeSimple\SoapBundle\Tests\fixtures\ServiceBinding\Foo[]');
 
-        $foo  = new Fixtures\Foo('foo', 2499104);
-        $foos = new stdClass();
+        $foo = new Fixtures\Foo('foo', 2499104);
+        $foos = new \stdClass();
         $foos->item = [$foo, $foo];
 
         $result = $messageBinder->processMessage(
@@ -118,8 +117,8 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
         $method = new Definition\Method('complextype_argument', null);
         $method->addInput('fooBar', FooBar::class);
 
-        $foo    = new Fixtures\Foo('foo', 38845);
-        $bar    = new Fixtures\Bar('bar', null);
+        $foo = new Fixtures\Foo('foo', 38845);
+        $bar = new Fixtures\Bar('bar', null);
         $fooBar = new Fixtures\FooBar($foo, $bar);
 
         $result = $messageBinder->processMessage(
@@ -138,10 +137,10 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
         $method = new Definition\Method('complextype_with_array', null);
         $method->addInput('simple_arrays', SimpleArrays::class);
 
-        $array          = [1, 2, 3, 4];
-        $stdClass       = new stdClass();
+        $array = [1, 2, 3, 4];
+        $stdClass = new \stdClass();
         $stdClass->item = $array;
-        $simpleArrays   = new Fixtures\SimpleArrays(null, new stdClass(), $stdClass);
+        $simpleArrays = new Fixtures\SimpleArrays(null, new \stdClass(), $stdClass);
 
         $result = $messageBinder->processMessage(
             $method,
@@ -164,7 +163,7 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
 
         $result = $messageBinder->processMessage(
             $method,
-            [new stdClass()],
+            [new \stdClass()],
             $this->addComplexTypes($this->getTypeRepository())
         );
 
@@ -221,7 +220,7 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
         $method = new Definition\Method('array_string_arguments', null);
         $method->addInput('foo', 'string[]');
         $method->addInput('bar', 'int');
-        $strings = new stdClass();
+        $strings = new \stdClass();
         $strings->item = ['foo', 'bar', 'barfoo'];
         $messages[] = [
             $method,
@@ -233,7 +232,7 @@ class RpcLiteralRequestMessageBinderTest extends TestCase
         $method->addInput('foo', 'string[]');
         $messages[] = [
             $method,
-            [new stdClass()],
+            [new \stdClass()],
             ['foo' => []],
         ];
 

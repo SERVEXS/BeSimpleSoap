@@ -13,7 +13,10 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 interface TypedElementInterface
 {
     public function getPhpType();
+
     public function getXmlType();
+
     public function setPhpType($phpType);
+
     public function setXmlType($xmlType);
 }

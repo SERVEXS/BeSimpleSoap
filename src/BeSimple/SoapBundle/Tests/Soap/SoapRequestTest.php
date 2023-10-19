@@ -45,6 +45,6 @@ class SoapRequestTest extends TestCase
 
     private function loadRequestContentFixture($name)
     {
-        return file_get_contents(__DIR__.'/../fixtures/Soap/'.$name);
+        return file_get_contents(__DIR__ . '/../fixtures/Soap/' . $name);
     }
 }

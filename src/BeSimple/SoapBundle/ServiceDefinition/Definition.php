@@ -23,9 +23,7 @@ class Definition extends BaseDefinition
 {
     public function __construct(TypeRepository $typeRepository)
     {
-        $this->typeRepository = $typeRepository;
-
-        $this->setOptions([]);
+        parent::__construct(null, null, $typeRepository);
     }
 
     public function setName($name)

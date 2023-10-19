@@ -12,17 +12,12 @@
 
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
-use BeSimple\SoapBundle\ServiceDefinition as Definition;
 use BeSimple\SoapBundle\ServiceDefinition\Annotation;
 use BeSimple\SoapBundle\ServiceDefinition\Annotation\Method;
+use BeSimple\SoapBundle\ServiceDefinition as Definition;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use Doctrine\Common\Annotations\Reader;
-use Exception;
-use InvalidArgumentException;
-use LogicException;
-use ReflectionClass;
-use ReflectionMethod;
 use Symfony\Component\Config\Loader\Loader;
 
 /**
@@ -41,6 +36,8 @@ class AnnotationClassLoader extends Loader
 
     public function __construct(Reader $reader, TypeRepository $typeRepository)
     {
+        parent::__construct();
+
         $this->reader = $reader;
         $this->typeRepository = $typeRepository;
     }
@@ -53,15 +50,15 @@ class AnnotationClassLoader extends Loader
      *
      * @return Definition\Definition A ServiceDefinition instance
      *
-     * @throws InvalidArgumentException When route can't be parsed
+     * @throws \InvalidArgumentException When route can't be parsed
      */
     public function load($class, $type = null)
     {
         if (!class_exists($class)) {
-            throw new InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-        $class      = new ReflectionClass($class);
+        $class = new \ReflectionClass($class);
         $definition = new Definition\Definition($this->typeRepository);
 
         $sharedHeaders = [];
@@ -72,10 +69,10 @@ class AnnotationClassLoader extends Loader
         }
 
         foreach ($class->getMethods() as $method) {
-            $serviceHeaders   = $sharedHeaders;
+            $serviceHeaders = $sharedHeaders;
             $serviceArguments = [];
-            $serviceMethod    =
-            $serviceReturn    = null;
+            $serviceMethod =
+            $serviceReturn = null;
 
             foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
                 if ($annotation instanceof Annotation\Header) {
@@ -84,7 +81,7 @@ class AnnotationClassLoader extends Loader
                     $serviceArguments[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
                 } elseif ($annotation instanceof Method) {
                     if ($serviceMethod) {
-                        throw new LogicException(sprintf('@Soap\Method defined twice for "%s".', $method->getName()));
+                        throw new \LogicException(sprintf('@Soap\Method defined twice for "%s".', $method->getName()));
                     }
 
                     $serviceMethod = new Definition\Method(
@@ -93,7 +90,7 @@ class AnnotationClassLoader extends Loader
                     );
                 } elseif ($annotation instanceof Annotation\Result) {
                     if ($serviceReturn) {
-                        throw new LogicException(sprintf('@Soap\Result defined twice for "%s".', $method->getName()));
+                        throw new \LogicException(sprintf('@Soap\Result defined twice for "%s".', $method->getName()));
                     }
 
                     $serviceReturn = $annotation->getPhpType();
@@ -102,7 +99,7 @@ class AnnotationClassLoader extends Loader
             }
 
             if (!$serviceMethod && (!empty($serviceArguments) || $serviceReturn)) {
-                throw new LogicException(sprintf('@Soap\Method non-existent for "%s".', $method->getName()));
+                throw new \LogicException(sprintf('@Soap\Method non-existent for "%s".', $method->getName()));
             }
 
             if ($serviceMethod) {
@@ -115,7 +112,7 @@ class AnnotationClassLoader extends Loader
                 }
 
                 if (!$serviceReturn) {
-                    throw new LogicException(sprintf('@Soap\Result non-existent for "%s".', $method->getName()));
+                    throw new \LogicException(sprintf('@Soap\Result non-existent for "%s".', $method->getName()));
                 }
 
                 if (!isset($serviceXmlReturn) || !$serviceXmlReturn) {
@@ -131,9 +128,9 @@ class AnnotationClassLoader extends Loader
         return $definition;
     }
 
-    private function getController(ReflectionClass $class, ReflectionMethod $method, Method $annotation): string
+    private function getController(\ReflectionClass $class, \ReflectionMethod $method, Method $annotation): string
     {
-        if(null !== $annotation->getService()) {
+        if (null !== $annotation->getService()) {
             return $annotation->getService() . ':' . $method->name;
         }
 
@@ -149,7 +146,7 @@ class AnnotationClassLoader extends Loader
         if (!$this->typeRepository->hasType($phpType)) {
             $complexTypeResolver = $this->resolve($phpType, 'annotation_complextype');
             if (!$complexTypeResolver) {
-                throw new Exception();
+                throw new \Exception();
             }
 
             $loaded = $complexTypeResolver->load($phpType);
@@ -170,7 +167,7 @@ class AnnotationClassLoader extends Loader
      * @param mixed  $resource A resource
      * @param string|null $type     The resource type
      *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @return bool True if this class supports the given resource, false otherwise
      */
     public function supports($resource, ?string $type = null): bool
     {

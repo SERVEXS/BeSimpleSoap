@@ -75,9 +75,9 @@ class ComplexType extends Configuration
      */
     public function setIsAttribute($isAttribute)
     {
-            $this->isAttribute = $isAttribute;
+        $this->isAttribute = $isAttribute;
 
-            return $this;
+        return $this;
     }
 
     public function getAliasName()

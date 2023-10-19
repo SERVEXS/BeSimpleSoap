@@ -12,10 +12,10 @@
 
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias;
 use BeSimple\SoapBundle\ServiceDefinition\ComplexType;
 use BeSimple\SoapBundle\ServiceDefinition\Definition;
 use BeSimple\SoapBundle\Util\Collection;
-use BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias;
 
 /**
  * AnnotationComplexTypeLoader loads ServiceDefinition from a PHP class and its methods.

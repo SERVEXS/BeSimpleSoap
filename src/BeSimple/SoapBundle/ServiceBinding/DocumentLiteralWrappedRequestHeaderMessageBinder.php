@@ -28,6 +28,7 @@ class DocumentLiteralWrappedRequestHeaderMessageBinder extends DocumentLiteralWr
     public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository)
     {
         $headerDefinition = $messageDefinition->getHeaders()->get($this->header);
+
         return [];
     }
 }

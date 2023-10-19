@@ -20,7 +20,7 @@ class TypeRepository
 {
     public const ARRAY_SUFFIX = '[]';
 
-    private array $xmlNamespaces  = [];
+    private array $xmlNamespaces = [];
     private array $defaultTypeMap = [];
 
     public function addXmlNamespace($prefix, $url): void
@@ -48,10 +48,9 @@ class TypeRepository
 
     public function fixTypeInformation(Definition $definition): void
     {
-        foreach($definition->getAllTypes() as $type) {
+        foreach ($definition->getAllTypes() as $type) {
             $phpType = $type->getPhpType();
             $xmlType = $type->getXmlType();
-
 
             if (null === $phpType) {
                 throw new \InvalidArgumentException();

@@ -22,14 +22,14 @@ class BsString
      *
      * @param  string $str    A string
      * @param  string $substr A string to check against
-     *
-     * @return bool           True if str starts with substr
      */
-    public static function startsWith($str, $substr)
+    public static function startsWith($str, $substr): bool
     {
-        if(\is_string($str) && \is_string($substr) && \strlen($str) >= \strlen($substr)) {
-            return $substr == substr($str, 0, \strlen($substr));
+        if (\is_string($str) && \is_string($substr) && \strlen($str) >= \strlen($substr)) {
+            return $substr === substr($str, 0, \strlen($substr));
         }
+
+        return false;
     }
 
     /**
@@ -37,13 +37,13 @@ class BsString
      *
      * @param  string $str    A string
      * @param  string $substr A string to check against
-     *
-     * @return bool           True if str ends with substr
      */
-    public static function endsWith($str, $substr)
+    public static function endsWith($str, $substr): bool
     {
-        if(\is_string($str) && \is_string($substr) && \strlen($str) >= \strlen($substr)) {
-            return $substr == substr($str, \strlen($str) - \strlen($substr));
+        if (\is_string($str) && \is_string($substr) && \strlen($str) >= \strlen($substr)) {
+            return $substr === substr($str, \strlen($str) - \strlen($substr));
         }
+
+        return false;
     }
 }

@@ -96,8 +96,8 @@ class Configuration implements ConfigurationInterface
                                     ->info('proxy configuration')
                                     ->addDefaultsIfNotSet()
                                     ->beforeNormalization()
-                                        ->ifTrue(fn($v) => !\is_array($v))
-                                        ->then(fn($v) => ['host' => $v ?? false])
+                                        ->ifTrue(fn ($v) => !\is_array($v))
+                                        ->then(fn ($v) => ['host' => $v ?? false])
                                     ->end()
                                     ->children()
                                         ->scalarNode('host')->defaultFalse()->end()
@@ -167,9 +167,6 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         return $this->getConfigTree();

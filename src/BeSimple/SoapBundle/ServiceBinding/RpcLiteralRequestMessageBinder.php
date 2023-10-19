@@ -16,8 +16,8 @@ use BeSimple\SoapBundle\ServiceDefinition\Method;
 use BeSimple\SoapCommon\Definition\Type\ArrayOfType;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
-use BeSimple\SoapCommon\Util\MessageBinder;
 use BeSimple\SoapCommon\Type\AbstractKeyValue;
+use BeSimple\SoapCommon\Util\MessageBinder;
 
 /**
  * @author Christian Kerl <christian-kerl@web.de>
@@ -34,14 +34,14 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
         $this->typeRepository = $typeRepository;
 
         $result = [];
-        $i      = 0;
+        $i = 0;
 
         foreach ($messageDefinition->getInput()->all() as $argument) {
             if (isset($message[$i])) {
                 $result[$argument->getName()] = $this->processType($argument->getType(), $message[$i]);
             }
 
-            $i++;
+            ++$i;
         }
 
         return $result;
@@ -56,7 +56,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
             $isArray = true;
             $array = [];
 
-            $phpType = substr($type->getPhpType(), 0, \strlen($type->getPhpType()) - 2);
+            $phpType = substr($type->getPhpType(), 0, -2);
             $type = $this->typeRepository->getType($phpType);
         }
 

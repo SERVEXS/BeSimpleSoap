@@ -13,8 +13,8 @@ namespace BeSimple\SoapBundle;
 
 use BeSimple\SoapBundle\ServiceBinding\ServiceBinder;
 use BeSimple\SoapCommon\Converter\TypeConverterCollection;
-use BeSimple\SoapWsdl\Dumper\Dumper;
 use BeSimple\SoapServer\SoapServerBuilder;
+use BeSimple\SoapWsdl\Dumper\Dumper;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -54,7 +54,7 @@ class WebServiceContext
                 $this->serviceDefinition->setName($this->options['name']);
                 $this->serviceDefinition->setNamespace($this->options['namespace']);
 
-                $cache->write('<?php return unserialize('.var_export(serialize($this->serviceDefinition), true).');');
+                $cache->write('<?php return unserialize(' . var_export(serialize($this->serviceDefinition), true) . ');');
             }
         }
 
@@ -68,10 +68,10 @@ class WebServiceContext
 
     public function getWsdlFile($endpoint = null)
     {
-        $file      = sprintf ('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5($endpoint));
+        $file = sprintf('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5($endpoint));
         $cache = new ConfigCache($file, $this->options['debug']);
 
-        if(!$cache->isFresh()) {
+        if (!$cache->isFresh()) {
             $definition = $this->getServiceDefinition();
 
             if ($endpoint) {

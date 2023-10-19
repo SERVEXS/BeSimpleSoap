@@ -16,8 +16,8 @@ use BeSimple\SoapBundle\ServiceDefinition\Method;
 use BeSimple\SoapCommon\Definition\Type\ArrayOfType;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
-use BeSimple\SoapCommon\Util\MessageBinder;
 use BeSimple\SoapCommon\Type\AbstractKeyValue;
+use BeSimple\SoapCommon\Util\MessageBinder;
 
 /**
  * @author Christian Kerl <christian-kerl@web.de>
@@ -89,7 +89,7 @@ class RpcLiteralResponseMessageBinder implements MessageBinderInterface
         $this->messageRefs[$hash] = $message;
 
         if (!$message instanceof $phpType) {
-            throw new \InvalidArgumentException(sprintf('The instance class must be "%s", "%s" given.', $phpType, $message::class));
+            throw new \InvalidArgumentException(sprintf('The instance class must be "%s", "%s" given.', $phpType, get_class($message)));
         }
 
         $message = clone $message;

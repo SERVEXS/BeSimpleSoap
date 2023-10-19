@@ -13,7 +13,6 @@
 namespace BeSimple\SoapBundle\ServiceDefinition;
 
 use BeSimple\SoapCommon\Definition\Method as BaseMethod;
-use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 
 /**
  * @author Christian Kerl <christian-kerl@web.de>

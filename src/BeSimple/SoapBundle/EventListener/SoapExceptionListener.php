@@ -25,9 +25,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class SoapExceptionListener extends ErrorListener
 {
-    /**
-     * @var ContainerInterface
-     */
     protected ContainerInterface $container;
 
     /**
@@ -46,7 +43,7 @@ class SoapExceptionListener extends ErrorListener
         $this->container = $container;
     }
 
-    public function onKernelException(ExceptionEvent $event, string $eventName = null, EventDispatcherInterface $eventDispatcher = null): void
+    public function onKernelException(ExceptionEvent $event, ?string $eventName = null, ?EventDispatcherInterface $eventDispatcher = null): void
     {
         if (Request::class::MASTER_REQUEST !== $event->getRequestType()) {
             return;

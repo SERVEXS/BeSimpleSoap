@@ -12,8 +12,7 @@
 
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
-use BeSimple\SoapBundle\ServiceDefinition\ServiceDefinition;
-
+use BeSimple\SoapBundle\ServiceDefinition\Definition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\FileLoader;
 
@@ -52,7 +51,7 @@ class AnnotationFileLoader extends FileLoader
      * @param string $file A PHP file path
      * @param string $type The resource type
      *
-     * @return ServiceDefinition A ServiceDefinition instance
+     * @return Definition A ServiceDefinition instance
      *
      * @throws \InvalidArgumentException When the file does not exist
      */
@@ -73,7 +72,7 @@ class AnnotationFileLoader extends FileLoader
      * @param mixed  $resource A resource
      * @param string $type     The resource type
      *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @return bool True if this class supports the given resource, false otherwise
      */
     public function supports($resource, $type = null)
     {
@@ -89,16 +88,16 @@ class AnnotationFileLoader extends FileLoader
      */
     protected function findClass($file)
     {
-        $class     = false;
+        $class = false;
         $namespace = false;
-        $tokens    = token_get_all(file_get_contents($file));
+        $tokens = token_get_all(file_get_contents($file));
         while ($token = array_shift($tokens)) {
             if (!\is_array($token)) {
                 continue;
             }
 
             if (true === $class && \T_STRING === $token[0]) {
-                return $namespace.'\\'.$token[1];
+                return $namespace . '\\' . $token[1];
             }
 
             if (true === $namespace && \T_STRING === $token[0]) {

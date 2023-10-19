@@ -20,7 +20,7 @@ class QName
 
     public static function isPrefixedQName($qname)
     {
-        return   str_contains($qname, ':') ? true : false;
+        return str_contains($qname, ':') ? true : false;
     }
 
     public static function fromPrefixedQName($qname, $resolveNamespacePrefixCallable)
@@ -42,7 +42,7 @@ class QName
     public function __construct($namespace, $name)
     {
         $this->namespace = $namespace;
-        $this->name      = $name;
+        $this->name = $name;
     }
 
     public function getNamespace()

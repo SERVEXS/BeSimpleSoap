@@ -11,7 +11,6 @@
 namespace BeSimple\SoapBundle\Soap;
 
 use BeSimple\SoapBundle\Util\Collection;
-use InvalidArgumentException;
 use Laminas\Mime\Message;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -112,7 +111,7 @@ class SoapRequest extends Request
     protected function initializeMtomSoapMessage(array $contentTypeHeader, $content)
     {
         if (!isset($contentTypeHeader['start']) || !isset($contentTypeHeader['start-info']) || !isset($contentTypeHeader['boundary'])) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         $mimeMessage = Message::createFromMessage($content, $contentTypeHeader['boundary']);
@@ -126,8 +125,8 @@ class SoapRequest extends Request
 
         // TODO: add more checks to achieve full compatibility to MTOM spec
         // http://www.w3.org/TR/soap12-mtom/
-        if ($rootPart->id != $soapMimePartId || $rootPartType['_type'] != 'application/xop+xml' || $rootPartType['type'] != $soapMimePartType) {
-            throw new InvalidArgumentException();
+        if ($rootPart->id !== $soapMimePartId || $rootPartType['_type'] !== 'application/xop+xml' || $rootPartType['type'] !== $soapMimePartType) {
+            throw new \InvalidArgumentException();
         }
 
         foreach ($mimeParts as $mimePart) {
