@@ -24,10 +24,12 @@
         "ext-soap": "*",
         "ext-curl": "*",
         "ass/xmlsecurity": "~1.0",
-        "symfony/framework-bundle": "^3.4|^4.0",
-        "symfony/twig-bundle": "^3.4|^4.0",
-        "symfony/property-access": "^3.4|^4.0",
-        "laminas/laminas-mime": "~2.7"
+        "symfony/framework-bundle": "^4.4|^5.4",
+        "symfony/twig-bundle": "^4.4|^5.4",
+        "symfony/property-access": "^4.4|^5.4",
+        "laminas/laminas-mime": "~2.7",
+        "twig/twig": "~2.0",
+        "doctrine/annotations": "^v1.0|^2.0.1"
     },
     "replace": {
         "besimple/soap-bundle": "self.version",
@@ -38,9 +40,10 @@
     },
     "require-dev": {
         "mikey179/vfsstream": "~1.6.5",
-        "symfony/filesystem": "~2.3",
-        "symfony/process": "^3.4|^4.4",
-        "phpunit/phpunit": "^9.5"
+        "symfony/filesystem": "^4.4|^5.4",
+        "symfony/process": "^4.4|^5.4",
+        "phpunit/phpunit": "^9.5",
+        "friendsofphp/php-cs-fixer": "^3.35"
     },
     "autoload": {
         "psr-0": { "BeSimple\\": "src/" }
@@ -51,6 +54,8 @@
         }
     },
     "scripts": {
-        "tests": "phpunit"
+        "tests": "phpunit",
+        "cs-fix": "php-cs-fixer fix",
+        "cs-fix:dry": "php-cs-fixer fix --dry-run"
     }
 }

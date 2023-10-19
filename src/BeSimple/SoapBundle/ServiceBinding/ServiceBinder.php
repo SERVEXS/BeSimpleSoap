@@ -18,37 +18,24 @@ use BeSimple\SoapBundle\Soap\SoapHeader;
  */
 class ServiceBinder
 {
-    /**
-     * @var \BeSimple\SoapBundle\ServiceDefinition\ServiceDefinition
-     */
-    private $definition;
+    private Definition $definition;
 
-    /**
-     * @var \BeSimple\SoapBundle\ServiceBinding\MessageBinderInterface
-     */
-    private $requestHeaderMessageBinder;
+    private MessageBinderInterface $requestHeaderMessageBinder;
 
-    /**
-     * @var \BeSimple\SoapBundle\ServiceBinding\MessageBinderInterface
-     */
-    private $requestMessageBinder;
+    private MessageBinderInterface $requestMessageBinder;
 
-    /**
-     * @var \BeSimple\SoapBundle\ServiceBinding\MessageBinderInterface
-     */
-    private $responseMessageBinder;
+    private MessageBinderInterface $responseMessageBinder;
 
-    /**
-     * @param Definition $definition
-     * @param MessageBinderInterface $requestHeaderMessageBinder
-     * @param MessageBinderInterface $requestMessageBinder
-     * @param MessageBinderInterface $responseMessageBinder
-     */
-    public function __construct(Definition $definition, MessageBinderInterface $requestHeaderMessageBinder, MessageBinderInterface $requestMessageBinder, MessageBinderInterface $responseMessageBinder) {
+    public function __construct(
+        Definition $definition,
+        MessageBinderInterface $requestHeaderMessageBinder,
+        MessageBinderInterface $requestMessageBinder,
+        MessageBinderInterface $responseMessageBinder
+    ) {
         $this->definition = $definition;
 
         $this->requestHeaderMessageBinder = $requestHeaderMessageBinder;
-        $this->requestMessageBinder       = $requestMessageBinder;
+        $this->requestMessageBinder = $requestMessageBinder;
 
         $this->responseMessageBinder = $responseMessageBinder;
     }
@@ -87,7 +74,11 @@ class ServiceBinder
         $headerDefinition = $methodDefinition->getHeader($header);
 
         $this->requestHeaderMessageBinder->setHeader($header);
-        $data = $this->requestHeaderMessageBinder->processMessage($methodDefinition, $data, $this->definition->getTypeRepository());
+        $data = $this->requestHeaderMessageBinder->processMessage(
+            $methodDefinition,
+            $data,
+            $this->definition->getTypeRepository()
+        );
 
         return new SoapHeader($this->definition->getNamespace(), $headerDefinition->getName(), $data);
     }

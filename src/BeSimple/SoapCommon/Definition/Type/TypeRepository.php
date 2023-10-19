@@ -46,9 +46,12 @@ class TypeRepository
         $this->xmlNamespaces[$prefix] = $url;
     }
 
+    /**
+     * @return ComplexType[]
+     */
     public function getComplexTypes()
     {
-        $types = array();
+        $types = [];
         foreach ($this->types as $type) {
             if ($type instanceof ComplexType) {
                 $types[] = $type;

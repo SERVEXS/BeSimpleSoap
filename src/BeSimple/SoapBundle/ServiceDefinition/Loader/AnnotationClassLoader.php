@@ -14,9 +14,15 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
 use BeSimple\SoapBundle\ServiceDefinition as Definition;
 use BeSimple\SoapBundle\ServiceDefinition\Annotation;
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\Method;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 use Doctrine\Common\Annotations\Reader;
+use Exception;
+use InvalidArgumentException;
+use LogicException;
+use ReflectionClass;
+use ReflectionMethod;
 use Symfony\Component\Config\Loader\Loader;
 
 /**
@@ -29,15 +35,10 @@ use Symfony\Component\Config\Loader\Loader;
  */
 class AnnotationClassLoader extends Loader
 {
-    protected $reader;
+    protected Reader $reader;
 
-    protected $typeRepository;
+    protected TypeRepository $typeRepository;
 
-    /**
-     * Constructor.
-     *
-     * @param \Doctrine\Common\Annotations\Reader $reader
-     */
     public function __construct(Reader $reader, TypeRepository $typeRepository)
     {
         $this->reader = $reader;
@@ -50,17 +51,17 @@ class AnnotationClassLoader extends Loader
      * @param string $class A class name
      * @param string $type  The resource type
      *
-     * @return \BeSimple\SoapBundle\ServiceDefinition\ServiceDefinition A ServiceDefinition instance
+     * @return Definition\Definition A ServiceDefinition instance
      *
-     * @throws \InvalidArgumentException When route can't be parsed
+     * @throws InvalidArgumentException When route can't be parsed
      */
     public function load($class, $type = null)
     {
         if (!class_exists($class)) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+            throw new InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-        $class      = new \ReflectionClass($class);
+        $class      = new ReflectionClass($class);
         $definition = new Definition\Definition($this->typeRepository);
 
         $sharedHeaders = array();
@@ -81,9 +82,9 @@ class AnnotationClassLoader extends Loader
                     $serviceHeaders[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
                 } elseif ($annotation instanceof Annotation\Param) {
                     $serviceArguments[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
-                } elseif ($annotation instanceof Annotation\Method) {
+                } elseif ($annotation instanceof Method) {
                     if ($serviceMethod) {
-                        throw new \LogicException(sprintf('@Soap\Method defined twice for "%s".', $method->getName()));
+                        throw new LogicException(sprintf('@Soap\Method defined twice for "%s".', $method->getName()));
                     }
 
                     $serviceMethod = new Definition\Method(
@@ -92,7 +93,7 @@ class AnnotationClassLoader extends Loader
                     );
                 } elseif ($annotation instanceof Annotation\Result) {
                     if ($serviceReturn) {
-                        throw new \LogicException(sprintf('@Soap\Result defined twice for "%s".', $method->getName()));
+                        throw new LogicException(sprintf('@Soap\Result defined twice for "%s".', $method->getName()));
                     }
 
                     $serviceReturn = $annotation->getPhpType();
@@ -101,7 +102,7 @@ class AnnotationClassLoader extends Loader
             }
 
             if (!$serviceMethod && (!empty($serviceArguments) || $serviceReturn)) {
-                throw new \LogicException(sprintf('@Soap\Method non-existent for "%s".', $method->getName()));
+                throw new LogicException(sprintf('@Soap\Method non-existent for "%s".', $method->getName()));
             }
 
             if ($serviceMethod) {
@@ -114,7 +115,7 @@ class AnnotationClassLoader extends Loader
                 }
 
                 if (!$serviceReturn) {
-                    throw new \LogicException(sprintf('@Soap\Result non-existent for "%s".', $method->getName()));
+                    throw new LogicException(sprintf('@Soap\Result non-existent for "%s".', $method->getName()));
                 }
 
                 if (!isset($serviceXmlReturn) || !$serviceXmlReturn) {
@@ -130,19 +131,13 @@ class AnnotationClassLoader extends Loader
         return $definition;
     }
 
-    /**
-     * @param \ReflectionMethod $method
-     * @param \BeSimple\SoapBundle\ServiceDefinition\Annotation\Method $annotation
-     *
-     * @return string
-     */
-    private function getController(\ReflectionClass $class, \ReflectionMethod $method, Annotation\Method $annotation)
+    private function getController(ReflectionClass $class, ReflectionMethod $method, Method $annotation): string
     {
         if(null !== $annotation->getService()) {
             return $annotation->getService() . ':' . $method->name;
-        } else {
-            return $class->name . '::' . $method->name;
         }
+
+        return $class->name . '::' . $method->name;
     }
 
     private function loadType($phpType)
@@ -154,7 +149,7 @@ class AnnotationClassLoader extends Loader
         if (!$this->typeRepository->hasType($phpType)) {
             $complexTypeResolver = $this->resolve($phpType, 'annotation_complextype');
             if (!$complexTypeResolver) {
-                throw new \Exception();
+                throw new Exception();
             }
 
             $loaded = $complexTypeResolver->load($phpType);
@@ -173,11 +168,11 @@ class AnnotationClassLoader extends Loader
      * Returns true if this class supports the given resource.
      *
      * @param mixed  $resource A resource
-     * @param string $type     The resource type
+     * @param string|null $type     The resource type
      *
      * @return Boolean True if this class supports the given resource, false otherwise
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, ?string $type = null): bool
     {
         return is_string($resource) && preg_match('/^(?:\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/', $resource) && (!$type || 'annotation' === $type);
     }

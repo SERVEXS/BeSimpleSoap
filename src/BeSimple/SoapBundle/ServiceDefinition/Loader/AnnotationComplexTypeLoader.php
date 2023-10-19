@@ -13,7 +13,9 @@
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
 use BeSimple\SoapBundle\ServiceDefinition\ComplexType;
+use BeSimple\SoapBundle\ServiceDefinition\Definition;
 use BeSimple\SoapBundle\Util\Collection;
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias;
 
 /**
  * AnnotationComplexTypeLoader loads ServiceDefinition from a PHP class and its methods.
@@ -24,16 +26,17 @@ use BeSimple\SoapBundle\Util\Collection;
  */
 class AnnotationComplexTypeLoader extends AnnotationClassLoader
 {
-    private $aliasClass       = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias';
-    private $complexTypeClass = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType';
+    private string $aliasClass = Alias::class;
+
+    private string $complexTypeClass = \BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType::class;
 
     /**
      * Loads a ServiceDefinition from annotations from a class.
      *
      * @param string $class A class name
-     * @param string $type  The resource type
+     * @param string $type The resource type
      *
-     * @return ServiceDefinition A ServiceDefinition instance
+     * @return Definition A ServiceDefinition instance
      *
      * @throws \InvalidArgumentException When route can't be parsed
      */
@@ -70,12 +73,9 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
-     *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @param mixed $resource A resource
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, ?string $type = null): bool
     {
         return is_string($resource) && class_exists($resource) && 'annotation_complextype' === $type;
     }

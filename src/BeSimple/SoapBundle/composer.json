@@ -21,6 +21,7 @@
     ],
     "require": {
         "php": ">=7.4.0",
+        "ext-dom": "*",
         "ext-soap": "*",
         "besimple/soap-common": "0.2.*",
         "besimple/soap-wsdl": "0.2.*",

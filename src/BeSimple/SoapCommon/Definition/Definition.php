@@ -13,6 +13,12 @@
 namespace BeSimple\SoapCommon\Definition;
 
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
+use Exception;
+use InvalidArgumentException;
+
+use const SOAP_1_1;
+use const SOAP_LITERAL;
+use const SOAP_RPC;
 
 /**
  * @author Francis Besset <francis.besset@gmail.com>
@@ -20,18 +26,22 @@ use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 class Definition
 {
     protected $name;
+
     protected $namespace;
 
-    protected $typeRepository;
+    protected TypeRepository $typeRepository;
 
-    protected $options;
-    protected $methods;
+    protected array $options;
 
-    public function __construct($name, $namespace, TypeRepository $typeRepository, array $options = array())
+    protected array $methods;
+
+    protected array $types;
+
+    public function __construct($name, $namespace, TypeRepository $typeRepository, array $options = [])
     {
         $this->name = $name;
         $this->namespace = $namespace;
-        $this->methods = array();
+        $this->methods = [];
 
         $this->typeRepository = $typeRepository;
 
@@ -40,14 +50,14 @@ class Definition
 
     public function setOptions(array $options)
     {
-        $this->options = array(
-            'version' => \SOAP_1_1,
-            'style' => \SOAP_RPC,
-            'use' => \SOAP_LITERAL,
+        $this->options = [
+            'version' => SOAP_1_1,
+            'style' => SOAP_RPC,
+            'use' => SOAP_LITERAL,
             'location' => null,
-        );
+        ];
 
-        $invalid = array();
+        $invalid = [];
         foreach ($options as $key => $value) {
             if (array_key_exists($key, $this->options)) {
                 $this->options[$key] = $value;
@@ -57,7 +67,9 @@ class Definition
         }
 
         if ($invalid) {
-            throw new \InvalidArgumentException(sprintf('The Definition does not support the following options: "%s"', implode('", "', $invalid)));
+            throw new InvalidArgumentException(
+                sprintf('The Definition does not support the following options: "%s"', implode('", "', $invalid))
+            );
         }
 
         return $this;
@@ -66,7 +78,7 @@ class Definition
     public function setOption($key, $value)
     {
         if (!array_key_exists($key, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         $this->options[$key] = $value;
@@ -77,7 +89,7 @@ class Definition
     public function getOption($key)
     {
         if (!array_key_exists($key, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         return $this->options[$key];
@@ -100,8 +112,8 @@ class Definition
 
     public function addType($phpType, $xmlType)
     {
-        if (isset($$this->types[$phpType])) {
-            throw new \Exception();
+        if (isset($this->types[$phpType])) {
+            throw new Exception();
         }
 
         $this->types[$phpType] = $xmlType;
@@ -121,7 +133,7 @@ class Definition
 
     public function getMethod($name, $default = null)
     {
-        return isset($this->methods[$name]) ? $this->methods[$name] : $default;
+        return $this->methods[$name] ?? $default;
     }
 
     public function getMethods()
@@ -133,7 +145,7 @@ class Definition
     {
         $name = $method->getName();
         if (isset($this->methods[$name])) {
-            throw new \Exception(sprintf('The method "%s" already exists', $name));
+            throw new Exception(sprintf('The method "%s" already exists', $name));
         }
 
         $this->methods[$name] = $method;
@@ -141,7 +153,7 @@ class Definition
         return $method;
     }
 
-    public function getTypeRepository()
+    public function getTypeRepository(): TypeRepository
     {
         return $this->typeRepository;
     }

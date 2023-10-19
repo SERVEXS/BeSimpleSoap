@@ -41,4 +41,9 @@ class Definition extends BaseDefinition
 
         return $this;
     }
+
+    public function getAllTypes(): array
+    {
+        return $this->types;
+    }
 }
