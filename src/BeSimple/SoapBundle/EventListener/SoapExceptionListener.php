@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\EventListener\ErrorListener;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -48,7 +49,7 @@ class SoapExceptionListener extends ErrorListener
     public function onKernelException(ExceptionEvent $event, ?string $eventName = null, ?EventDispatcherInterface $eventDispatcher = null): void
     {
 
-        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
+        if (!$this->getIsMainRequest($event)) {
             return;
         }
 
@@ -87,5 +88,19 @@ class SoapExceptionListener extends ErrorListener
             // Must be called before ExceptionListener of HttpKernel component
             KernelEvents::EXCEPTION => ['onKernelException', -64],
         ];
+    }
+
+    /**
+     * @param ExceptionEvent $event
+     *
+     * @return bool
+     */
+    public function getIsMainRequest(ExceptionEvent $event): bool
+    {
+        if (Kernel::MAJOR_VERSION < 5) {
+            return $event->isMasterRequest();
+        }
+
+        return $event->isMainRequest();
     }
 }
