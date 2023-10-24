@@ -37,8 +37,6 @@ class AnnotationClassLoader extends Loader
 
     public function __construct(Reader $reader, TypeRepository $typeRepository)
     {
-        parent::__construct();
-
         $this->reader = $reader;
         $this->typeRepository = $typeRepository;
     }
