@@ -13,6 +13,7 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 /**
  * @Annotation
  */
+#[\Attribute]
 class Result extends Configuration implements TypedElementInterface
 {
     private $phpType;

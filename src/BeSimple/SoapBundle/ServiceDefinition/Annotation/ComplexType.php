@@ -13,12 +13,13 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 /**
  * @Annotation
  */
+#[\Attribute]
 class ComplexType extends Configuration
 {
     private $name;
     private $value;
-    private $isNillable = false;
-    private $isAttribute = false;
+    private bool $isNillable = false;
+    private bool $isAttribute = false;
 
     public function getName()
     {

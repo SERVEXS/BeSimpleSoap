@@ -15,6 +15,7 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 /**
  * @Annotation
  */
+#[\Attribute]
 class Alias extends Configuration
 {
     private $value;
