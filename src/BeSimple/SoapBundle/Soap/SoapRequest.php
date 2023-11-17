@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class SoapRequest extends Request
 {
-    protected string $soapMessage;
+    protected ?string $soapMessage = null;
 
     protected string $soapAction;
 
