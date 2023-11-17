@@ -27,36 +27,22 @@ abstract class WsSecurityFilterClientServer
     /**
      * The date format to be used with {@link \DateTime}
      */
-    public const DATETIME_FORMAT = 'Y-m-d\TH:i:s.u\Z';
+    final public const DATETIME_FORMAT = 'Y-m-d\TH:i:s.u\Z';
 
     /**
      * (X509 3.2.1) Reference to a Subject Key Identifier
      */
-    public const TOKEN_REFERENCE_SUBJECT_KEY_IDENTIFIER = 0;
+    final public const TOKEN_REFERENCE_SUBJECT_KEY_IDENTIFIER = 0;
 
     /**
      * (X509 3.2.1) Reference to a Security Token
      */
-    public const TOKEN_REFERENCE_SECURITY_TOKEN = 1;
+    final public const TOKEN_REFERENCE_SECURITY_TOKEN = 1;
 
     /**
      * (SMS_1.1 7.3) Key Identifiers
      */
-    public const TOKEN_REFERENCE_THUMBPRINT_SHA1 = 2;
-
-    /**
-     * Actor.
-     *
-     * @var string
-     */
-    protected $actor;
-
-    /**
-     * (SMS 10) Add security timestamp.
-     *
-     * @var bool
-     */
-    protected $addTimestamp;
+    final public const TOKEN_REFERENCE_THUMBPRINT_SHA1 = 2;
 
     /**
      * Encrypt the signature?
@@ -64,13 +50,6 @@ abstract class WsSecurityFilterClientServer
      * @var bool
      */
     protected $encryptSignature;
-
-    /**
-     * (SMS 10) Security timestamp expires time in seconds.
-     *
-     * @var int
-     */
-    protected $expires;
 
     /**
      * Sign all headers.
@@ -114,11 +93,24 @@ abstract class WsSecurityFilterClientServer
      * @param int     $expires      (SMS 10) Security timestamp expires time in seconds
      * @param string  $actor        SOAP actor
      */
-    public function __construct($addTimestamp = true, $expires = 300, $actor = null)
+    public function __construct(
+        /**
+         * (SMS 10) Add security timestamp.
+         *
+         */
+        protected $addTimestamp = true,
+        /**
+         * (SMS 10) Security timestamp expires time in seconds.
+         *
+         */
+        protected $expires = 300,
+        /**
+         * Actor.
+         *
+         */
+        protected $actor = null
+    )
     {
-        $this->addTimestamp = $addTimestamp;
-        $this->expires = $expires;
-        $this->actor = $actor;
     }
 
     /**
@@ -219,7 +211,7 @@ abstract class WsSecurityFilterClientServer
             $filterHelper->setAttribute($keyIdentifier, null, 'EncodingType', Helper::NAME_WSS_SMS . '#Base64Binary');
             $filterHelper->setAttribute($keyIdentifier, null, 'ValueType', Helper::NAME_WSS_SMS_1_1 . '#ThumbprintSHA1');
             $securityTokenReference->appendChild($keyIdentifier);
-            $thumbprintSha1 = base64_encode(sha1(base64_decode($xmlSecurityKey->getX509Certificate(true)), true));
+            $thumbprintSha1 = base64_encode(sha1(base64_decode((string) $xmlSecurityKey->getX509Certificate(true)), true));
             $dataNode = new \DOMText($thumbprintSha1);
             $keyIdentifier->appendChild($dataNode);
         }

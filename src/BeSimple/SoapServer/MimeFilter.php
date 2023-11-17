@@ -29,20 +29,18 @@ use BeSimple\SoapCommon\SoapResponseFilter;
 class MimeFilter implements SoapRequestFilter, SoapResponseFilter
 {
     /**
-     * Attachment type.
-     *
-     * @var int Helper::ATTACHMENTS_TYPE_SWA | Helper::ATTACHMENTS_TYPE_MTOM
-     */
-    protected $attachmentType = Helper::ATTACHMENTS_TYPE_SWA;
-
-    /**
      * Constructor.
      *
      * @param int $attachmentType Helper::ATTACHMENTS_TYPE_SWA | Helper::ATTACHMENTS_TYPE_MTOM
      */
-    public function __construct($attachmentType)
+    public function __construct(
+        /**
+         * Attachment type.
+         *
+         */
+        protected $attachmentType
+    )
     {
-        $this->attachmentType = $attachmentType;
     }
 
     /**
@@ -75,7 +73,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
             $soapPart = $multipart->getPart();
             // convert href -> myhref for external references as PHP throws exception in this case
             // http://svn.php.net/viewvc/php/php-src/branches/PHP_5_4/ext/soap/php_encoding.c?view=markup#l3436
-            $content = preg_replace('/href=(?!#)/', 'myhref=', $soapPart->getContent());
+            $content = preg_replace('/href=(?!#)/', 'myhref=', (string) $soapPart->getContent());
             $request->setContent($content);
             $request->setContentType($soapPart->getHeader('Content-Type'));
             // store attachments
@@ -126,7 +124,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
 
             // TODO
             $headers = $multipart->getHeadersForHttp();
-            [, $contentType] = explode(': ', $headers[0]);
+            [, $contentType] = explode(': ', (string) $headers[0]);
 
             $response->setContentType($contentType);
         }

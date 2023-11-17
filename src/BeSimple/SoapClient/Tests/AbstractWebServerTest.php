@@ -46,7 +46,7 @@ abstract class AbstractWebServerTest extends TestCase
         self::$webserver->start();
         usleep(100000);
 
-        self::$websererPortLength = \strlen(WEBSERVER_PORT);
+        self::$websererPortLength = \strlen((string) WEBSERVER_PORT);
     }
 
     public static function tearDownAfterClass(): void

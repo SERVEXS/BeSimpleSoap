@@ -24,21 +24,13 @@ class Curl
      *
      * @var string
      */
-    public const USER_AGENT = 'PHP-SOAP/\BeSimple\SoapClient';
+    final public const USER_AGENT = 'PHP-SOAP/\BeSimple\SoapClient';
 
     /**
      * Curl resource.
      *
-     * @var resource
      */
-    private $ch;
-
-    /**
-     * Maximum number of location headers to follow.
-     *
-     * @var int
-     */
-    private $followLocationMaxRedirects;
+    private readonly \CurlHandle|bool $ch;
 
     /**
      * Request response data.
@@ -53,13 +45,16 @@ class Curl
      * @param array $options                    Options array from SoapClient constructor
      * @param int   $followLocationMaxRedirects Redirection limit for Location header
      */
-    public function __construct(array $options = [], $followLocationMaxRedirects = 10)
+    public function __construct(array $options = [], /**
+     * Maximum number of location headers to follow.
+     *
+     */
+    private $followLocationMaxRedirects = 10)
     {
         // set the default HTTP user agent
         if (!isset($options['user_agent'])) {
             $options['user_agent'] = self::USER_AGENT;
         }
-        $this->followLocationMaxRedirects = $followLocationMaxRedirects;
 
         // make http request
         $this->ch = curl_init();
@@ -83,7 +78,7 @@ class Curl
 
         if (isset($options['proxy_host'])) {
             if (false !== $options['proxy_host']) {
-                $proxyHost = $options['proxy_host'] . (isset($options['proxy_port']) ? $options['proxy_port'] : 8080);
+                $proxyHost = $options['proxy_host'] . ($options['proxy_port'] ?? 8080);
             } else {
                 $proxyHost = false;
             }
@@ -100,7 +95,7 @@ class Curl
         }
 
         if (isset($options['login'])) {
-            curl_setopt($this->ch, \CURLOPT_HTTPAUTH, isset($options['extra_options']['http_auth']) ? $options['extra_options']['http_auth'] : \CURLAUTH_ANY);
+            curl_setopt($this->ch, \CURLOPT_HTTPAUTH, $options['extra_options']['http_auth'] ?? \CURLAUTH_ANY);
             curl_setopt($this->ch, \CURLOPT_USERPWD, $options['login'] . ':' . $options['password']);
         }
         if (isset($options['local_cert'])) {
@@ -247,11 +242,8 @@ class Curl
     {
         $errorCodeMapping = $this->getErrorCodeMapping();
         $errorNumber = curl_errno($this->ch);
-        if (isset($errorCodeMapping[$errorNumber])) {
-            return $errorCodeMapping[$errorNumber];
-        }
 
-        return curl_error($this->ch);
+        return $errorCodeMapping[$errorNumber] ?? curl_error($this->ch);
     }
 
     /**

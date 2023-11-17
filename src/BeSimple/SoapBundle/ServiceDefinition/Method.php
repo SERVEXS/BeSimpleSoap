@@ -20,13 +20,9 @@ use BeSimple\SoapCommon\Definition\Method as BaseMethod;
  */
 class Method extends BaseMethod
 {
-    private $controller;
-
-    public function __construct($name, $controller)
+    public function __construct($name, private $controller)
     {
         parent::__construct($name);
-
-        $this->controller = $controller;
     }
 
     public function getController()

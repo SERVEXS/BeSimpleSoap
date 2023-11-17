@@ -2,13 +2,11 @@
 
 namespace BeSimple\SoapCommon\Type\KeyValue;
 
-use BeSimple\SoapBundle\ServiceDefinition\Annotation as Soap;
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType;
 use BeSimple\SoapCommon\Type\AbstractKeyValue;
 
 class BsInt extends AbstractKeyValue
 {
-    /**
-     * @Soap\ComplexType("int")
-     */
+    #[ComplexType(['type' => 'int'])]
     protected $value;
 }

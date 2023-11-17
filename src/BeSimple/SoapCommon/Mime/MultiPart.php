@@ -113,7 +113,7 @@ class MultiPart extends PartHeader
      */
     public function addPart(Part $part, $isMain = false): void
     {
-        $contentId = trim($part->getHeader('Content-ID'), '<>');
+        $contentId = trim((string) $part->getHeader('Content-ID'), '<>');
         if ($isMain === true) {
             $this->mainPartContentId = $contentId;
             $this->setHeader('Content-Type', 'start', $part->getHeader('Content-ID'));
@@ -135,11 +135,8 @@ class MultiPart extends PartHeader
         if (null === $contentId) {
             $contentId = $this->mainPartContentId;
         }
-        if (isset($this->parts[$contentId])) {
-            return $this->parts[$contentId];
-        }
 
-        return null;
+        return $this->parts[$contentId] ?? null;
     }
 
     /**

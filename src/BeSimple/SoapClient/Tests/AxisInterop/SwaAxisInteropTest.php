@@ -24,7 +24,7 @@ use BeSimple\SoapCommon\Helper as BeSimpleSoapHelper;
 
 class SwaAxisInteropTest extends TestCase
 {
-    private $options = [
+    private array $options = [
         'soap_version' => \SOAP_1_1,
         'features' => \SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
         'attachment_type' => BeSimpleSoapHelper::ATTACHMENTS_TYPE_SWA,

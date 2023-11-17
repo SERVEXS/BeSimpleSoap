@@ -22,7 +22,7 @@ class ComplexType extends Message implements TypeInterface
     public function __construct($phpType, $xmlType)
     {
         $this->phpType = $phpType;
-        $this->xmlType = str_replace('\\', '.', $xmlType);
+        $this->xmlType = str_replace('\\', '.', (string) $xmlType);
 
         parent::__construct($xmlType);
     }

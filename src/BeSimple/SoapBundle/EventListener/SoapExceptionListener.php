@@ -28,8 +28,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class SoapExceptionListener extends ErrorListener
 {
-    protected ContainerInterface $container;
-
     /**
      * To avoid conflict between , the logger param is not typed:
      *  The parent class needs and instance of `Psr\Log\LoggerInterface` from Symfony 2.2,
@@ -39,11 +37,9 @@ class SoapExceptionListener extends ErrorListener
      * @param string             $controller The controller name to call
      * @param LoggerInterface    $logger     A logger instance
      */
-    public function __construct(ContainerInterface $container, $controller, $logger)
+    public function __construct(protected ContainerInterface $container, $controller, $logger)
     {
         parent::__construct($controller, $logger);
-
-        $this->container = $container;
     }
 
     public function onKernelException(ExceptionEvent $event, ?string $eventName = null, ?EventDispatcherInterface $eventDispatcher = null): void
@@ -91,7 +87,6 @@ class SoapExceptionListener extends ErrorListener
     }
 
     /**
-     * @param ExceptionEvent $event
      *
      * @return bool
      */

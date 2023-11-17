@@ -54,12 +54,12 @@ class ClassmapTest extends TestCase
     {
         $classmap = new Classmap();
 
-        $classmap->add('foobar', __CLASS__);
+        $classmap->add('foobar', self::class);
         $classmap->add('foo', 'BeSimple\SoapCommon\Tests\Classmap');
 
         $map = [
             'foobar' => Classmap::class,
-            'barfoo' => __CLASS__,
+            'barfoo' => self::class,
         ];
         $classmap->set($map);
 

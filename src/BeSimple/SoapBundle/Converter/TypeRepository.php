@@ -18,7 +18,7 @@ use BeSimple\SoapBundle\Util\Assert;
  */
 class TypeRepository
 {
-    public const ARRAY_SUFFIX = '[]';
+    final public const ARRAY_SUFFIX = '[]';
 
     private array $xmlNamespaces = [];
     private array $defaultTypeMap = [];

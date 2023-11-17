@@ -19,25 +19,15 @@ use BeSimple\SoapCommon\Definition\Type\TypeRepository;
  */
 class Definition
 {
-    protected $name;
-
-    protected $namespace;
-
-    protected TypeRepository $typeRepository;
-
     protected array $options;
 
     protected array $methods;
 
     protected array $types;
 
-    public function __construct($name, $namespace, TypeRepository $typeRepository, array $options = [])
+    public function __construct(protected $name, protected $namespace, protected TypeRepository $typeRepository, array $options = [])
     {
-        $this->name = $name;
-        $this->namespace = $namespace;
         $this->methods = [];
-
-        $this->typeRepository = $typeRepository;
 
         $this->setOptions($options);
     }

@@ -20,17 +20,8 @@ class Collection implements \IteratorAggregate, \Countable
      */
     private array $elements = [];
 
-    private string $getter;
-
-    /**
-     * @var T|null
-     */
-    private $class;
-
-    public function __construct(string $getter, ?string $class = null)
+    public function __construct(private readonly string $getter, private readonly ?string $class = null)
     {
-        $this->getter = $getter;
-        $this->class = $class;
     }
 
     /**
@@ -39,7 +30,7 @@ class Collection implements \IteratorAggregate, \Countable
     public function add($element): void
     {
         if ($this->class && !$element instanceof $this->class) {
-            throw new \InvalidArgumentException(sprintf('Cannot add class "%s" because it is not an instance of "%s"', get_class($element), $this->class));
+            throw new \InvalidArgumentException(sprintf('Cannot add class "%s" because it is not an instance of "%s"', $element::class, $this->class));
         }
 
         $this->elements[$element->{$this->getter}()] = $element;

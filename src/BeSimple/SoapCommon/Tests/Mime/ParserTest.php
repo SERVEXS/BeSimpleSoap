@@ -48,13 +48,13 @@ class ParserTest extends TestCase
         $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('text/xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('UTF-8', $p1->getHeader('Content-Type', 'charset'));
-        $this->assertEquals(389, \strlen($p1->getContent()));
+        $this->assertEquals(389, \strlen((string) $p1->getContent()));
 
         $p2 = $mp->getPart('0x9d6ad00-0xa19ef48-0x9de7500-0xa4fae78-0xa382698');
         $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('binary', $p2->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/binary', $p2->getHeader('Content-Type'));
-        $this->assertEquals(79, \strlen($p2->getContent()));
+        $this->assertEquals(79, \strlen((string) $p2->getContent()));
     }
 
     public function testParserResponseAxis(): void
@@ -79,7 +79,7 @@ class ParserTest extends TestCase
         $this->assertEquals('8bit', $p1->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/soap+xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('utf-8', $p1->getHeader('Content-Type', 'charset'));
-        $this->assertEquals(499, \strlen($p1->getContent()));
+        $this->assertEquals(499, \strlen((string) $p1->getContent()));
     }
 
     public function testParserResponseWsi(): void
@@ -106,7 +106,7 @@ class ParserTest extends TestCase
         $this->assertEquals('application/xop+xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('utf-8', $p1->getHeader('Content-Type', 'charset'));
         $this->assertEquals('application/soap+xml', $p1->getHeader('Content-Type', 'type'));
-        $this->assertEquals(910, \strlen($p1->getContent()));
+        $this->assertEquals(910, \strlen((string) $p1->getContent()));
     }
 
     public function testParserWithHeaderArray(): void
@@ -148,12 +148,12 @@ class ParserTest extends TestCase
         $this->assertEquals('application/xop+xml', $p1->getHeader('Content-Type'));
         $this->assertEquals('utf-8', $p1->getHeader('Content-Type', 'charset'));
         $this->assertEquals('application/soap+xml', $p1->getHeader('Content-Type', 'type'));
-        $this->assertEquals(737, \strlen($p1->getContent()));
+        $this->assertEquals(737, \strlen((string) $p1->getContent()));
 
         $p2 = $mp->getPart('http://tempuri.org/1/632618206527087310');
         $this->assertInstanceOf(Part::class, $p1);
         $this->assertEquals('binary', $p2->getHeader('Content-Transfer-Encoding'));
         $this->assertEquals('application/octet-stream', $p2->getHeader('Content-Type'));
-        $this->assertEquals(769, \strlen($p2->getContent()));
+        $this->assertEquals(769, \strlen((string) $p2->getContent()));
     }
 }

@@ -20,7 +20,7 @@ use BeSimple\SoapCommon\Classmap;
  */
 class TypeRepository
 {
-    public const ARRAY_SUFFIX = '[]';
+    final public const ARRAY_SUFFIX = '[]';
 
     protected $xmlNamespaces = [];
     protected $types = [];
@@ -116,7 +116,7 @@ class TypeRepository
 
     public function getArrayOf($arrayType)
     {
-        if (!preg_match('#(.*)' . preg_quote(static::ARRAY_SUFFIX, '#') . '$#', $arrayType, $match)) {
+        if (!preg_match('#(.*)' . preg_quote((string) static::ARRAY_SUFFIX, '#') . '$#', (string) $arrayType, $match)) {
             return false;
         }
 

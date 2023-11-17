@@ -21,16 +21,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ExceptionHandler
 {
-    protected FlattenException $exception;
-
-    protected $details;
-
     protected ?\SoapFault $soapFault = null;
 
-    public function __construct(FlattenException $exception, $details = null)
+    public function __construct(protected FlattenException $exception, protected $details = null)
     {
-        $this->exception = $exception;
-        $this->details = $details;
     }
 
     public function setSoapFault(\SoapFault $soapFault): void

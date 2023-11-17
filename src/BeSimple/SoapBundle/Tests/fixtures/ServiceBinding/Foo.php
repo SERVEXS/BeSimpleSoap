@@ -4,12 +4,7 @@ namespace BeSimple\SoapBundle\Tests\fixtures\ServiceBinding;
 
 class Foo
 {
-    public $foo;
-    public $bar;
-
-    public function __construct($foo, $bar)
+    public function __construct(public $foo, public $bar)
     {
-        $this->foo = $foo;
-        $this->bar = $bar;
     }
 }

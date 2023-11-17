@@ -31,14 +31,8 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
  */
 class AnnotationClassLoader extends Loader
 {
-    protected Reader $reader;
-
-    protected TypeRepository $typeRepository;
-
-    public function __construct(Reader $reader, TypeRepository $typeRepository)
+    public function __construct(protected Reader $reader, protected TypeRepository $typeRepository)
     {
-        $this->reader = $reader;
-        $this->typeRepository = $typeRepository;
     }
 
     /**

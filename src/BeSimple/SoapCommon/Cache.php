@@ -17,13 +17,13 @@ namespace BeSimple\SoapCommon;
  */
 class Cache
 {
-    public const DISABLED = 0;
-    public const ENABLED = 1;
+    final public const DISABLED = 0;
+    final public const ENABLED = 1;
 
-    public const TYPE_NONE = \WSDL_CACHE_NONE;
-    public const TYPE_DISK = \WSDL_CACHE_DISK;
-    public const TYPE_MEMORY = \WSDL_CACHE_MEMORY;
-    public const TYPE_DISK_MEMORY = \WSDL_CACHE_BOTH;
+    final public const TYPE_NONE = \WSDL_CACHE_NONE;
+    final public const TYPE_DISK = \WSDL_CACHE_DISK;
+    final public const TYPE_MEMORY = \WSDL_CACHE_MEMORY;
+    final public const TYPE_DISK_MEMORY = \WSDL_CACHE_BOTH;
 
     protected static $types = [
         self::TYPE_NONE,

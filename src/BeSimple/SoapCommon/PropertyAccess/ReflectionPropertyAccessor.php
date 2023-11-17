@@ -16,13 +16,10 @@ use Symfony\Component\PropertyAccess\PropertyPathInterface;
  * @see https://github.com/symfony/symfony/issues/23938#issuecomment-325186998
  * @see https://github.com/nelmio/alice/blob/master/src/PropertyAccess/ReflectionPropertyAccessor.php
  */
-final class ReflectionPropertyAccessor implements PropertyAccessorInterface
+final readonly class ReflectionPropertyAccessor implements PropertyAccessorInterface
 {
-    private PropertyAccessorInterface $decoratedPropertyAccessor;
-
-    public function __construct(PropertyAccessorInterface $decoratedPropertyAccessor)
+    public function __construct(private PropertyAccessorInterface $decoratedPropertyAccessor)
     {
-        $this->decoratedPropertyAccessor = $decoratedPropertyAccessor;
     }
 
     public function setValue(&$objectOrArray, $propertyPath, $value): void
@@ -35,7 +32,7 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
                 throw $e;
             }
 
-            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== get_class($objectOrArray)) {
+            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== $objectOrArray::class) {
                 $propertyReflectionProperty->setAccessible(true);
 
                 $propertyReflectionProperty->setValue($objectOrArray, $value);
@@ -63,7 +60,7 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
                 throw $e;
             }
 
-            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== get_class($objectOrArray)) {
+            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== $objectOrArray::class) {
                 $propertyReflectionProperty->setAccessible(true);
 
                 return $propertyReflectionProperty->getValue($objectOrArray);
@@ -116,7 +113,7 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
             return null;
         }
 
-        $reflectionClass = (new \ReflectionClass(get_class($objectOrArray)));
+        $reflectionClass = (new \ReflectionClass($objectOrArray::class));
 
         while ($reflectionClass instanceof \ReflectionClass) {
             if ($reflectionClass->hasProperty($propertyPath)

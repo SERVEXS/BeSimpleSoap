@@ -56,7 +56,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
             $isArray = true;
             $array = [];
 
-            $phpType = substr($type->getPhpType(), 0, -2);
+            $phpType = substr((string) $type->getPhpType(), 0, -2);
             $type = $this->typeRepository->getType($phpType);
         }
 
@@ -131,7 +131,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
                 $messageBinder->writeProperty($property, $value);
             } elseif (!$type->isNillable()) {
                 // @TODO use xmlType instead of phpType
-                throw new \SoapFault('SOAP_ERROR_COMPLEX_TYPE', sprintf('"%s:%s" cannot be null.', ucfirst($phpType), $type->getName()));
+                throw new \SoapFault('SOAP_ERROR_COMPLEX_TYPE', sprintf('"%s:%s" cannot be null.', ucfirst((string) $phpType), $type->getName()));
             }
         }
 

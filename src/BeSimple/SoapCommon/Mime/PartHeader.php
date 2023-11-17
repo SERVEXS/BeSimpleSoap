@@ -86,7 +86,7 @@ abstract class PartHeader
      */
     protected function generateHeaders()
     {
-        $charset = strtolower($this->getHeader('Content-Type', 'charset'));
+        $charset = strtolower((string) $this->getHeader('Content-Type', 'charset'));
         $preferences = [
             'scheme' => 'Q',
             'input-charset' => 'utf-8',

@@ -26,17 +26,14 @@ use Symfony\Component\Config\Loader\LoaderInterface;
  */
 class WebServiceContext
 {
-    private $options;
-
     private $serviceDefinition;
-    private $serviceBinder;
+    private ?\BeSimple\SoapBundle\ServiceBinding\ServiceBinder $serviceBinder = null;
     private $serverBuilder;
 
-    public function __construct(LoaderInterface $loader, TypeConverterCollection $converters, array $options)
+    public function __construct(LoaderInterface $loader, TypeConverterCollection $converters, private array $options)
     {
         $this->loader = $loader;
         $this->converters = $converters;
-        $this->options = $options;
     }
 
     public function getServiceDefinition()
@@ -68,7 +65,7 @@ class WebServiceContext
 
     public function getWsdlFile($endpoint = null)
     {
-        $file = sprintf('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5($endpoint));
+        $file = sprintf('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5((string) $endpoint));
         $cache = new ConfigCache($file, $this->options['debug']);
 
         if (!$cache->isFresh()) {

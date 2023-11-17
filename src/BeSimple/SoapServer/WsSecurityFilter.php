@@ -108,7 +108,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
             }
 
             // add SecurityTokenReference resolver for KeyInfo
-            $keyResolver = [$this, 'keyInfoSecurityTokenReferenceResolver'];
+            $keyResolver = $this->keyInfoSecurityTokenReferenceResolver(...);
             XmlSecurityDSig::addKeyInfoResolver(Helper::NS_WSS, 'SecurityTokenReference', $keyResolver);
 
             // do we have a reference list in header

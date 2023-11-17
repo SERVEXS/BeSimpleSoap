@@ -38,12 +38,12 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
     /**
      * (UT 3.1) Password type: plain text.
      */
-    public const PASSWORD_TYPE_TEXT = 0;
+    final public const PASSWORD_TYPE_TEXT = 0;
 
     /**
      * (UT 3.1) Password type: digest.
      */
-    public const PASSWORD_TYPE_DIGEST = 1;
+    final public const PASSWORD_TYPE_DIGEST = 1;
 
     /**
      * (UT 3.1) Password.
@@ -148,7 +148,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
                 && (null === $this->userSecurityKey
                     || (null !== $this->userSecurityKey && !$this->userSecurityKey->hasPrivateKey()))) {
                 if (self::PASSWORD_TYPE_DIGEST === $this->passwordType) {
-                    $nonce = mt_rand();
+                    $nonce = random_int(0, mt_getrandmax());
                     $password = base64_encode(sha1($nonce . $createdTimestamp . $this->password, true));
                     $passwordType = Helper::NAME_WSS_UTP . '#PasswordDigest';
                 } else {
@@ -231,7 +231,7 @@ class WsSecurityFilter extends WsSecurityFilterClientServer implements SoapReque
         $security = $dom->getElementsByTagNameNS(Helper::NS_WSS, 'Security')->item(0);
         if (null !== $security) {
             // add SecurityTokenReference resolver for KeyInfo
-            $keyResolver = [$this, 'keyInfoSecurityTokenReferenceResolver'];
+            $keyResolver = $this->keyInfoSecurityTokenReferenceResolver(...);
             XmlSecurityDSig::addKeyInfoResolver(Helper::NS_WSS, 'SecurityTokenReference', $keyResolver);
             // do we have a reference list in header
             $referenceList = XmlSecurityEnc::locateReferenceList($security);

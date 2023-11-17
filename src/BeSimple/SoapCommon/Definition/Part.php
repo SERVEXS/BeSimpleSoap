@@ -17,15 +17,11 @@ namespace BeSimple\SoapCommon\Definition;
  */
 class Part
 {
-    protected $name;
-    protected $type;
     protected $nillable;
     protected $attribute;
 
-    public function __construct($name, $type, $nillable = false, $attribute = false)
+    public function __construct(protected $name, protected $type, $nillable = false, $attribute = false)
     {
-        $this->name = $name;
-        $this->type = $type;
         $this->setNillable($nillable);
         $this->setAttribute($attribute);
     }
