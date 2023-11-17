@@ -97,10 +97,6 @@ class SoapExceptionListener extends ErrorListener
      */
     public function getIsMainRequest(ExceptionEvent $event): bool
     {
-        if (Kernel::MAJOR_VERSION < 5) {
-            return $event->isMasterRequest();
-        }
-
         return $event->isMainRequest();
     }
 }

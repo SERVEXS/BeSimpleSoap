@@ -45,11 +45,12 @@ class AnnotationClassLoader extends Loader
      * Loads a ServiceDefinition from annotations from a class.
      *
      * @param string $class A class name
-     * @param string $type  The resource type
+     * @param string $type The resource type
      *
      * @return Definition\Definition A ServiceDefinition instance
      *
      * @throws \InvalidArgumentException When route can't be parsed
+     * @throws \Exception
      */
     public function load($class, $type = null)
     {
@@ -163,15 +164,13 @@ class AnnotationClassLoader extends Loader
     /**
      * @inheritDoc
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, ?string $type = null): bool
     {
         return \is_string($resource) && preg_match('/^(?:\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/', $resource) && (!$type || 'annotation' === $type);
     }
 
-    /**
-     * @return null
-     */
     public function getResolver(): LoaderResolverInterface
     {
+        return $this->resolver;
     }
 }
