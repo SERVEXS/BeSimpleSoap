@@ -107,7 +107,7 @@ class AnnotationClassLoader extends Loader
                 }
             }
 
-            // Legacy method attribute processing...
+            // method attribute processing...
             foreach ($method->getAttributes() as $attribute){
                 if ($attribute instanceof Annotation\Header) {
                     $serviceHeaders[$attribute->getValue()] = $this->loadType($attribute->getPhpType());
