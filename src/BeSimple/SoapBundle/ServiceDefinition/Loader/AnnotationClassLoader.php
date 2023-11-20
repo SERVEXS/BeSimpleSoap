@@ -111,30 +111,24 @@ class AnnotationClassLoader extends Loader
                 $attributeInstance = $attribute->newInstance();
                 if ($attributeInstance instanceof Annotation\Header) {
                     $serviceHeaders[$attributeInstance->getValue()] = $this->loadType($attributeInstance->getPhpType());
-                } else {
-                    if ($attributeInstance instanceof Annotation\Param) {
-                        $serviceArguments[$attributeInstance->getValue()] = $this->loadType($attributeInstance->getPhpType());
-                    } else {
-                        if ($attributeInstance instanceof Method) {
-                            if ($serviceMethod) {
-                                throw new LogicException(sprintf('Soap\Method defined twice for "%s".', $method->getName()));
-                            }
-
-                            $serviceMethod = new Definition\Method(
-                                $attributeInstance->getValue(),
-                                $this->getController($class, $method, $attributeInstance)
-                            );
-                        } else {
-                            if ($attributeInstance instanceof Annotation\Result) {
-                                if ($serviceReturn) {
-                                    throw new LogicException(sprintf('Soap\Result defined twice for "%s".', $method->getName()));
-                                }
-
-                                $serviceReturn = $attributeInstance->getPhpType();
-                                $serviceXmlReturn = $attributeInstance->getXmlType();
-                            }
-                        }
+                } else  if ($attributeInstance instanceof Annotation\Param) {
+                    $serviceArguments[$attributeInstance->getValue()] = $this->loadType($attributeInstance->getPhpType());
+                } else  if ($attributeInstance instanceof Method) {
+                    if ($serviceMethod) {
+                        throw new LogicException(sprintf('Soap\Method defined twice for "%s".', $method->getName()));
                     }
+
+                    $serviceMethod = new Definition\Method(
+                        $attributeInstance->getValue(),
+                        $this->getController($class, $method, $attributeInstance)
+                    );
+                } else  if ($attributeInstance instanceof Annotation\Result) {
+                    if ($serviceReturn) {
+                        throw new LogicException(sprintf('Soap\Result defined twice for "%s".', $method->getName()));
+                    }
+
+                    $serviceReturn = $attributeInstance->getPhpType();
+                    $serviceXmlReturn = $attributeInstance->getXmlType();
                 }
             }
 
