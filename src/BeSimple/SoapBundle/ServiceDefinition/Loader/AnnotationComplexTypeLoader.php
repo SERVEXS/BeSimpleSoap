@@ -71,16 +71,14 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
                 $annotations['properties']->add($propertyComplexType);
             }
 
-            foreach ($property->getAttributes() as $attribute) {
-                if (!$attribute instanceof ComplexTypeAnnotation) {
-                    continue;
-                }
+            foreach ($property->getAttributes(ComplexTypeAnnotation::class) as $attribute) {
+                $instance = $attribute->newInstance();
 
                 $propertyComplexType = new ComplexType();
-                $propertyComplexType->setValue($attribute->getValue());
-                $propertyComplexType->setNillable($attribute->isNillable());
-                $propertyComplexType->setIsAttribute($attribute->isAttribute());
-                $propertyComplexType->setName($attribute->getName());
+                $propertyComplexType->setValue($instance->getValue());
+                $propertyComplexType->setNillable($instance->isNillable());
+                $propertyComplexType->setIsAttribute($instance->isAttribute());
+                $propertyComplexType->setName($instance->getName());
                 $annotations['properties']->add($propertyComplexType);
             }
         }

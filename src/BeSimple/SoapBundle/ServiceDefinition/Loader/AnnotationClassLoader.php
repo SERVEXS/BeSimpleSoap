@@ -70,10 +70,9 @@ class AnnotationClassLoader extends Loader
             }
         }
 
-        foreach ($class->getAttributes() as $attribute) {
-            if ($attribute instanceof Annotation\Header) {
-                $sharedHeaders[$attribute->getValue()] = $this->loadType($attribute->getPhpType());
-            }
+        foreach ($class->getAttributes(Annotation\Header::class) as $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            $sharedHeaders[$attributeInstance->getValue()] = $this->loadType($attributeInstance->getPhpType());
         }
 
         foreach ($class->getMethods() as $method) {
@@ -108,27 +107,34 @@ class AnnotationClassLoader extends Loader
             }
 
             // method attribute processing...
-            foreach ($method->getAttributes() as $attribute){
-                if ($attribute instanceof Annotation\Header) {
-                    $serviceHeaders[$attribute->getValue()] = $this->loadType($attribute->getPhpType());
-                } else if ($attribute instanceof Annotation\Param) {
-                    $serviceArguments[$attribute->getValue()] = $this->loadType($attribute->getPhpType());
-                } else if ($attribute instanceof Method) {
-                    if ($serviceMethod) {
-                        throw new LogicException(sprintf('Soap\Method defined twice for "%s".', $method->getName()));
-                    }
+            foreach ($method->getAttributes() as $attribute) {
+                $attributeInstance = $attribute->newInstance();
+                if ($attributeInstance instanceof Annotation\Header) {
+                    $serviceHeaders[$attributeInstance->getValue()] = $this->loadType($attributeInstance->getPhpType());
+                } else {
+                    if ($attributeInstance instanceof Annotation\Param) {
+                        $serviceArguments[$attributeInstance->getValue()] = $this->loadType($attributeInstance->getPhpType());
+                    } else {
+                        if ($attributeInstance instanceof Method) {
+                            if ($serviceMethod) {
+                                throw new LogicException(sprintf('Soap\Method defined twice for "%s".', $method->getName()));
+                            }
 
-                    $serviceMethod = new Definition\Method(
-                        $attribute->getValue(),
-                        $this->getController($class, $method, $attribute)
-                    );
-                } else if ($attribute instanceof Annotation\Result) {
-                    if ($serviceReturn) {
-                        throw new LogicException(sprintf('Soap\Result defined twice for "%s".', $method->getName()));
-                    }
+                            $serviceMethod = new Definition\Method(
+                                $attributeInstance->getValue(),
+                                $this->getController($class, $method, $attributeInstance)
+                            );
+                        } else {
+                            if ($attributeInstance instanceof Annotation\Result) {
+                                if ($serviceReturn) {
+                                    throw new LogicException(sprintf('Soap\Result defined twice for "%s".', $method->getName()));
+                                }
 
-                    $serviceReturn = $attribute->getPhpType();
-                    $serviceXmlReturn = $attribute->getXmlType();
+                                $serviceReturn = $attributeInstance->getPhpType();
+                                $serviceXmlReturn = $attributeInstance->getXmlType();
+                            }
+                        }
+                    }
                 }
             }
 
@@ -186,7 +192,12 @@ class AnnotationClassLoader extends Loader
             $loaded = $complexTypeResolver->load($phpType);
             $complexType = new ComplexType($phpType, $loaded['alias'] ?? $phpType);
             foreach ($loaded['properties'] as $name => $property) {
-                $complexType->add($name, $this->loadType($property->getValue()), $property->isNillable(), $property->isAttribute());
+                $complexType->add(
+                    $name,
+                    $this->loadType($property->getValue()),
+                    $property->isNillable(),
+                    $property->isAttribute()
+                );
             }
 
             $this->typeRepository->addComplexType($complexType);
@@ -200,7 +211,10 @@ class AnnotationClassLoader extends Loader
      */
     public function supports($resource, ?string $type = null): bool
     {
-        return is_string($resource) && preg_match('/^(?:\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/', $resource) && (!$type || 'annotation' === $type);
+        return is_string($resource) && preg_match(
+                '/^(?:\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/',
+                $resource
+            ) && (!$type || 'annotation' === $type);
     }
 
     public function getResolver(): LoaderResolverInterface
