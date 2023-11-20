@@ -7,6 +7,6 @@ use BeSimple\SoapCommon\Type\AbstractKeyValue;
 
 class BsBoolean extends AbstractKeyValue
 {
-    #[ComplexType(['type' => 'boolean'])]
+    #[ComplexType(['name' => 'boolean'])]
     protected $value;
 }

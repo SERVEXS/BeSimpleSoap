@@ -7,6 +7,6 @@ use BeSimple\SoapCommon\Type\AbstractKeyValue;
 
 class DateTime extends AbstractKeyValue
 {
-    #[ComplexType(['type' => 'dateTime'])]
+    #[ComplexType(['name' => 'dateTime'])]
     protected $value;
 }

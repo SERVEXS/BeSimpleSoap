@@ -7,6 +7,6 @@ use BeSimple\SoapCommon\Type\AbstractKeyValue;
 
 class BsFloat extends AbstractKeyValue
 {
-    #[ComplexType(['type' => 'float'])]
+    #[ComplexType(['name' => 'float'])]
     protected $value;
 }
