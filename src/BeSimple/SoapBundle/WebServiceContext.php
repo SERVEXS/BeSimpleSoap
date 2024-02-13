@@ -15,6 +15,7 @@ use BeSimple\SoapBundle\ServiceBinding\ServiceBinder;
 use BeSimple\SoapCommon\Converter\TypeConverterCollection;
 use BeSimple\SoapServer\SoapServerBuilder;
 use BeSimple\SoapWsdl\Dumper\Dumper;
+use LogicException;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -27,8 +28,14 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 class WebServiceContext
 {
     private $serviceDefinition;
-    private ?\BeSimple\SoapBundle\ServiceBinding\ServiceBinder $serviceBinder = null;
+
+    private ?ServiceBinder $serviceBinder = null;
+
     private $serverBuilder;
+
+    private LoaderInterface $loader;
+
+    private TypeConverterCollection $converters;
 
     public function __construct(LoaderInterface $loader, TypeConverterCollection $converters, private array $options)
     {
@@ -39,12 +46,17 @@ class WebServiceContext
     public function getServiceDefinition()
     {
         if (null === $this->serviceDefinition) {
-            $cache = new ConfigCache(sprintf('%s/%s.definition.php', $this->options['cache_dir'], $this->options['name']), $this->options['debug']);
+            $cache = new ConfigCache(
+                sprintf('%s/%s.definition.php', $this->options['cache_dir'], $this->options['name']),
+                $this->options['debug']
+            );
             if ($cache->isFresh()) {
                 $this->serviceDefinition = include $cache->getPath();
             } else {
                 if (!$this->loader->supports($this->options['resource'], $this->options['resource_type'])) {
-                    throw new \LogicException(sprintf('Cannot load "%s" (%s)', $this->options['resource'], $this->options['resource_type']));
+                    throw new LogicException(
+                        sprintf('Cannot load "%s" (%s)', $this->options['resource'], $this->options['resource_type'])
+                    );
                 }
 
                 $this->serviceDefinition = $this->loader->load($this->options['resource'], $this->options['resource_type']);
@@ -65,7 +77,7 @@ class WebServiceContext
 
     public function getWsdlFile($endpoint = null)
     {
-        $file = sprintf('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5((string) $endpoint));
+        $file = sprintf('%s/%s.%s.wsdl', $this->options['cache_dir'], $this->options['name'], md5((string)$endpoint));
         $cache = new ConfigCache($file, $this->options['debug']);
 
         if (!$cache->isFresh()) {
@@ -105,8 +117,7 @@ class WebServiceContext
             $this->serverBuilder = SoapServerBuilder::createWithDefaults()
                 ->withWsdl($this->getWsdlFile())
                 ->withClassmap($this->getServiceDefinition()->getTypeRepository()->getClassmap())
-                ->withTypeConverters($this->converters)
-            ;
+                ->withTypeConverters($this->converters);
 
             if (null !== $this->options['cache_type']) {
                 $this->serverBuilder->withWsdlCache($this->options['cache_type']);

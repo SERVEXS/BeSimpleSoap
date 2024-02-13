@@ -81,31 +81,6 @@ class AnnotationClassLoader extends Loader
             $serviceMethod = null;
             $serviceReturn = null;
 
-            // Legacy method annotation processing...
-            foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
-                if ($annotation instanceof Annotation\Header) {
-                    $serviceHeaders[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
-                } elseif ($annotation instanceof Annotation\Param) {
-                    $serviceArguments[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
-                } elseif ($annotation instanceof Method) {
-                    if ($serviceMethod) {
-                        throw new LogicException(sprintf('Soap\Method defined twice for "%s".', $method->getName()));
-                    }
-
-                    $serviceMethod = new Definition\Method(
-                        $annotation->getValue(),
-                        $this->getController($class, $method, $annotation)
-                    );
-                } elseif ($annotation instanceof Annotation\Result) {
-                    if ($serviceReturn) {
-                        throw new LogicException(sprintf('Soap\Result defined twice for "%s".', $method->getName()));
-                    }
-
-                    $serviceReturn = $annotation->getPhpType();
-                    $serviceXmlReturn = $annotation->getXmlType();
-                }
-            }
-
             // method attribute processing...
             foreach ($method->getAttributes() as $attribute) {
                 $attributeInstance = $attribute->newInstance();
@@ -129,6 +104,31 @@ class AnnotationClassLoader extends Loader
 
                     $serviceReturn = $attributeInstance->getPhpType();
                     $serviceXmlReturn = $attributeInstance->getXmlType();
+                }
+            }
+
+            // Legacy method annotation processing...
+            foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
+                if ($annotation instanceof Annotation\Header) {
+                    $serviceHeaders[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
+                } elseif ($annotation instanceof Annotation\Param) {
+                    $serviceArguments[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
+                } elseif ($annotation instanceof Method) {
+                    if ($serviceMethod) {
+                        throw new LogicException(sprintf('Soap\Method defined twice for "%s".', $method->getName()));
+                    }
+
+                    $serviceMethod = new Definition\Method(
+                        $annotation->getValue(),
+                        $this->getController($class, $method, $annotation)
+                    );
+                } elseif ($annotation instanceof Annotation\Result) {
+                    if ($serviceReturn) {
+                        throw new LogicException(sprintf('Soap\Result defined twice for "%s".', $method->getName()));
+                    }
+
+                    $serviceReturn = $annotation->getPhpType();
+                    $serviceXmlReturn = $annotation->getXmlType();
                 }
             }
 

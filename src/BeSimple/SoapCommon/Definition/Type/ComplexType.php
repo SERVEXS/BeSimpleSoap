@@ -19,6 +19,20 @@ use BeSimple\SoapCommon\Definition\Message;
  */
 class ComplexType extends Message implements TypeInterface
 {
+    /**
+     * @var string
+     */
+    private $phpType;
+
+    /**
+     * @var array|string|string[]
+     */
+    private $xmlType;
+
+    /**
+     * @param string $phpType
+     * @param string|null $xmlType
+     */
     public function __construct($phpType, $xmlType)
     {
         $this->phpType = $phpType;
