@@ -30,7 +30,7 @@
         "symfony/twig-bundle": "^5.4|^6.0",
         "symfony/property-access": "^5.4|^6.0",
         "laminas/laminas-mime": "~2.7",
-        "twig/twig": "~2.0",
+        "twig/twig": "^2.0|^3.0",
         "doctrine/annotations": "^v1.0|^2.0.1"
     },
     "replace": {
