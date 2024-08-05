@@ -17,7 +17,7 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
  *
  * @extends Configuration<TParam>
  */
-#[\Attribute(\Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class Param extends Configuration implements TypedElementInterface
 {
     private $value;
