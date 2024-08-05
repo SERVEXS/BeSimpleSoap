@@ -12,6 +12,10 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 
 /**
  * @Annotation
+ *
+ * @phpstan-type TMethod array{value: string, service?: string}
+ *
+ * @extends Configuration<TMethod>
  */
 #[\Attribute]
 class Method extends Configuration

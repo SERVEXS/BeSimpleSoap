@@ -12,11 +12,16 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 
 /**
  * @Annotation
+ *
+ * @phpstan-type TResult array{phpType?: string, xmlType?: string}
+ *
+ * @extends Configuration<TResult>
  */
 #[\Attribute]
 class Result extends Configuration implements TypedElementInterface
 {
     private $phpType;
+
     private $xmlType;
 
     public function getPhpType()

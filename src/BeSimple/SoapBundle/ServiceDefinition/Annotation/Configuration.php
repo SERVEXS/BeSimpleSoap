@@ -14,9 +14,14 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
  * Based on \Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation
  *
  * @author Francis Besset <francis.besset@gmail.com>
+ *
+ * @template TConfiguration of array
  */
 abstract class Configuration implements ConfigurationInterface
 {
+    /**
+     * @param TConfiguration $values
+     */
     public function __construct(array $values)
     {
         foreach ($values as $k => $v) {
