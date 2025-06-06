@@ -11,7 +11,6 @@
 namespace BeSimple\SoapBundle\Soap;
 
 use BeSimple\SoapBundle\Util\Collection;
-
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -21,13 +20,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class SoapResponse extends Response
 {
-    /**
-     * @var \BeSimple\SoapBundle\Util\Collection
-     */
-    protected $soapHeaders;
+    protected Collection $soapHeaders;
 
     /**
-     * @var mixed
+     * @var mixed|null
      */
     protected $soapReturnValue;
 
@@ -35,33 +31,33 @@ class SoapResponse extends Response
     {
         parent::__construct();
 
-        $this->soapHeaders = new Collection('getName', 'BeSimple\SoapBundle\Soap\SoapHeader');
+        $this->soapHeaders = new Collection('getName', SoapHeader::class);
         $this->setReturnValue($returnValue);
     }
 
-    /**
-     * @param SoapHeader $soapHeader
-     */
-    public function addSoapHeader(SoapHeader $soapHeader)
+    public function addSoapHeader(SoapHeader $soapHeader): void
     {
         $this->soapHeaders->add($soapHeader);
     }
 
-    /**
-     * @return \BeSimple\SoapBundle\Util\Collection
-     */
-    public function getSoapHeaders()
+    public function getSoapHeaders(): Collection
     {
         return $this->soapHeaders;
     }
 
-    public function setReturnValue($value)
+    /**
+     * @param mixed|null $value
+     */
+    public function setReturnValue($value): self
     {
         $this->soapReturnValue = $value;
 
         return $this;
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getReturnValue()
     {
         return $this->soapReturnValue;

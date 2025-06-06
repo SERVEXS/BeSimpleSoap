@@ -20,14 +20,14 @@ class DocumentLiteralWrappedRequestMessageBinder implements MessageBinderInterfa
 {
     public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository)
     {
-        if(count($message) > 1) {
+        if (\count($message) > 1) {
             throw new \InvalidArgumentException();
         }
 
-        $result  = array();
+        $result = [];
         $message = $message[0];
 
-        foreach($messageDefinition->getInput()->all() as $argument) {
+        foreach ($messageDefinition->getInput()->all() as $argument) {
             $result[$argument->getName()] = $message;
         }
 

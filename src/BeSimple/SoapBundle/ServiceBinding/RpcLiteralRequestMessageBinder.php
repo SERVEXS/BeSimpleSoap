@@ -16,6 +16,7 @@ use BeSimple\SoapBundle\ServiceDefinition\Method;
 use BeSimple\SoapCommon\Definition\Type\ArrayOfType;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
 use BeSimple\SoapCommon\Definition\Type\TypeRepository;
+use BeSimple\SoapCommon\Type\AbstractKeyValue;
 use BeSimple\SoapCommon\Util\MessageBinder;
 
 /**
@@ -24,23 +25,23 @@ use BeSimple\SoapCommon\Util\MessageBinder;
  */
 class RpcLiteralRequestMessageBinder implements MessageBinderInterface
 {
-    protected $typeRepository;
+    protected TypeRepository $typeRepository;
 
-    private $messageRefs = array();
+    private array $messageRefs = [];
 
     public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository)
     {
         $this->typeRepository = $typeRepository;
 
-        $result = array();
-        $i      = 0;
+        $result = [];
+        $i = 0;
 
         foreach ($messageDefinition->getInput()->all() as $argument) {
             if (isset($message[$i])) {
                 $result[$argument->getName()] = $this->processType($argument->getType(), $message[$i]);
             }
 
-            $i++;
+            ++$i;
         }
 
         return $result;
@@ -53,9 +54,9 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
         $type = $this->typeRepository->getType($phpType);
         if ($type instanceof ArrayOfType) {
             $isArray = true;
-            $array = array();
+            $array = [];
 
-            $phpType = substr($type->getPhpType(), 0, strlen($type->getPhpType()) - 2);
+            $phpType = substr((string) $type->getPhpType(), 0, -2);
             $type = $this->typeRepository->getType($phpType);
         }
 
@@ -70,8 +71,8 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
                     }
 
                     // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
-                    if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
-                        $assocArray = array();
+                    if (\in_array(AbstractKeyValue::class, class_parents($phpType), true)) {
+                        $assocArray = [];
                         foreach ($array as $keyValue) {
                             $assocArray[$keyValue->getKey()] = $keyValue->getValue();
                         }
@@ -79,14 +80,14 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
                         $array = $assocArray;
                     }
                 }
-                if (is_array($message)) {
+                if (\is_array($message)) {
                     foreach ($message as $complexType) {
                         $array[] = $this->checkComplexType($phpType, $complexType);
                     }
 
                     // See https://github.com/BeSimple/BeSimpleSoapBundle/issues/29
-                    if (in_array('BeSimple\SoapCommon\Type\AbstractKeyValue', class_parents($phpType))) {
-                        $assocArray = array();
+                    if (\in_array(AbstractKeyValue::class, class_parents($phpType), true)) {
+                        $assocArray = [];
                         foreach ($array as $keyValue) {
                             $assocArray[$keyValue->getKey()] = $keyValue->getValue();
                         }
@@ -130,7 +131,7 @@ class RpcLiteralRequestMessageBinder implements MessageBinderInterface
                 $messageBinder->writeProperty($property, $value);
             } elseif (!$type->isNillable()) {
                 // @TODO use xmlType instead of phpType
-                throw new \SoapFault('SOAP_ERROR_COMPLEX_TYPE', sprintf('"%s:%s" cannot be null.', ucfirst($phpType), $type->getName()));
+                throw new \SoapFault('SOAP_ERROR_COMPLEX_TYPE', sprintf('"%s:%s" cannot be null.', ucfirst((string) $phpType), $type->getName()));
             }
         }
 

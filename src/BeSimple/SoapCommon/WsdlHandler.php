@@ -12,8 +12,6 @@
 
 namespace BeSimple\SoapCommon;
 
-use BeSimple\SoapCommon\Helper;
-
 /**
  * This class loads the given WSDL file and allows to check MIME binding
  * information.
@@ -25,26 +23,18 @@ class WsdlHandler
     /**
      * Binding type 'input' .
      */
-    const BINDING_OPERATION_INPUT  = 'input';
+    final public const BINDING_OPERATION_INPUT = 'input';
 
     /**
      * Binding type 'output' .
      */
-    const BINDING_OPERATION_OUTPUT = 'output';
-
-    /**
-     * WSDL file name.
-     *
-     * @var string
-     */
-    private $wsdlFile;
+    final public const BINDING_OPERATION_OUTPUT = 'output';
 
     /**
      * DOMDocument WSDL file.
      *
-     * @var \DOMDocument
      */
-    private $domDocument;
+    private ?\DOMDocument $domDocument = null;
 
     /**
      * DOMXPath WSDL file.
@@ -58,14 +48,13 @@ class WsdlHandler
      *
      * @var array(string=>array(string=>array(string=>array(string))))
      */
-    private $mimeTypes = array();
+    private array $mimeTypes = [];
 
     /**
      * WSDL namespace of current WSDL file.
      *
-     * @var string
      */
-    private $wsdlSoapNamespace;
+    private ?string $wsdlSoapNamespace = null;
 
     /**
      * Constructor.
@@ -73,10 +62,13 @@ class WsdlHandler
      * @param string $wsdlFile    WSDL file name
      * @param string $soapVersion SOAP version constant
      */
-    public function __construct($wsdlFile, $soapVersion)
+    public function __construct(/**
+     * WSDL file name.
+     *
+     */
+    private $wsdlFile, $soapVersion)
     {
-        $this->wsdlFile = $wsdlFile;
-        if ($soapVersion == SOAP_1_1) {
+        if ($soapVersion == \SOAP_1_1) {
             $this->wsdlSoapNamespace = Helper::NS_WSDL_SOAP_1_1;
         } else {
             $this->wsdlSoapNamespace = Helper::NS_WSDL_SOAP_1_2;
@@ -92,11 +84,11 @@ class WsdlHandler
      */
     private function getMimeTypesForSoapAction($soapAction)
     {
-        $query = '/wsdl:definitions/wsdl:binding/wsdl:operation/soap:operation[@soapAction="'.$soapAction.'"]/..';
+        $query = '/wsdl:definitions/wsdl:binding/wsdl:operation/soap:operation[@soapAction="' . $soapAction . '"]/..';
         $nodes = $this->domXpath->query($query);
-        $mimeTypes = array();
+        $mimeTypes = [];
         if (null !== $wsdlOperation = $nodes->item(0)) {
-            //$wsdlOperationName = $wsdlOperation->getAttribute('name');
+            // $wsdlOperationName = $wsdlOperation->getAttribute('name');
             foreach ($wsdlOperation->childNodes as $soapOperationChild) {
                 // wsdl:input or wsdl:output
                 if ($soapOperationChild->localName == 'input' || $soapOperationChild->localName == 'output') {
@@ -110,7 +102,7 @@ class WsdlHandler
                                     case 'body':
                                         $parts = $child->getAttribute('parts');
                                         $parts = ($parts == '') ? '[body]' : $parts;
-                                        $mimeTypes[$operationType][$parts] = array('text/xml');
+                                        $mimeTypes[$operationType][$parts] = ['text/xml'];
                                         break;
                                     case 'content':
                                         $part = $child->getAttribute('part');
@@ -118,7 +110,7 @@ class WsdlHandler
                                         $type = $child->getAttribute('type');
                                         $type = ($type == '') ? '*/*' : $type;
                                         if (!isset($mimeTypes[$operationType][$part])) {
-                                            $mimeTypes[$operationType][$part] = array();
+                                            $mimeTypes[$operationType][$part] = [];
                                         }
                                         $mimeTypes[$operationType][$part][] = $type;
                                         break;
@@ -126,7 +118,7 @@ class WsdlHandler
                                         // this does not conform to the spec
                                         $part = $child->getAttribute('part');
                                         $part = ($part == '') ? null : $part;
-                                        $mimeTypes[$operationType][$part] = array('text/xml');
+                                        $mimeTypes[$operationType][$part] = ['text/xml'];
                                         break;
                                 }
                             }
@@ -136,7 +128,7 @@ class WsdlHandler
                         if (null !== $child) {
                             $parts = $child->getAttribute('parts');
                             $parts = ($parts == '') ? '[body]' : $parts;
-                            $mimeTypes[$operationType][$parts] = array('text/xml');
+                            $mimeTypes[$operationType][$parts] = ['text/xml'];
                         }
                     }
                 }
@@ -154,7 +146,7 @@ class WsdlHandler
      * @param string $part            Part name
      * @param string $currentMimeType Current mime type
      *
-     * @return boolean
+     * @return bool
      */
     public function isValidMimeTypeType($soapAction, $operationType, $part, $currentMimeType)
     {
@@ -170,16 +162,16 @@ class WsdlHandler
         }
         $mimeTypes = $this->mimeTypes[$soapAction][$operationType][$part];
         // wildcard or exact match
-        if (in_array('*/*', $mimeTypes) || in_array($currentMimeType, $mimeTypes)) {
+        if (\in_array('*/*', $mimeTypes, true) || \in_array($currentMimeType, $mimeTypes, true)) {
             return true;
-        // type/* match
-        } else {
-            list($ctype) = explode('/', $currentMimeType);
-            foreach ($mimeTypes as $mimeType) {
-                list($type, $subtype) = explode('/', $mimeType);
-                if ($subtype == '*' && $type == $ctype) {
-                    return true;
-                }
+            // type/* match
+        }
+
+        [$ctype] = explode('/', $currentMimeType);
+        foreach ($mimeTypes as $mimeType) {
+            [$type, $subtype] = explode('/', (string) $mimeType);
+            if ($subtype === '*' && $type === $ctype) {
+                return true;
             }
         }
 
@@ -188,10 +180,8 @@ class WsdlHandler
 
     /**
      * Loads the WSDL file into a DOM
-     *
-     * @return void
      */
-    private function loadWsdlInDom()
+    private function loadWsdlInDom(): void
     {
         if (null === $this->domDocument) {
             $this->domDocument = new \DOMDocument('1.0', 'utf-8');

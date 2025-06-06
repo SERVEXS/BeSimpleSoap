@@ -12,8 +12,8 @@
 
 namespace BeSimple\SoapServer;
 
-use BeSimple\SoapCommon\SoapRequest as CommonSoapRequest;
 use BeSimple\SoapCommon\SoapMessage;
+use BeSimple\SoapCommon\SoapRequest as CommonSoapRequest;
 
 /**
  * SoapRequest class for SoapClient. Provides factory function for request object.
@@ -28,16 +28,16 @@ class SoapRequest extends CommonSoapRequest
      * @param string $content Content
      * @param string $version SOAP version
      *
-     * @return BeSimple\SoapClient\SoapRequest
+     * @return SoapRequest
      */
     public static function create($content, $version)
     {
-        $request = new SoapRequest();
+        $request = new self();
 
         // $content is if unmodified from SoapClient not a php string type!
-        $request->setContent((string) (null === $content ? file_get_contents("php://input") : $content));
+        $request->setContent((string) ($content ?? file_get_contents('php://input')));
         $request->setLocation(self::getCurrentUrl());
-        $request->setAction(isset($_SERVER[SoapMessage::SOAP_ACTION_HEADER]) ? $_SERVER[SoapMessage::SOAP_ACTION_HEADER] : null);
+        $request->setAction($_SERVER[SoapMessage::SOAP_ACTION_HEADER] ?? null);
         $request->setVersion($version);
 
         if (isset($_SERVER[SoapMessage::CONTENT_TYPE_HEADER])) {
@@ -57,16 +57,17 @@ class SoapRequest extends CommonSoapRequest
     public static function getCurrentUrl()
     {
         $url = '';
-        if (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) === 'on' || $_SERVER['HTTPS'] === '1')) {
+        if (isset($_SERVER['HTTPS']) && (strtolower((string) $_SERVER['HTTPS']) === 'on' || $_SERVER['HTTPS'] === '1')) {
             $url .= 'https://';
         } else {
             $url .= 'http://';
         }
-        $url .= isset( $_SERVER['SERVER_NAME'] ) ? $_SERVER['SERVER_NAME'] : '';
-        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != 80) {
+        $url .= $_SERVER['SERVER_NAME'] ?? '';
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] !== 80) {
             $url .= ":{$_SERVER['SERVER_PORT']}";
         }
-        $url .= isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $url .= $_SERVER['REQUEST_URI'] ?? '';
+
         return $url;
     }
 }

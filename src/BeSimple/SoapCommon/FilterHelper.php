@@ -24,14 +24,14 @@ class FilterHelper
      *
      * @var \DOMDocument
      */
-    protected $domDocument = null;
+    protected $domDocument;
 
     /**
      * Namespaces added.
      *
      * @var array(string=>string)
      */
-    protected $namespaces = array();
+    protected $namespaces = [];
 
     /**
      * Constructor.
@@ -47,13 +47,11 @@ class FilterHelper
      * Add new soap header.
      *
      * @param \DOMElement $node           DOMElement to add
-     * @param boolean     $mustUnderstand SOAP header mustUnderstand attribute
+     * @param bool     $mustUnderstand SOAP header mustUnderstand attribute
      * @param string      $actor          SOAP actor/role
      * @param string      $soapVersion    SOAP version SOAP_1_1|SOAP_1_2
-     *
-     * @return void
      */
-    public function addHeaderElement(\DOMElement $node, $mustUnderstand = null, $actor = null, $soapVersion = SOAP_1_1)
+    public function addHeaderElement(\DOMElement $node, $mustUnderstand = null, $actor = null, $soapVersion = \SOAP_1_1): void
     {
         $root = $this->domDocument->documentElement;
         $namespace = $root->namespaceURI;
@@ -62,7 +60,7 @@ class FilterHelper
             $node->appendChild(new \DOMAttr($prefix . ':mustUnderstand', (int) $mustUnderstand));
         }
         if (null !== $actor) {
-            $attributeName = ($soapVersion == SOAP_1_1) ? 'actor' : 'role';
+            $attributeName = ($soapVersion == \SOAP_1_1) ? 'actor' : 'role';
             $node->appendChild(new \DOMAttr($prefix . ':' . $attributeName, $actor));
         }
         $nodeListHeader = $root->getElementsByTagNameNS($namespace, 'Header');
@@ -88,10 +86,8 @@ class FilterHelper
      * Add new soap body element.
      *
      * @param \DOMElement $node DOMElement to add
-     *
-     * @return void
      */
-    public function addBodyElement(\DOMElement $node)
+    public function addBodyElement(\DOMElement $node): void
     {
         $root = $this->domDocument->documentElement;
         $namespace = $root->namespaceURI;
@@ -113,10 +109,8 @@ class FilterHelper
      *
      * @param string $prefix       Namespace prefix
      * @param string $namespaceURI Namespace URI
-     *
-     * @return void
      */
-    public function addNamespace($prefix, $namespaceURI)
+    public function addNamespace($prefix, $namespaceURI): void
     {
         if (!isset($this->namespaces[$namespaceURI])) {
             $root = $this->domDocument->documentElement;
@@ -148,10 +142,8 @@ class FilterHelper
      * @param string      $namespaceURI Namespace URI
      * @param string      $name         Attribute name
      * @param string      $value        Attribute value
-     *
-     * @return void
      */
-    public function setAttribute(\DOMElement $element, $namespaceURI, $name, $value)
+    public function setAttribute(\DOMElement $element, $namespaceURI, $name, $value): void
     {
         if (null !== $namespaceURI) {
             $prefix = $this->namespaces[$namespaceURI];
@@ -166,10 +158,8 @@ class FilterHelper
      *
      * @param string $prefix       Namespace prefix
      * @param string $namespaceURI Namespace URI
-     *
-     * @return void
      */
-    public function registerNamespace($prefix, $namespaceURI)
+    public function registerNamespace($prefix, $namespaceURI): void
     {
         if (!isset($this->namespaces[$namespaceURI])) {
             $this->namespaces[$namespaceURI] = $prefix;

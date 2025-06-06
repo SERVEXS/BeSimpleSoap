@@ -12,6 +12,7 @@
 
 namespace BeSimple\SoapBundle\DependencyInjection;
 
+use BeSimple\SoapBundle\Controller\SoapWebServiceController;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -24,18 +25,17 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    private $cacheTypes = array('none', 'disk', 'memory', 'disk_memory');
-    private $proxyAuth = array('basic', 'ntlm');
+    private array $cacheTypes = ['none', 'disk', 'memory', 'disk_memory'];
+    private array $proxyAuth = ['basic', 'ntlm'];
 
     /**
      * Generates the configuration tree.
      */
-    public function getConfigTree()
+    public function getConfigTree(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('be_simple_soap');
-        $rootNode = method_exists(TreeBuilder::class, 'getRootNode')
-            ? $treeBuilder->getRootNode()
-            : $treeBuilder->root('be_simple_soap');
+
+        $rootNode = $treeBuilder->getRootNode();
 
         $this->addCacheSection($rootNode);
         $this->addClientSection($rootNode);
@@ -44,14 +44,14 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('exception_controller')->defaultValue('BeSimpleSoapBundle:SoapWebService:exception')->end()
+                ->scalarNode('exception_controller')->defaultValue('BeSimple\SoapBundle\Controller\SoapWebServiceController::exceptionAction')->end()
             ->end()
         ;
 
         return $treeBuilder;
     }
 
-    private function addCacheSection(ArrayNodeDefinition $rootNode)
+    private function addCacheSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->children()
@@ -74,7 +74,7 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    private function addClientSection(ArrayNodeDefinition $rootNode)
+    private function addClientSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->children()
@@ -97,8 +97,8 @@ class Configuration implements ConfigurationInterface
                                     ->info('proxy configuration')
                                     ->addDefaultsIfNotSet()
                                     ->beforeNormalization()
-                                        ->ifTrue(function ($v) { return !is_array($v); })
-                                        ->then(function ($v) { return array('host' => null === $v ? false : $v); })
+                                        ->ifTrue(fn ($v) => !\is_array($v))
+                                        ->then(fn ($v) => ['host' => $v ?? false])
                                     ->end()
                                     ->children()
                                         ->scalarNode('host')->defaultFalse()->end()
@@ -122,7 +122,7 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    private function addServicesSection(ArrayNodeDefinition $rootNode)
+    private function addServicesSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->children()
@@ -136,7 +136,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('binding')
                                 ->defaultValue('document-wrapped')
                                 ->validate()
-                                    ->ifNotInArray(array('rpc-literal', 'document-wrapped'))
+                                    ->ifNotInArray(['rpc-literal', 'document-wrapped'])
                                     ->thenInvalid("Service binding style has to be either 'rpc-literal' or 'document-wrapped'")
                                 ->end()
                             ->end()
@@ -153,7 +153,7 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    private function addWsdlDumperSection(ArrayNodeDefinition $rootNode)
+    private function addWsdlDumperSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->children()
@@ -168,10 +168,7 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         return $this->getConfigTree();
     }

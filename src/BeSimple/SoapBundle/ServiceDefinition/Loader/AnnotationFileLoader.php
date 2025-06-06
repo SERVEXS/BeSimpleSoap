@@ -12,10 +12,24 @@
 
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
-use BeSimple\SoapBundle\ServiceDefinition\ServiceDefinition;
-
+use BeSimple\SoapBundle\ServiceDefinition\Definition;
+use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\FileLoader;
+
+use function count;
+use function function_exists;
+use function in_array;
+use function is_array;
+use function is_string;
+use function token_get_all;
+
+use const PATHINFO_EXTENSION;
+use const T_CLASS;
+use const T_NAMESPACE;
+use const T_NS_SEPARATOR;
+use const T_STRING;
 
 /**
  * AnnotationFileLoader loads ServiceDefinition from annotations set
@@ -33,15 +47,15 @@ class AnnotationFileLoader extends FileLoader
      * Constructor.
      *
      * @param AnnotationClassLoader $loader An AnnotationClassLoader instance
-     * @param string|array          $paths  A path or an array of paths where to look for resources
+     * @param string|array $paths A path or an array of paths where to look for resources
      */
-    public function __construct(FileLocator $locator, AnnotationClassLoader $loader, $paths = array())
+    public function __construct(FileLocator $locator, AnnotationClassLoader $loader, $paths = [])
     {
         if (!function_exists('token_get_all')) {
-            throw new \RuntimeException('The Tokenizer extension is required for the routing annotation loaders.');
+            throw new RuntimeException('The Tokenizer extension is required for the routing annotation loaders.');
         }
 
-        parent::__construct($locator, $paths);
+        parent::__construct($locator);
 
         $this->loader = $loader;
     }
@@ -52,11 +66,11 @@ class AnnotationFileLoader extends FileLoader
      * @param string $file A PHP file path
      * @param string $type The resource type
      *
-     * @return ServiceDefinition A ServiceDefinition instance
+     * @return Definition A ServiceDefinition instance
      *
-     * @throws \InvalidArgumentException When the file does not exist
+     * @throws InvalidArgumentException When the file does not exist
      */
-    public function load($file, $type = null)
+    public function load($file, $type = null): ?Definition
     {
         $path = $this->locator->locate($file);
 
@@ -70,12 +84,12 @@ class AnnotationFileLoader extends FileLoader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
+     * @param mixed $resource A resource
+     * @param string $type The resource type
      *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @return bool True if this class supports the given resource, false otherwise
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, $type = null): bool
     {
         return is_string($resource) && 'php' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'annotation' === $type);
     }
@@ -89,35 +103,75 @@ class AnnotationFileLoader extends FileLoader
      */
     protected function findClass($file)
     {
-        $class     = false;
-        $namespace = false;
-        $tokens    = token_get_all(file_get_contents($file));
-        while ($token = array_shift($tokens)) {
-            if (!is_array($token)) {
-                continue;
-            }
+        return $this->getClassFullNameFromFile($file);
+    }
 
-            if (true === $class && T_STRING === $token[0]) {
-                return $namespace.'\\'.$token[1];
-            }
+    /**
+     * Thanks to https://stackoverflow.com/a/39887697 we found a solution which also works in PHP8
+     *
+     * get the full name (name \ namespace) of a class from its file path
+     * result example: (string) "I\Am\The\Namespace\Of\This\Class"
+     */
+    public function getClassFullNameFromFile(string $filePathName): string
+    {
+        return $this->getClassNamespaceFromFile($filePathName) . '\\' . $this->getClassNameFromFile($filePathName);
+    }
 
-            if (true === $namespace && T_STRING === $token[0]) {
-                $namespace = '';
-                do {
-                    $namespace .= $token[1];
-                    $token = array_shift($tokens);
-                } while ($tokens && is_array($token) && in_array($token[0], array(T_NS_SEPARATOR, T_STRING)));
-            }
+    /**
+     * get the class namespace form file path using token
+     */
+    protected function getClassNamespaceFromFile(string $file): ?string
+    {
+        $src = file_get_contents($file);
 
-            if (T_CLASS === $token[0]) {
-                $class = true;
+        $tokens = token_get_all($src);
+        $count = count($tokens);
+        $i = 0;
+        $namespace = '';
+        $namespace_ok = false;
+        while ($i < $count) {
+            $token = $tokens[$i];
+            if (is_array($token) && $token[0] === T_NAMESPACE) {
+                // Found namespace declaration
+                while (++$i < $count) {
+                    if ($tokens[$i] === ';') {
+                        $namespace_ok = true;
+                        $namespace = trim($namespace);
+                        break;
+                    }
+                    $namespace .= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
+                }
+                break;
             }
+            $i++;
+        }
+        if (!$namespace_ok) {
+            return null;
+        }
 
-            if (T_NAMESPACE === $token[0]) {
-                $namespace = true;
+        return $namespace;
+    }
+
+    /**
+     * get the class name form file path using token
+     */
+    protected function getClassNameFromFile(string $filePathName): ?string
+    {
+        $php_code = file_get_contents($filePathName);
+
+        $classes = [];
+        $tokens = token_get_all($php_code);
+        $count = count($tokens);
+        for ($i = 2; $i < $count; $i++) {
+            if ($tokens[$i - 2][0] === T_CLASS
+                && $tokens[$i - 1][0] === T_WHITESPACE
+                && $tokens[$i][0] === T_STRING
+            ) {
+                $class_name = $tokens[$i][1];
+                $classes[] = $class_name;
             }
         }
 
-        return false;
+        return $classes[0];
     }
 }

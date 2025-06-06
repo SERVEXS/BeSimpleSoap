@@ -23,9 +23,7 @@ class Definition extends BaseDefinition
 {
     public function __construct(TypeRepository $typeRepository)
     {
-        $this->typeRepository = $typeRepository;
-
-        $this->setOptions(array());
+        parent::__construct(null, null, $typeRepository);
     }
 
     public function setName($name)
@@ -40,5 +38,10 @@ class Definition extends BaseDefinition
         $this->namespace = $namespace;
 
         return $this;
+    }
+
+    public function getAllTypes(): array
+    {
+        return $this->types;
     }
 }

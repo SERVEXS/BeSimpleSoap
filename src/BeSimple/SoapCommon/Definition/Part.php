@@ -17,15 +17,11 @@ namespace BeSimple\SoapCommon\Definition;
  */
 class Part
 {
-    protected $name;
-    protected $type;
     protected $nillable;
     protected $attribute;
 
-    public function __construct($name, $type, $nillable = false, $attribute = false)
+    public function __construct(protected $name, protected $type, $nillable = false, $attribute = false)
     {
-        $this->name = $name;
-        $this->type = $type;
         $this->setNillable($nillable);
         $this->setAttribute($attribute);
     }
@@ -50,9 +46,9 @@ class Part
      */
     public function setAttribute($attribute)
     {
-            $this->attribute = $attribute;
-    
-            return $this;
+        $this->attribute = $attribute;
+
+        return $this;
     }
 
     public function getType()
@@ -60,7 +56,7 @@ class Part
         return $this->type;
     }
 
-    public function setType($type)
+    public function setType($type): void
     {
         $this->type = $type;
     }
@@ -70,8 +66,8 @@ class Part
         return $this->nillable;
     }
 
-    public function setNillable($nillable)
+    public function setNillable($nillable): void
     {
-        $this->nillable = (boolean) $nillable;
+        $this->nillable = (bool) $nillable;
     }
 }

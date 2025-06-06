@@ -27,7 +27,7 @@ class XmlMimeFilter implements SoapResponseFilter
     /**
      * Reset all properties to default values.
      */
-    public function resetFilter()
+    public function resetFilter(): void
     {
     }
 
@@ -35,10 +35,8 @@ class XmlMimeFilter implements SoapResponseFilter
      * Modify the given response XML.
      *
      * @param \BeSimple\SoapCommon\SoapResponse $response SOAP request
-     *
-     * @return void
      */
-    public function filterResponse(SoapResponse $response)
+    public function filterResponse(SoapResponse $response): void
     {
         // get \DOMDocument from SOAP request
         $dom = $response->getContentDocument();
@@ -65,6 +63,5 @@ class XmlMimeFilter implements SoapResponseFilter
                 }
             }
         }
-
     }
 }

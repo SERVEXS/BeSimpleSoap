@@ -24,21 +24,15 @@ use BeSimple\SoapCommon\SoapResponse as CommonSoapResponse;
  */
 class SoapKernel extends CommonSoapKernel
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function filterRequest(CommonSoapRequest $request)
+    public function filterRequest(CommonSoapRequest $request): void
     {
         $request->setAttachments($this->attachments);
-        $this->attachments = array();
+        $this->attachments = [];
 
         parent::filterRequest($request);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function filterResponse(CommonSoapResponse $response)
+    public function filterResponse(CommonSoapResponse $response): void
     {
         parent::filterResponse($response);
 

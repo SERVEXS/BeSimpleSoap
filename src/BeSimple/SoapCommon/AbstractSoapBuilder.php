@@ -22,12 +22,12 @@ use BeSimple\SoapCommon\Converter\TypeConverterInterface;
 abstract class AbstractSoapBuilder
 {
     protected $wsdl;
-    protected $soapOptions = array();
+    protected $soapOptions = [];
 
     /**
      * @return AbstractSoapBuilder
      */
-    static public function createWithDefaults()
+    public static function createWithDefaults()
     {
         $builder = new static();
 
@@ -42,7 +42,7 @@ abstract class AbstractSoapBuilder
     {
         $this->soapOptions['features'] = 0;
         $this->soapOptions['classmap'] = new Classmap();
-        $this->soapOptions['typemap']  = new TypeConverterCollection();
+        $this->soapOptions['typemap'] = new TypeConverterCollection();
     }
 
     public function getWsdl()
@@ -55,7 +55,7 @@ abstract class AbstractSoapBuilder
         $options = $this->soapOptions;
 
         $options['classmap'] = $this->soapOptions['classmap']->all();
-        $options['typemap']  = $this->soapOptions['typemap']->getTypemap();
+        $options['typemap'] = $this->soapOptions['typemap']->getTypemap();
 
         return $options;
     }
@@ -99,7 +99,7 @@ abstract class AbstractSoapBuilder
 
     public function withWsdlCache($cache)
     {
-        if (!in_array($cache, Cache::getTypes(), true)) {
+        if (!\in_array($cache, Cache::getTypes(), true)) {
             throw new \InvalidArgumentException();
         }
 
@@ -221,8 +221,8 @@ abstract class AbstractSoapBuilder
     /**
      * Sets the classmap.
      *
-     * @param array   $classmap The classmap.
-     * @param boolean $merge    If true the given classmap is merged into the existing one, otherwise the existing one is overwritten.
+     * @param array   $classmap the classmap
+     * @param bool $merge    if true the given classmap is merged into the existing one, otherwise the existing one is overwritten
      *
      * @return AbstractSoapBuilder
      */
@@ -237,7 +237,7 @@ abstract class AbstractSoapBuilder
         return $this;
     }
 
-    protected function validateWsdl()
+    protected function validateWsdl(): void
     {
         if (null === $this->wsdl) {
             throw new \InvalidArgumentException('The WSDL has to be configured!');

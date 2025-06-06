@@ -20,8 +20,7 @@ class Classmap
     /**
      * @var array
      */
-    protected $classmap = array();
-
+    protected $classmap = [];
 
     /**
      * @return array
@@ -53,7 +52,7 @@ class Classmap
      *
      * @throws \InvalidArgumentException
      */
-    public function add($type, $classname)
+    public function add($type, $classname): void
     {
         if ($this->has($type)) {
             throw new \InvalidArgumentException(sprintf('The type "%s" already exists', $type));
@@ -62,12 +61,9 @@ class Classmap
         $this->classmap[$type] = $classname;
     }
 
-    /**
-     * @param array $classmap
-     */
-    public function set(array $classmap)
+    public function set(array $classmap): void
     {
-        $this->classmap = array();
+        $this->classmap = [];
 
         foreach ($classmap as $type => $classname) {
             $this->add($type, $classname);
@@ -77,14 +73,14 @@ class Classmap
     /**
      * @param string $type
      *
-     * @return boolean
+     * @return bool
      */
     public function has($type)
     {
         return isset($this->classmap[$type]);
     }
 
-    public function addClassmap(Classmap $classmap)
+    public function addClassmap(self $classmap): void
     {
         foreach ($classmap->all() as $type => $classname) {
             $this->add($type, $classname);

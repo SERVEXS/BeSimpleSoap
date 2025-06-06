@@ -20,7 +20,7 @@ class DocumentLiteralWrappedRequestHeaderMessageBinder extends DocumentLiteralWr
 {
     private $header;
 
-    public function setHeader($header)
+    public function setHeader($header): void
     {
         $this->header = $header;
     }
@@ -28,6 +28,7 @@ class DocumentLiteralWrappedRequestHeaderMessageBinder extends DocumentLiteralWr
     public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository)
     {
         $headerDefinition = $messageDefinition->getHeaders()->get($this->header);
+
         return [];
     }
 }

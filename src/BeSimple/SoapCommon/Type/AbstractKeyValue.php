@@ -2,24 +2,18 @@
 
 namespace BeSimple\SoapCommon\Type;
 
-use BeSimple\SoapBundle\ServiceDefinition\Annotation as Soap;
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType;
 
 abstract class AbstractKeyValue
 {
-    /**
-     * @Soap\ComplexType("string")
-     */
-    protected $key;
-
-    /**
-     * The Soap type of this variable must be defined in child class
-     */
-    protected $value;
-
-    public function __construct($key, $value)
-    {
-        $this->key   = $key;
-        $this->value = $value;
+    public function __construct(
+        #[ComplexType(['name' => 'string'])]
+        protected $key,
+        /**
+         * The Soap type of this variable must be defined in child class
+         */
+        protected $value
+    ) {
     }
 
     public function getKey()

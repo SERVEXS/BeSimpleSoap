@@ -10,7 +10,7 @@
 
 namespace BeSimple\SoapBundle\Converter;
 
-use BeSimple\SoapBundle\ServiceDefinition\ServiceDefinition;
+use BeSimple\SoapBundle\ServiceDefinition\Definition;
 use BeSimple\SoapBundle\Util\Assert;
 
 /**
@@ -18,12 +18,12 @@ use BeSimple\SoapBundle\Util\Assert;
  */
 class TypeRepository
 {
-    const ARRAY_SUFFIX = '[]';
+    final public const ARRAY_SUFFIX = '[]';
 
-    private $xmlNamespaces  = array();
-    private $defaultTypeMap = array();
+    private array $xmlNamespaces = [];
+    private array $defaultTypeMap = [];
 
-    public function addXmlNamespace($prefix, $url)
+    public function addXmlNamespace($prefix, $url): void
     {
         $this->xmlNamespaces[$prefix] = $url;
     }
@@ -33,7 +33,7 @@ class TypeRepository
         return $this->xmlNamespaces[$prefix];
     }
 
-    public function addDefaultTypeMapping($phpType, $xmlType)
+    public function addDefaultTypeMapping($phpType, $xmlType): void
     {
         Assert::thatArgumentNotNull('phpType', $phpType);
         Assert::thatArgumentNotNull('xmlType', $xmlType);
@@ -43,12 +43,12 @@ class TypeRepository
 
     public function getXmlTypeMapping($phpType)
     {
-        return isset($this->defaultTypeMap[$phpType]) ? $this->defaultTypeMap[$phpType] : null;
+        return $this->defaultTypeMap[$phpType] ?? null;
     }
 
-    public function fixTypeInformation(ServiceDefinition $definition)
+    public function fixTypeInformation(Definition $definition): void
     {
-        foreach($definition->getAllTypes() as $type) {
+        foreach ($definition->getAllTypes() as $type) {
             $phpType = $type->getPhpType();
             $xmlType = $type->getXmlType();
 

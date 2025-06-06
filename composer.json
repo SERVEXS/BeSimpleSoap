@@ -20,14 +20,18 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
-        "ext-soap": "*",
+        "php": ">=8.2",
         "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-iconv": "*",
+        "ext-soap": "*",
         "ass/xmlsecurity": "~1.0",
-        "symfony/framework-bundle": "^3.4|^4.0",
-        "symfony/twig-bundle": "^3.4|^4.0",
-        "symfony/property-access": "^3.4|^4.0",
-        "laminas/laminas-mime": "~2.7"
+        "symfony/framework-bundle": "^5.4|^6.0",
+        "symfony/twig-bundle": "^5.4|^6.0",
+        "symfony/property-access": "^5.4|^6.0",
+        "laminas/laminas-mime": "~2.7",
+        "twig/twig": "~2.0",
+        "doctrine/annotations": "^v1.0|^2.0.1"
     },
     "replace": {
         "besimple/soap-bundle": "self.version",
@@ -38,9 +42,11 @@
     },
     "require-dev": {
         "mikey179/vfsstream": "~1.6.5",
-        "symfony/filesystem": "~2.3",
-        "symfony/process": "^3.4|^4.4",
-        "phpunit/phpunit": "^9.5"
+        "symfony/filesystem": "^5.4|^6.0",
+        "symfony/process": "^5.4|^6.0",
+        "phpunit/phpunit": "^9.5",
+        "friendsofphp/php-cs-fixer": "^3.35",
+        "rector/rector": "^0.18.10"
     },
     "autoload": {
         "psr-0": { "BeSimple\\": "src/" }
@@ -51,6 +57,10 @@
         }
     },
     "scripts": {
-        "tests": "phpunit"
+        "tests": "phpunit",
+        "cs-fix": "php-cs-fixer fix --verbose",
+        "cs-fix:dry": "php-cs-fixer fix --dry-run",
+        "rector": "rector process src",
+        "rector-dry": "rector process src --dry-run"
     }
 }

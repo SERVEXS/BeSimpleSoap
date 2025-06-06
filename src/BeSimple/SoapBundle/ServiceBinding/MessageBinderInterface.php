@@ -18,11 +18,5 @@ use BeSimple\SoapCommon\Definition\Type\TypeRepository;
  */
 interface MessageBinderInterface
 {
-    /**
-     * @param Method $messageDefinition
-     * @param mixed $message
-     *
-     * @return mixed
-     */
-    function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository);
+    public function processMessage(Method $messageDefinition, $message, TypeRepository $typeRepository);
 }

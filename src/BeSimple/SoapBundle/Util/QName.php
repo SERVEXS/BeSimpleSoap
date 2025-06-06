@@ -13,36 +13,31 @@ namespace BeSimple\SoapBundle\Util;
 /**
  * @author Christian Kerl <christian-kerl@web.de>
  */
-class QName
+class QName implements \Stringable
 {
-    private $namespace;
-    private $name;
-
     public static function isPrefixedQName($qname)
     {
-        return false !== strpos($qname, ':') ? true : false;
+        return str_contains((string) $qname, ':') ? true : false;
     }
 
     public static function fromPrefixedQName($qname, $resolveNamespacePrefixCallable)
     {
         Assert::thatArgument('qname', self::isPrefixedQName($qname));
 
-        list($prefix, $name) = explode(':', $qname);
+        [$prefix, $name] = explode(':', (string) $qname);
 
-        return new self(call_user_func($resolveNamespacePrefixCallable, $prefix), $name);
+        return new self(\call_user_func($resolveNamespacePrefixCallable, $prefix), $name);
     }
 
     public static function fromPackedQName($qname)
     {
-        Assert::thatArgument('qname', preg_match('/^\{(.+)\}(.+)$/', $qname, $matches));
+        Assert::thatArgument('qname', preg_match('/^\{(.+)\}(.+)$/', (string) $qname, $matches));
 
         return new self($matches[1], $matches[2]);
     }
 
-    public function __construct($namespace, $name)
+    public function __construct(private $namespace, private $name)
     {
-        $this->namespace = $namespace;
-        $this->name      = $name;
     }
 
     public function getNamespace()
@@ -55,7 +50,7 @@ class QName
         return $this->name;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return sprintf('{%s}%s', $this->getNamespace(), $this->getName());
     }

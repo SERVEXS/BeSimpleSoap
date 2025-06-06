@@ -26,7 +26,7 @@ class ClassmapTest extends TestCase
     {
         $classmap = new Classmap();
 
-        $this->assertSame(array(), $classmap->all());
+        $this->assertSame([], $classmap->all());
     }
 
     public function testAdd(): void
@@ -54,13 +54,13 @@ class ClassmapTest extends TestCase
     {
         $classmap = new Classmap();
 
-        $classmap->add('foobar', __CLASS__);
+        $classmap->add('foobar', self::class);
         $classmap->add('foo', 'BeSimple\SoapCommon\Tests\Classmap');
 
-        $map = array(
+        $map = [
             'foobar' => Classmap::class,
-            'barfoo' => __CLASS__,
-        );
+            'barfoo' => self::class,
+        ];
         $classmap->set($map);
 
         $this->assertSame($map, $classmap->all());
@@ -74,7 +74,7 @@ class ClassmapTest extends TestCase
         $classmap2->add('foobar', Classmap::class);
         $classmap1->addClassmap($classmap2);
 
-        $this->assertEquals(array('foobar' => Classmap::class), $classmap1->all());
+        $this->assertEquals(['foobar' => Classmap::class], $classmap1->all());
 
         $this->expectException('InvalidArgumentException');
         $classmap1->addClassmap($classmap2);

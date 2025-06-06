@@ -12,9 +12,9 @@
 
 namespace BeSimple\SoapServer;
 
-use BeSimple\SoapCommon\Helper;
 use BeSimple\SoapCommon\Converter\MtomTypeConverter;
 use BeSimple\SoapCommon\Converter\SwaTypeConverter;
+use BeSimple\SoapCommon\Helper;
 
 /**
  * Extended SoapServer that allows adding filters for SwA, MTOM, ... .
@@ -29,14 +29,14 @@ class SoapServer extends \SoapServer
      *
      * @var int
      */
-    protected $soapVersion = SOAP_1_1;
+    protected $soapVersion = \SOAP_1_1;
 
     /**
      * Soap kernel.
      *
      * @var \BeSimple\SoapServer\SoapKernel
      */
-    protected $soapKernel = null;
+    protected $soapKernel;
 
     /**
      * Constructor.
@@ -44,7 +44,7 @@ class SoapServer extends \SoapServer
      * @param string               $wsdl    WSDL file
      * @param array(string=>mixed) $options Options array
      */
-    public function __construct($wsdl, array $options = array())
+    public function __construct($wsdl, array $options = [])
     {
         // store SOAP version
         if (isset($options['soap_version'])) {
@@ -64,7 +64,7 @@ class SoapServer extends \SoapServer
      *
      * @param string $request Request string
      */
-    public function handle($request = null)
+    public function handle($request = null): void
     {
         // wrap request data in SoapRequest object
         $soapRequest = SoapRequest::create($request, $this->soapVersion);
@@ -131,11 +131,9 @@ class SoapServer extends \SoapServer
     /**
      * Configure filter and type converter for SwA/MTOM.
      *
-     * @param array &$options SOAP constructor options array.
-     *
-     * @return void
+     * @param array &$options SOAP constructor options array
      */
-    private function configureMime(array &$options)
+    private function configureMime(array &$options): void
     {
         if (isset($options['attachment_type']) && Helper::ATTACHMENTS_TYPE_BASE64 !== $options['attachment_type']) {
             // register mime filter in SoapKernel
@@ -153,18 +151,14 @@ class SoapServer extends \SoapServer
             }
             // configure typemap
             if (!isset($options['typemap'])) {
-                $options['typemap'] = array();
+                $options['typemap'] = [];
             }
-            $options['typemap'][] = array(
+            $options['typemap'][] = [
                 'type_name' => $converter->getTypeName(),
-                'type_ns'   => $converter->getTypeNamespace(),
-                'from_xml'  => function($input) use ($converter) {
-                    return $converter->convertXmlToPhp($input);
-                },
-                'to_xml'    => function($input) use ($converter) {
-                    return $converter->convertPhpToXml($input);
-                },
-            );
+                'type_ns' => $converter->getTypeNamespace(),
+                'from_xml' => fn ($input) => $converter->convertXmlToPhp($input),
+                'to_xml' => fn ($input) => $converter->convertPhpToXml($input),
+            ];
         }
     }
 }

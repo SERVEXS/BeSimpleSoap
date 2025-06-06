@@ -19,37 +19,31 @@ use BeSimple\SoapCommon\Definition\Type\TypeRepository;
  */
 class Definition
 {
-    protected $name;
-    protected $namespace;
+    protected array $options;
 
-    protected $typeRepository;
+    protected array $methods;
 
-    protected $options;
-    protected $methods;
+    protected array $types;
 
-    public function __construct($name, $namespace, TypeRepository $typeRepository, array $options = array())
+    public function __construct(protected $name, protected $namespace, protected TypeRepository $typeRepository, array $options = [])
     {
-        $this->name = $name;
-        $this->namespace = $namespace;
-        $this->methods = array();
-
-        $this->typeRepository = $typeRepository;
+        $this->methods = [];
 
         $this->setOptions($options);
     }
 
     public function setOptions(array $options)
     {
-        $this->options = array(
+        $this->options = [
             'version' => \SOAP_1_1,
             'style' => \SOAP_RPC,
             'use' => \SOAP_LITERAL,
             'location' => null,
-        );
+        ];
 
-        $invalid = array();
+        $invalid = [];
         foreach ($options as $key => $value) {
-            if (array_key_exists($key, $this->options)) {
+            if (\array_key_exists($key, $this->options)) {
                 $this->options[$key] = $value;
             } else {
                 $invalid[] = $key;
@@ -57,7 +51,9 @@ class Definition
         }
 
         if ($invalid) {
-            throw new \InvalidArgumentException(sprintf('The Definition does not support the following options: "%s"', implode('", "', $invalid)));
+            throw new \InvalidArgumentException(
+                sprintf('The Definition does not support the following options: "%s"', implode('", "', $invalid))
+            );
         }
 
         return $this;
@@ -65,7 +61,7 @@ class Definition
 
     public function setOption($key, $value)
     {
-        if (!array_key_exists($key, $this->options)) {
+        if (!\array_key_exists($key, $this->options)) {
             throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
@@ -76,7 +72,7 @@ class Definition
 
     public function getOption($key)
     {
-        if (!array_key_exists($key, $this->options)) {
+        if (!\array_key_exists($key, $this->options)) {
             throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
@@ -98,9 +94,9 @@ class Definition
         return $this->types[$phpType];
     }
 
-    public function addType($phpType, $xmlType)
+    public function addType($phpType, $xmlType): void
     {
-        if (isset($$this->types[$phpType])) {
+        if (isset($this->types[$phpType])) {
             throw new \Exception();
         }
 
@@ -109,7 +105,7 @@ class Definition
 
     public function getMessages()
     {
-        $messages = array();
+        $messages = [];
         foreach ($this->methods as $method) {
             $messages[] = $method->getHeaders();
             $messages[] = $method->getInput();
@@ -121,7 +117,7 @@ class Definition
 
     public function getMethod($name, $default = null)
     {
-        return isset($this->methods[$name]) ? $this->methods[$name] : $default;
+        return $this->methods[$name] ?? $default;
     }
 
     public function getMethods()
@@ -141,7 +137,7 @@ class Definition
         return $method;
     }
 
-    public function getTypeRepository()
+    public function getTypeRepository(): TypeRepository
     {
         return $this->typeRepository;
     }

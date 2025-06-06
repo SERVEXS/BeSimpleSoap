@@ -19,12 +19,9 @@ use BeSimple\SoapCommon\Classmap as BaseClassmap;
  */
 class Classmap extends BaseClassmap
 {
-    protected $classmapInversed = array();
+    protected $classmapInversed = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function add($type, $classname)
+    public function add($type, $classname): void
     {
         parent::add($type, $classname);
 
@@ -34,7 +31,7 @@ class Classmap extends BaseClassmap
     public function getByClassname($classname)
     {
         if (!$this->hasByClassname($classname)) {
-            throw new \InvalidArgumentException(sprintf('The classname "%s" was not found in %s', $classname, __CLASS__));
+            throw new \InvalidArgumentException(sprintf('The classname "%s" was not found in %s', $classname, self::class));
         }
 
         return $this->classmapInversed[$classname];

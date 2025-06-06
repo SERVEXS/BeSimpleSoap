@@ -14,10 +14,6 @@
 namespace BeSimple\SoapCommon;
 
 use BeSimple\SoapCommon\Mime\Part as MimePart;
-use BeSimple\SoapCommon\SoapRequest;
-use BeSimple\SoapCommon\SoapResponse;
-use BeSimple\SoapCommon\SoapRequestFilter;
-use BeSimple\SoapCommon\SoapResponseFilter;
 
 /**
  * SoapKernel provides methods to pre- and post-process SoapRequests and SoapResponses using
@@ -29,36 +25,34 @@ use BeSimple\SoapCommon\SoapResponseFilter;
 class SoapKernel
 {
     /**
-    * Mime attachments.
-    *
-    * @var array(\BeSimple\SoapCommon\Mime\Part)
-    */
-    protected $attachments = array();
+     * Mime attachments.
+     *
+     * @var array(\BeSimple\SoapCommon\Mime\Part)
+     */
+    protected $attachments = [];
 
     /**
      * Request filters.
      *
      * @var array(SoapRequestFilter)
      */
-    private $requestFilters = array();
+    private array $requestFilters = [];
 
     /**
      * Response filters.
      *
      * @var array(SoapResponseFilter)
      */
-    private $responseFilters = array();
+    private array $responseFilters = [];
 
     /**
-    * Add attachment.
-    *
-    * @param \BeSimple\SoapCommon\Mime\Part $attachment New attachment
-    *
-    * @return void
-    */
-    public function addAttachment(MimePart $attachment)
+     * Add attachment.
+     *
+     * @param \BeSimple\SoapCommon\Mime\Part $attachment New attachment
+     */
+    public function addAttachment(MimePart $attachment): void
     {
-        $contentId = trim($attachment->getHeader('Content-ID'), '<>');
+        $contentId = trim((string) $attachment->getHeader('Content-ID'), '<>');
 
         $this->attachments[$contentId] = $attachment;
     }
@@ -92,14 +86,14 @@ class SoapKernel
      *
      * @param SoapRequestFilter|SoapResponseFilter $filter Filter to register
      */
-    public function registerFilter($filter)
+    public function registerFilter($filter): void
     {
         if ($filter instanceof SoapRequestFilter) {
             array_unshift($this->requestFilters, $filter);
         }
 
         if ($filter instanceof SoapResponseFilter) {
-            array_push($this->responseFilters, $filter);
+            $this->responseFilters[] = $filter;
         }
     }
 
@@ -108,7 +102,7 @@ class SoapKernel
      *
      * @param SoapRequest $request Soap request
      */
-    public function filterRequest(SoapRequest $request)
+    public function filterRequest(SoapRequest $request): void
     {
         foreach ($this->requestFilters as $filter) {
             $filter->filterRequest($request);
@@ -120,7 +114,7 @@ class SoapKernel
      *
      * @param SoapResponse $response SOAP response
      */
-    public function filterResponse(SoapResponse $response)
+    public function filterResponse(SoapResponse $response): void
     {
         foreach ($this->responseFilters as $filter) {
             $filter->filterResponse($response);

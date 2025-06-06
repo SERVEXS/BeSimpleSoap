@@ -20,14 +20,14 @@ use BeSimple\SoapCommon\Classmap;
  */
 class TypeRepository
 {
-    const ARRAY_SUFFIX = '[]';
+    final public const ARRAY_SUFFIX = '[]';
 
-    protected $xmlNamespaces = array();
-    protected $types = array();
+    protected $xmlNamespaces = [];
+    protected $types = [];
 
     protected $classmap;
 
-    public function __construct(Classmap $classmap = null)
+    public function __construct(?Classmap $classmap = null)
     {
         $this->classmap = $classmap;
     }
@@ -36,19 +36,23 @@ class TypeRepository
     {
         return $this->xmlNamespaces;
     }
+
     public function getXmlNamespace($prefix)
     {
         return $this->xmlNamespaces[$prefix];
     }
 
-    public function addXmlNamespace($prefix, $url)
+    public function addXmlNamespace($prefix, $url): void
     {
         $this->xmlNamespaces[$prefix] = $url;
     }
 
+    /**
+     * @return ComplexType[]
+     */
     public function getComplexTypes()
     {
-        $types = array();
+        $types = [];
         foreach ($this->types as $type) {
             if ($type instanceof ComplexType) {
                 $types[] = $type;
@@ -72,7 +76,7 @@ class TypeRepository
         return $this->types[$phpType] = $xmlType;
     }
 
-    public function addComplexType(ComplexType $type)
+    public function addComplexType(ComplexType $type): void
     {
         $phpType = $type->getPhpType();
 
@@ -112,7 +116,7 @@ class TypeRepository
 
     public function getArrayOf($arrayType)
     {
-        if (!preg_match('#(.*)'.preg_quote(static::ARRAY_SUFFIX, '#').'$#', $arrayType, $match)) {
+        if (!preg_match('#(.*)' . preg_quote((string) static::ARRAY_SUFFIX, '#') . '$#', (string) $arrayType, $match)) {
             return false;
         }
 
@@ -124,7 +128,7 @@ class TypeRepository
         return $this->classmap;
     }
 
-    protected function addClassmap($xmlType, $phpType)
+    protected function addClassmap($xmlType, $phpType): void
     {
         if (!$this->classmap) {
             return;

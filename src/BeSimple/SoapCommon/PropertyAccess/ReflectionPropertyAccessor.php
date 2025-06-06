@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace BeSimple\SoapCommon\PropertyAccess;
 
-use Closure;
-use ReflectionClass;
-use ReflectionProperty;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
@@ -15,22 +12,16 @@ use Symfony\Component\PropertyAccess\PropertyPathInterface;
  * Symfony property access cannot access a private property or method, therefore this `nelmo/alice` inspired
  * Reflection based PropertyAccessor has been added, see links below for more information.
  *
- * @link https://github.com/symfony/symfony/issues/23938
- * @link https://github.com/symfony/symfony/issues/23938#issuecomment-325186998
- * @link https://github.com/nelmio/alice/blob/master/src/PropertyAccess/ReflectionPropertyAccessor.php
+ * @see https://github.com/symfony/symfony/issues/23938
+ * @see https://github.com/symfony/symfony/issues/23938#issuecomment-325186998
+ * @see https://github.com/nelmio/alice/blob/master/src/PropertyAccess/ReflectionPropertyAccessor.php
  */
-final class ReflectionPropertyAccessor implements PropertyAccessorInterface
+final readonly class ReflectionPropertyAccessor implements PropertyAccessorInterface
 {
-    private PropertyAccessorInterface $decoratedPropertyAccessor;
-
-    public function __construct(PropertyAccessorInterface $decoratedPropertyAccessor)
+    public function __construct(private PropertyAccessorInterface $decoratedPropertyAccessor)
     {
-        $this->decoratedPropertyAccessor = $decoratedPropertyAccessor;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setValue(&$objectOrArray, $propertyPath, $value): void
     {
         try {
@@ -41,7 +32,7 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
                 throw $e;
             }
 
-            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== get_class($objectOrArray)) {
+            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== $objectOrArray::class) {
                 $propertyReflectionProperty->setAccessible(true);
 
                 $propertyReflectionProperty->setValue($objectOrArray, $value);
@@ -49,8 +40,8 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
                 return;
             }
 
-            $setPropertyClosure = Closure::bind(
-                fn($object) => $object->{$propertyPath} = $value,
+            $setPropertyClosure = \Closure::bind(
+                fn ($object) => $object->{$propertyPath} = $value,
                 $objectOrArray,
                 $objectOrArray
             );
@@ -59,9 +50,6 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getValue($objectOrArray, $propertyPath)
     {
         try {
@@ -72,14 +60,14 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
                 throw $e;
             }
 
-            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== get_class($objectOrArray)) {
+            if ($propertyReflectionProperty->getDeclaringClass()->getName() !== $objectOrArray::class) {
                 $propertyReflectionProperty->setAccessible(true);
 
                 return $propertyReflectionProperty->getValue($objectOrArray);
             }
 
-            $getPropertyClosure = Closure::bind(
-                fn($object) => $object->{$propertyPath},
+            $getPropertyClosure = \Closure::bind(
+                fn ($object) => $object->{$propertyPath},
                 $objectOrArray,
                 $objectOrArray
             );
@@ -88,26 +76,20 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isWritable($objectOrArray, $propertyPath): bool
     {
-        return (
-            $this->decoratedPropertyAccessor->isWritable($objectOrArray, $propertyPath) ||
-            $this->propertyExists($objectOrArray, $propertyPath)
-        );
+        return
+            $this->decoratedPropertyAccessor->isWritable($objectOrArray, $propertyPath)
+            || $this->propertyExists($objectOrArray, $propertyPath)
+        ;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isReadable($objectOrArray, $propertyPath): bool
     {
-        return (
-            $this->decoratedPropertyAccessor->isReadable($objectOrArray, $propertyPath) ||
-            $this->propertyExists($objectOrArray, $propertyPath)
-        );
+        return
+            $this->decoratedPropertyAccessor->isReadable($objectOrArray, $propertyPath)
+            || $this->propertyExists($objectOrArray, $propertyPath)
+        ;
     }
 
     /**
@@ -126,16 +108,16 @@ final class ReflectionPropertyAccessor implements PropertyAccessorInterface
     private function getPropertyReflectionProperty(
         $objectOrArray,
         $propertyPath
-    ): ?ReflectionProperty {
-        if (false === is_object($objectOrArray)) {
+    ): ?\ReflectionProperty {
+        if (false === \is_object($objectOrArray)) {
             return null;
         }
 
-        $reflectionClass = (new ReflectionClass(get_class($objectOrArray)));
+        $reflectionClass = (new \ReflectionClass($objectOrArray::class));
 
-        while ($reflectionClass instanceof ReflectionClass) {
-            if ($reflectionClass->hasProperty($propertyPath) &&
-                false === $reflectionClass->getProperty($propertyPath)->isStatic()
+        while ($reflectionClass instanceof \ReflectionClass) {
+            if ($reflectionClass->hasProperty($propertyPath)
+                && false === $reflectionClass->getProperty($propertyPath)->isStatic()
             ) {
                 return $reflectionClass->getProperty($propertyPath);
             }

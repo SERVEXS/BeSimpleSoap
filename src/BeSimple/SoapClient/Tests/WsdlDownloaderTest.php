@@ -24,9 +24,9 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class WsdlDownloaderTest extends AbstractWebserverTest
 {
-    static protected $filesystem;
+    protected static $filesystem;
 
-    static protected $fixturesPath;
+    protected static $fixturesPath;
 
     /**
      * @dataProvider provideDownload
@@ -34,15 +34,15 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     public function testDownload($source, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
-        $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
+        $wsdlCacheUrl = $wsdlCacheDir->url();
 
         Cache::setEnabled(Cache::ENABLED);
         Cache::setDirectory($wsdlCacheUrl);
         $cacheDirForRegExp = preg_quote($wsdlCacheUrl, '#');
 
-        $wsdlDownloader = new WsdlDownloader(new Curl(array(
+        $wsdlDownloader = new WsdlDownloader(new Curl([
             'proxy_host' => false,
-        )));
+        ]));
         $this->assertCount(0, $wsdlCacheDir->getChildren());
 
         $cacheFileName = $wsdlDownloader->download($source);
@@ -53,28 +53,28 @@ class WsdlDownloaderTest extends AbstractWebserverTest
 
     public function provideDownload(): array
     {
-        return array(
-            array(
-                __DIR__.DIRECTORY_SEPARATOR.'Fixtures/build_include/xsdinctest_absolute.xml',
+        return [
+            [
+                __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures/build_include/xsdinctest_absolute.xml',
                 '%s/wsdl_[a-f0-9]{32}\.cache',
                 2,
-            ),
-            array(
-                __DIR__.DIRECTORY_SEPARATOR.'Fixtures/xsdinclude/xsdinctest_relative.xml',
+            ],
+            [
+                __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures/xsdinclude/xsdinctest_relative.xml',
                 '\.\./type_include\.xsd',
                 1,
-            ),
-            array(
+            ],
+            [
                 sprintf('http://localhost:%d/build_include/xsdinctest_absolute.xml', WEBSERVER_PORT),
                 '%s/wsdl_[a-f0-9]{32}\.cache',
                 2,
-            ),
-            array(
+            ],
+            [
                 sprintf('http://localhost:%d/xsdinclude/xsdinctest_relative.xml', WEBSERVER_PORT),
                 '%s/wsdl_[a-f0-9]{32}\.cache',
                 2,
-            ),
-        );
+            ],
+        ];
     }
 
     public function testIsRemoteFile(): void
@@ -108,15 +108,15 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     public function testResolveWsdlIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
-        $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
+        $wsdlCacheUrl = $wsdlCacheDir->url();
 
         Cache::setEnabled(Cache::ENABLED);
         Cache::setDirectory($wsdlCacheUrl);
         $cacheDirForRegExp = preg_quote($wsdlCacheUrl, '#');
 
-        $wsdlDownloader = new WsdlDownloader(new Curl(array(
+        $wsdlDownloader = new WsdlDownloader(new Curl([
             'proxy_host' => false,
-        )));
+        ]));
         $r = new \ReflectionClass($wsdlDownloader);
         $m = $r->getMethod('resolveRemoteIncludes');
         $m->setAccessible(true);
@@ -135,36 +135,36 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         $remoteUrlAbsolute = sprintf('http://localhost:%d/build_include/wsdlinctest_absolute.xml', WEBSERVER_PORT);
         $remoteUrlRelative = sprintf('http://localhost:%d/wsdlinclude/wsdlinctest_relative.xml', WEBSERVER_PORT);
 
-        return array(
-            array(
-                __DIR__.DIRECTORY_SEPARATOR.'Fixtures/build_include/wsdlinctest_absolute.xml',
+        return [
+            [
+                __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures/build_include/wsdlinctest_absolute.xml',
                 '%s/cache_local_absolute.xml',
                 null,
                 '%s/wsdl_[a-f0-9]{32}.cache',
                 2,
-            ),
-            array(
-                __DIR__.DIRECTORY_SEPARATOR.'Fixtures/wsdlinclude/wsdlinctest_relative.xml',
+            ],
+            [
+                __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures/wsdlinclude/wsdlinctest_relative.xml',
                 '%s/cache_local_relative.xml',
                 null,
                 '\.\./wsdl_include\.wsdl',
                 1,
-            ),
-            array(
+            ],
+            [
                 $remoteUrlAbsolute,
                 '%s/cache_remote_absolute.xml',
                 $remoteUrlAbsolute,
                 '%s/wsdl_[a-f0-9]{32}\.cache',
                 2,
-            ),
-            array(
+            ],
+            [
                 $remoteUrlRelative,
                 '%s/cache_remote_relative.xml',
                 $remoteUrlRelative,
                 '%s/wsdl_[a-f0-9]{32}\.cache',
-                2
-            ),
-        );
+                2,
+            ],
+        ];
     }
 
     /**
@@ -173,15 +173,15 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     public function testResolveXsdIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
-        $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
+        $wsdlCacheUrl = $wsdlCacheDir->url();
 
         Cache::setEnabled(Cache::ENABLED);
         Cache::setDirectory($wsdlCacheUrl);
         $cacheDirForRegExp = preg_quote($wsdlCacheUrl, '#');
 
-        $wsdlDownloader = new WsdlDownloader(new Curl(array(
+        $wsdlDownloader = new WsdlDownloader(new Curl([
             'proxy_host' => false,
-        )));
+        ]));
         $r = new \ReflectionClass($wsdlDownloader);
         $m = $r->getMethod('resolveRemoteIncludes');
         $m->setAccessible(true);
@@ -200,36 +200,36 @@ class WsdlDownloaderTest extends AbstractWebserverTest
         $remoteUrlAbsolute = sprintf('http://localhost:%d/build_include/xsdinctest_absolute.xml', WEBSERVER_PORT);
         $remoteUrlRelative = sprintf('http://localhost:%d/xsdinclude/xsdinctest_relative.xml', WEBSERVER_PORT);
 
-        return array(
-            array(
-                __DIR__.DIRECTORY_SEPARATOR.'Fixtures/build_include/xsdinctest_absolute.xml',
+        return [
+            [
+                __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures/build_include/xsdinctest_absolute.xml',
                 '%s/cache_local_absolute.xml',
                 null,
                 '%s/wsdl_[a-f0-9]{32}\.cache',
                 2,
-            ),
-            array(
-                __DIR__.DIRECTORY_SEPARATOR.'Fixtures/xsdinclude/xsdinctest_relative.xml',
+            ],
+            [
+                __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures/xsdinclude/xsdinctest_relative.xml',
                 '%s/cache_local_relative.xml',
                 null,
                 '\.\./type_include\.xsd',
                 1,
-            ),
-            array(
+            ],
+            [
                 $remoteUrlAbsolute,
                 '%s/cache_remote_absolute.xml',
                 $remoteUrlAbsolute,
                 '%s/wsdl_[a-f0-9]{32}\.cache',
                 2,
-            ),
-            array(
+            ],
+            [
                 $remoteUrlRelative,
                 '%s/cache_remote_relative.xml',
                 $remoteUrlRelative,
                 '%s/wsdl_[a-f0-9]{32}\.cache',
                 2,
-            ),
-        );
+            ],
+        ];
     }
 
     public function testResolveRelativePathInUrl(): void
@@ -269,15 +269,15 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     {
         parent::setUpBeforeClass();
 
-        self::$filesystem  = new Filesystem();
-        self::$fixturesPath = __DIR__.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR;
-        self::$filesystem->mkdir(self::$fixturesPath.'build_include');
+        self::$filesystem = new Filesystem();
+        self::$fixturesPath = __DIR__ . \DIRECTORY_SEPARATOR . 'Fixtures' . \DIRECTORY_SEPARATOR;
+        self::$filesystem->mkdir(self::$fixturesPath . 'build_include');
 
-        foreach (array('wsdlinclude/wsdlinctest_absolute.xml', 'xsdinclude/xsdinctest_absolute.xml') as $file) {
-            $content = file_get_contents(self::$fixturesPath.$file);
-            $content = preg_replace('#'.preg_quote('%location%').'#', sprintf('localhost:%d', WEBSERVER_PORT), $content);
+        foreach (['wsdlinclude/wsdlinctest_absolute.xml', 'xsdinclude/xsdinctest_absolute.xml'] as $file) {
+            $content = file_get_contents(self::$fixturesPath . $file);
+            $content = preg_replace('#' . preg_quote('%location%') . '#', sprintf('localhost:%d', WEBSERVER_PORT), $content);
 
-            file_put_contents(self::$fixturesPath.'build_include'.DIRECTORY_SEPARATOR.pathinfo($file, PATHINFO_BASENAME), $content);
+            file_put_contents(self::$fixturesPath . 'build_include' . \DIRECTORY_SEPARATOR . pathinfo($file, \PATHINFO_BASENAME), $content);
         }
     }
 
@@ -285,6 +285,6 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     {
         parent::tearDownAfterClass();
 
-        self::$filesystem->remove(self::$fixturesPath.'build_include');
+        self::$filesystem->remove(self::$fixturesPath . 'build_include');
     }
 }

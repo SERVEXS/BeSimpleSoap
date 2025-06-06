@@ -33,7 +33,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
      *
      * @return \BeSimple\SoapServer\SoapServerBuilder
      */
-    static public function createWithDefaults()
+    public static function createWithDefaults()
     {
         return parent::createWithDefaults()
             ->withErrorReporting(false);
@@ -97,7 +97,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
      */
     public function withPersistanceRequest()
     {
-        $this->persistence = SOAP_PERSISTENCE_REQUEST;
+        $this->persistence = \SOAP_PERSISTENCE_REQUEST;
 
         return $this;
     }
@@ -109,7 +109,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
      */
     public function withPersistenceSession()
     {
-        $this->persistence = SOAP_PERSISTENCE_SESSION;
+        $this->persistence = \SOAP_PERSISTENCE_SESSION;
 
         return $this;
     }
@@ -117,7 +117,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
     /**
      * Enables reporting of internal errors to clients. This should only be enabled in development environments.
      *
-     * @param boolean $enable Enable error reporting
+     * @param bool $enable Enable error reporting
      *
      * @return \BeSimple\SoapServer\SoapServerBuilder
      */
@@ -167,17 +167,17 @@ class SoapServerBuilder extends AbstractSoapBuilder
     /**
      * Configures the handler class or object.
      *
-     * @param mixed $handler Can be either a class name or an object.
+     * @param mixed $handler can be either a class name or an object
      *
      * @return \BeSimple\SoapServer\SoapServerBuilder
      */
-    public function withHandler($handler)
+    public function withHandler(mixed $handler)
     {
-        if (is_string($handler) && class_exists($handler)) {
-            $this->handlerClass  = $handler;
+        if (\is_string($handler) && class_exists($handler)) {
+            $this->handlerClass = $handler;
             $this->handlerObject = null;
-        } elseif (is_object($handler)) {
-            $this->handlerClass  = null;
+        } elseif (\is_object($handler)) {
+            $this->handlerClass = null;
             $this->handlerObject = $handler;
         } else {
             throw new \InvalidArgumentException('The handler has to be a class name or an object');
@@ -189,7 +189,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
     /**
      * Validate options.
      */
-    protected function validateOptions()
+    protected function validateOptions(): void
     {
         $this->validateWsdl();
 

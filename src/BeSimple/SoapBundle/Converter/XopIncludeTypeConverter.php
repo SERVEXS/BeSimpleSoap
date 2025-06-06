@@ -30,7 +30,7 @@ class XopIncludeTypeConverter implements TypeConverterInterface
         return 'base64Binary';
     }
 
-    public function convertXmlToPhp(SoapRequest $request, $data)
+    public function convertXmlToPhp(SoapRequest $request, $data = null)
     {
         $doc = new \DOMDocument();
         $doc->loadXML($data);
@@ -49,7 +49,7 @@ class XopIncludeTypeConverter implements TypeConverterInterface
         return $data;
     }
 
-    public function convertPhpToXml(SoapResponse $response, $data)
+    public function convertPhpToXml(SoapResponse $response, $data = null)
     {
         return $data;
     }

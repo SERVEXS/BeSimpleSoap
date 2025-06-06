@@ -26,26 +26,24 @@ class WsSecurityKey
      *
      * @var \ass\XmlSecurity\Key
      */
-    protected $privateKey = null;
+    protected $privateKey;
 
     /**
      * Public key.
      *
      * @var \ass\XmlSecurity\Key
      */
-    protected $publicKey = null;
+    protected $publicKey;
 
     /**
      * Add private key.
      *
      * @param string  $encryptionType Encryption type
      * @param string  $key            Private key
-     * @param boolean $keyIsFile      Given key parameter is path to key file
+     * @param bool $keyIsFile      Given key parameter is path to key file
      * @param string  $passphrase     Passphrase for key
-     *
-     * @return void
      */
-    public function addPrivateKey($encryptionType, $key = null, $keyIsFile = true, $passphrase = null)
+    public function addPrivateKey($encryptionType, $key = null, $keyIsFile = true, $passphrase = null): void
     {
         $this->privateKey = XmlSecurityKey::factory($encryptionType, $key, $keyIsFile, XmlSecurityKey::TYPE_PRIVATE, $passphrase);
     }
@@ -55,11 +53,9 @@ class WsSecurityKey
      *
      * @param string  $encryptionType Encryption type
      * @param string  $key            Public key
-     * @param boolean $keyIsFile      Given key parameter is path to key file
-     *
-     * @return void
+     * @param bool $keyIsFile      Given key parameter is path to key file
      */
-    public function addPublicKey($encryptionType, $key = null, $keyIsFile = true)
+    public function addPublicKey($encryptionType, $key = null, $keyIsFile = true): void
     {
         $this->publicKey = XmlSecurityKey::factory($encryptionType, $key, $keyIsFile, XmlSecurityKey::TYPE_PUBLIC);
     }
@@ -87,7 +83,7 @@ class WsSecurityKey
     /**
      * Has private and public key?
      *
-     * @return boolean
+     * @return bool
      */
     public function hasKeys()
     {
@@ -97,7 +93,7 @@ class WsSecurityKey
     /**
      * Has private key?
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPrivateKey()
     {
@@ -107,7 +103,7 @@ class WsSecurityKey
     /**
      * Has public key?
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPublicKey()
     {

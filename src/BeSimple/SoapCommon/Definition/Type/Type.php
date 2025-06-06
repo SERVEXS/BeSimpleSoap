@@ -17,13 +17,8 @@ namespace BeSimple\SoapCommon\Definition\Type;
  */
 class Type implements TypeInterface
 {
-    protected $phpType;
-    protected $xmlType;
-
-    public function __construct($phpType, $xmlType)
+    public function __construct(protected $phpType, protected $xmlType)
     {
-        $this->phpType = $phpType;
-        $this->xmlType = $xmlType;
     }
 
     public function getPhpType()

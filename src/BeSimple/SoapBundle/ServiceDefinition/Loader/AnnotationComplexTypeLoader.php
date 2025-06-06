@@ -12,7 +12,10 @@
 
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias;
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType as ComplexTypeAnnotation;
 use BeSimple\SoapBundle\ServiceDefinition\ComplexType;
+use BeSimple\SoapBundle\ServiceDefinition\Definition;
 use BeSimple\SoapBundle\Util\Collection;
 
 /**
@@ -24,16 +27,17 @@ use BeSimple\SoapBundle\Util\Collection;
  */
 class AnnotationComplexTypeLoader extends AnnotationClassLoader
 {
-    private $aliasClass       = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias';
-    private $complexTypeClass = 'BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType';
+    private string $aliasClass = Alias::class;
+
+    private string $complexTypeClass = ComplexTypeAnnotation::class;
 
     /**
      * Loads a ServiceDefinition from annotations from a class.
      *
      * @param string $class A class name
-     * @param string $type  The resource type
+     * @param string $type The resource type
      *
-     * @return ServiceDefinition A ServiceDefinition instance
+     * @return Definition A ServiceDefinition instance
      *
      * @throws \InvalidArgumentException When route can't be parsed
      */
@@ -43,14 +47,18 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-        $annotations = array();
+        $annotations = [];
 
         $class = new \ReflectionClass($class);
         if ($alias = $this->reader->getClassAnnotation($class, $this->aliasClass)) {
             $annotations['alias'] = $alias->getValue();
         }
 
-        $annotations['properties'] = new Collection('getName', 'BeSimple\SoapBundle\ServiceDefinition\ComplexType');
+        foreach ($class->getAttributes(Alias::class) as $alias) {
+            $annotations['alias'] = $alias->getValue();
+        }
+
+        $annotations['properties'] = new Collection('getName', ComplexType::class);
         foreach ($class->getProperties() as $property) {
             $complexType = $this->reader->getPropertyAnnotation($property, $this->complexTypeClass);
 
@@ -59,7 +67,18 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
                 $propertyComplexType->setValue($complexType->getValue());
                 $propertyComplexType->setNillable($complexType->isNillable());
                 $propertyComplexType->setIsAttribute($complexType->isAttribute());
-                $propertyComplexType->setName($property->getName());
+                $propertyComplexType->setName($complexType->getName() ?? $property->getName());
+                $annotations['properties']->add($propertyComplexType);
+            }
+
+            foreach ($property->getAttributes(ComplexTypeAnnotation::class) as $attribute) {
+                $instance = $attribute->newInstance();
+
+                $propertyComplexType = new ComplexType();
+                $propertyComplexType->setValue($instance->getValue());
+                $propertyComplexType->setNillable($instance->isNillable());
+                $propertyComplexType->setIsAttribute($instance->isAttribute());
+                $propertyComplexType->setName($instance->getName() ?? $property->getName());
                 $annotations['properties']->add($propertyComplexType);
             }
         }
@@ -68,15 +87,10 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
     }
 
     /**
-     * Returns true if this class supports the given resource.
-     *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
-     *
-     * @return Boolean True if this class supports the given resource, false otherwise
+     * @inheritDoc
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, ?string $type = null): bool
     {
-        return is_string($resource) && class_exists($resource) && 'annotation_complextype' === $type;
+        return \is_string($resource) && class_exists($resource) && 'annotation_complextype' === $type;
     }
 }

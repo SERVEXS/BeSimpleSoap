@@ -2,29 +2,28 @@
 
 require '../../../../../vendor/autoload.php';
 
-use BeSimple\SoapCommon\Helper as BeSimpleSoapHelper;
 use BeSimple\SoapClient\SoapClient as BeSimpleSoapClient;
-
-use BeSimple\SoapClient\Tests\ServerInterop\Fixtures\base64Binary;
 use BeSimple\SoapClient\Tests\ServerInterop\Fixtures\AttachmentRequest;
+use BeSimple\SoapClient\Tests\ServerInterop\Fixtures\base64Binary;
+use BeSimple\SoapCommon\Helper as BeSimpleSoapHelper;
 
-$options = array(
-    'soap_version'    => SOAP_1_1,
-    'features'        => SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
-    'trace'           => true, // enables use of the methods  SoapClient->__getLastRequest,  SoapClient->__getLastRequestHeaders,  SoapClient->__getLastResponse and  SoapClient->__getLastResponseHeaders
+$options = [
+    'soap_version' => \SOAP_1_1,
+    'features' => \SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
+    'trace' => true, // enables use of the methods  SoapClient->__getLastRequest,  SoapClient->__getLastRequestHeaders,  SoapClient->__getLastResponse and  SoapClient->__getLastResponseHeaders
     'attachment_type' => BeSimpleSoapHelper::ATTACHMENTS_TYPE_MTOM,
-    'cache_wsdl'      => WSDL_CACHE_NONE,
-    'classmap'        => array(
-        'base64Binary'      => 'BeSimple\SoapClient\Tests\ServerInterop\Fixtures\base64Binary',
-        'AttachmentRequest' => 'BeSimple\SoapClient\Tests\ServerInterop\Fixtures\AttachmentRequest',
-    ),
+    'cache_wsdl' => \WSDL_CACHE_NONE,
+    'classmap' => [
+        'base64Binary' => base64Binary::class,
+        'AttachmentRequest' => AttachmentRequest::class,
+    ],
     'connection_timeout' => 1,
-);
+];
 
 $sc = new BeSimpleSoapClient('Fixtures/MTOM.wsdl', $options);
 
-//var_dump($sc->__getFunctions());
-//var_dump($sc->__getTypes());
+// var_dump($sc->__getFunctions());
+// var_dump($sc->__getTypes());
 
 try {
     $b64 = new base64Binary();
@@ -36,7 +35,6 @@ try {
     $attachment->binaryData = $b64;
 
     var_dump($sc->attachment($attachment));
-
 } catch (Exception $e) {
     var_dump($e);
 }

@@ -13,6 +13,7 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 /**
  * @Annotation
  */
+#[\Attribute]
 class Param extends Configuration implements TypedElementInterface
 {
     private $value;
@@ -34,17 +35,17 @@ class Param extends Configuration implements TypedElementInterface
         return $this->xmlType;
     }
 
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->value = $value;
     }
 
-    public function setPhpType($phpType)
+    public function setPhpType($phpType): void
     {
         $this->phpType = $phpType;
     }
 
-    public function setXmlType($xmlType)
+    public function setXmlType($xmlType): void
     {
         $this->xmlType = $xmlType;
     }

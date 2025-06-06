@@ -16,36 +16,31 @@ use BeSimple\SoapCommon\Definition\Definition;
 use BeSimple\SoapCommon\Definition\Method;
 use BeSimple\SoapCommon\Definition\Type\ArrayOfType;
 use BeSimple\SoapCommon\Definition\Type\ComplexType;
-use DOMDocument;
-use DOMElement;
-use Exception;
-use InvalidArgumentException;
-use const SOAP_1_2;
 
 /**
  * @author Francis Besset <francis.besset@gmail.com>
  */
 class Dumper
 {
-    const XML_NS     = 'xmlns';
-    const XML_NS_URI = 'http://www.w3.org/2000/xmlns/';
+    final public const XML_NS = 'xmlns';
+    final public const XML_NS_URI = 'http://www.w3.org/2000/xmlns/';
 
-    const WSDL_NS     = 'wsdl';
-    const WSDL_NS_URI = 'http://schemas.xmlsoap.org/wsdl/';
+    final public const WSDL_NS = 'wsdl';
+    final public const WSDL_NS_URI = 'http://schemas.xmlsoap.org/wsdl/';
 
-    const SOAP_NS     = 'soap';
-    const SOAP_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap/';
+    final public const SOAP_NS = 'soap';
+    final public const SOAP_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap/';
 
-    const SOAP12_NS     = 'soap12';
-    const SOAP12_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap12/';
+    final public const SOAP12_NS = 'soap12';
+    final public const SOAP12_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap12/';
 
-    const SOAP_ENC_NS  = 'soap-enc';
-    const SOAP_ENC_URI = 'http://schemas.xmlsoap.org/soap/encoding/';
+    final public const SOAP_ENC_NS = 'soap-enc';
+    final public const SOAP_ENC_URI = 'http://schemas.xmlsoap.org/soap/encoding/';
 
-    const XSD_NS     = 'xsd';
-    const XSD_NS_URI = 'http://www.w3.org/2001/XMLSchema';
+    final public const XSD_NS = 'xsd';
+    final public const XSD_NS_URI = 'http://www.w3.org/2001/XMLSchema';
 
-    const TYPES_NS = 'tns';
+    final public const TYPES_NS = 'tns';
 
     /**
      * @var Definition
@@ -57,7 +52,7 @@ class Dumper
     protected $version12;
 
     /**
-     * @var DOMDocument
+     * @var \DOMDocument
      */
     protected $document;
     protected $domDefinitions;
@@ -67,21 +62,16 @@ class Dumper
 
     /**
      * Dumper constructor.
-     *
-     * @param Definition $definition
-     * @param array $options
      */
     public function __construct(Definition $definition, array $options = [])
     {
         $this->definition = $definition;
-        $this->document = new DOMDocument('1.0', 'utf-8');
+        $this->document = new \DOMDocument('1.0', 'utf-8');
 
         $this->setOptions($options);
     }
 
     /**
-     * @param array $options
-     *
      * @return $this
      */
     public function setOptions(array $options)
@@ -89,14 +79,14 @@ class Dumper
         $this->options = [
             'version11_class' => Version11::class,
             'version12_class' => Version12::class,
-            'version11_name'  => $this->definition->getName(),
-            'version12_name'  => $this->definition->getName() . '12',
-            'stylesheet'      => null,
+            'version11_name' => $this->definition->getName(),
+            'version12_name' => $this->definition->getName() . '12',
+            'stylesheet' => null,
         ];
 
         $invalid = [];
         foreach ($options as $key => $value) {
-            if (array_key_exists($key, $this->options)) {
+            if (\array_key_exists($key, $this->options)) {
                 $this->options[$key] = $value;
             } else {
                 $invalid[] = $key;
@@ -104,7 +94,7 @@ class Dumper
         }
 
         if ($invalid) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('The Definition does not support the following options: "%s"',
                     implode('", "', $invalid))
             );
@@ -114,15 +104,12 @@ class Dumper
     }
 
     /**
-     * @param $key
-     * @param $value
-     *
      * @return $this
      */
     public function setOption($key, $value)
     {
-        if (!array_key_exists($key, $this->options)) {
-            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+        if (!\array_key_exists($key, $this->options)) {
+            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         $this->options[$key] = $value;
@@ -130,15 +117,10 @@ class Dumper
         return $this;
     }
 
-    /**
-     * @param $key
-     *
-     * @return mixed
-     */
     public function getOption($key)
     {
-        if (!array_key_exists($key, $this->options)) {
-            throw new InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
+        if (!\array_key_exists($key, $this->options)) {
+            throw new \InvalidArgumentException(sprintf('The Definition does not support the "%s" option.', $key));
         }
 
         return $this->options[$key];
@@ -146,7 +128,8 @@ class Dumper
 
     /**
      * @return string
-     * @throws Exception
+     *
+     * @throws \Exception
      */
     public function dump()
     {
@@ -154,7 +137,7 @@ class Dumper
         $this->addMethods();
         $this->addService();
 
-        foreach (array($this->version11, $this->version12) as $version) {
+        foreach ([$this->version11, $this->version12] as $version) {
             if (!$version) {
                 continue;
             }
@@ -169,7 +152,7 @@ class Dumper
         return $this->document->saveXML();
     }
 
-    protected function appendVersion(VersionInterface $version)
+    protected function appendVersion(VersionInterface $version): void
     {
         $binding = $version->getBindingNode();
         $binding = $this->document->importNode($binding, true);
@@ -181,7 +164,7 @@ class Dumper
     }
 
     /**
-     * @return DOMElement
+     * @return \DOMElement
      */
     protected function addService()
     {
@@ -193,16 +176,16 @@ class Dumper
         return $this->domService;
     }
 
-    protected function addDefinitions()
+    protected function addDefinitions(): void
     {
         $this->domDefinitions = $this->document->createElement('definitions');
         $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS, static::WSDL_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::TYPES_NS,  $this->definition->getNamespace());
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP_NS,static::SOAP_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP12_NS,static::SOAP12_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::XSD_NS,static::XSD_NS_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP_ENC_NS,static::SOAP_ENC_URI);
-        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::WSDL_NS,static::WSDL_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::TYPES_NS, $this->definition->getNamespace());
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP_NS, static::SOAP_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP12_NS, static::SOAP12_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::XSD_NS, static::XSD_NS_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::SOAP_ENC_NS, static::SOAP_ENC_URI);
+        $this->domDefinitions->setAttributeNS(static::XML_NS_URI, static::XML_NS . ':' . static::WSDL_NS, static::WSDL_NS_URI);
 
         foreach ($this->definition->getTypeRepository()->getXmlNamespaces() as $prefix => $uri) {
             $this->domDefinitions->setAttributeNs(static::XML_NS_URI, static::XML_NS . ':' . $prefix, $uri);
@@ -215,9 +198,9 @@ class Dumper
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function addMethods()
+    protected function addMethods(): void
     {
         $this->addPortType();
         $this->addComplexTypes();
@@ -232,10 +215,10 @@ class Dumper
         }
     }
 
-    protected function addMessages(array $messages)
+    protected function addMessages(array $messages): void
     {
         foreach ($messages as $message) {
-            if (preg_match('#Header$#', $message->getName()) && $message->isEmpty()) {
+            if (preg_match('#Header$#', (string) $message->getName()) && $message->isEmpty()) {
                 continue;
             }
 
@@ -262,8 +245,9 @@ class Dumper
     }
 
     /**
-     * @return DOMElement
-     * @throws Exception
+     * @return \DOMElement
+     *
+     * @throws \Exception
      */
     protected function addComplexTypes()
     {
@@ -282,16 +266,14 @@ class Dumper
     }
 
     /**
-     * @param ComplexType $type
-     *
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function addComplexType(ComplexType $type)
+    protected function addComplexType(ComplexType $type): void
     {
         $complexType = $this->document->createElement(static::XSD_NS . ':complexType');
         $complexType->setAttribute('name', $type->getXmlType());
 
-        $all = $this->document->createElement(static::XSD_NS.':'.($type instanceof ArrayOfType ? 'sequence' : 'all'));
+        $all = $this->document->createElement(static::XSD_NS . ':' . ($type instanceof ArrayOfType ? 'sequence' : 'all'));
         $complexType->appendChild($all);
 
         foreach ($type->all() as $child) {
@@ -335,7 +317,7 @@ class Dumper
         $this->domSchema->appendChild($complexType);
     }
 
-    protected function addPortType()
+    protected function addPortType(): void
     {
         $this->domPortType = $this->document->createElement('portType');
         $this->domPortType->setAttribute('name', $this->definition->getName() . 'PortType');
@@ -344,19 +326,17 @@ class Dumper
     }
 
     /**
-     * @param Method $method
-     *
-     * @return DOMElement
+     * @return \DOMElement
      */
     protected function addPortOperation(Method $method)
     {
         $operation = $this->document->createElement('operation');
         $operation->setAttribute('name', $method->getName());
 
-        foreach (array('input'  => $method->getInput(),
-                       'output' => $method->getOutput(),
-                       'fault'  => $method->getFault(),
-                 ) as $type => $message) {
+        foreach (['input' => $method->getInput(),
+            'output' => $method->getOutput(),
+            'fault' => $method->getFault(),
+        ] as $type => $message) {
             if ('fault' === $type && $message->isEmpty()) {
                 continue;
             }
@@ -372,7 +352,7 @@ class Dumper
         return $operation;
     }
 
-    protected function addStylesheet()
+    protected function addStylesheet(): void
     {
         if ($this->options['stylesheet']) {
             $stylesheet = $this->document->createProcessingInstruction('xml-stylesheet',
@@ -382,23 +362,15 @@ class Dumper
         }
     }
 
-    /**
-     * @param $version
-     *
-     * @return mixed
-     */
     protected function getVersion($version)
     {
-        if (SOAP_1_2 === $version) {
+        if (\SOAP_1_2 === $version) {
             return $this->getVersion12();
         }
 
         return $this->getVersion11();
     }
 
-    /**
-     * @return mixed
-     */
     protected function getVersion11()
     {
         if (!$this->version11) {
@@ -416,9 +388,6 @@ class Dumper
         return $this->version11;
     }
 
-    /**
-     * @return mixed
-     */
     protected function getVersion12()
     {
         if (!$this->version12) {

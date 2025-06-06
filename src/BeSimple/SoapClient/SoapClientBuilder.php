@@ -28,7 +28,7 @@ class SoapClientBuilder extends AbstractSoapBuilder
      *
      * @var array(string=>mixed)
      */
-    protected $soapOptionAuthentication = array();
+    protected $soapOptionAuthentication = [];
 
     /**
      * Create new instance with default options.
@@ -66,7 +66,7 @@ class SoapClientBuilder extends AbstractSoapBuilder
     /**
      * Configure option 'trace'.
      *
-     * @param boolean $trace Enable/Disable
+     * @param bool $trace Enable/Disable
      *
      * @return \BeSimple\SoapClient\SoapClientBuilder
      */
@@ -80,7 +80,7 @@ class SoapClientBuilder extends AbstractSoapBuilder
     /**
      * Configure option 'exceptions'.
      *
-     * @param boolean $exceptions Enable/Disable
+     * @param bool $exceptions Enable/Disable
      *
      * @return \BeSimple\SoapClient\SoapClientBuilder
      */
@@ -112,7 +112,7 @@ class SoapClientBuilder extends AbstractSoapBuilder
      */
     public function withCompressionGzip()
     {
-        $this->soapOptions['compression'] = SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP;
+        $this->soapOptions['compression'] = \SOAP_COMPRESSION_ACCEPT | \SOAP_COMPRESSION_GZIP;
 
         return $this;
     }
@@ -124,7 +124,7 @@ class SoapClientBuilder extends AbstractSoapBuilder
      */
     public function withCompressionDeflate()
     {
-        $this->soapOptions['compression'] = SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_DEFLATE;
+        $this->soapOptions['compression'] = \SOAP_COMPRESSION_ACCEPT | \SOAP_COMPRESSION_DEFLATE;
 
         return $this;
     }
@@ -139,11 +139,11 @@ class SoapClientBuilder extends AbstractSoapBuilder
      */
     public function withBasicAuthentication($username, $password)
     {
-        $this->soapOptionAuthentication = array(
-            'authentication' => SOAP_AUTHENTICATION_BASIC,
-            'login'          => $username,
-            'password'       => $password,
-        );
+        $this->soapOptionAuthentication = [
+            'authentication' => \SOAP_AUTHENTICATION_BASIC,
+            'login' => $username,
+            'password' => $password,
+        ];
 
         return $this;
     }
@@ -158,10 +158,10 @@ class SoapClientBuilder extends AbstractSoapBuilder
      */
     public function withDigestAuthentication($certificate, $passphrase = null)
     {
-        $this->soapOptionAuthentication = array(
-            'authentication' => SOAP_AUTHENTICATION_DIGEST,
-            'local_cert'     => $certificate,
-        );
+        $this->soapOptionAuthentication = [
+            'authentication' => \SOAP_AUTHENTICATION_DIGEST,
+            'local_cert' => $certificate,
+        ];
 
         if ($passphrase) {
             $this->soapOptionAuthentication['passphrase'] = $passphrase;
@@ -191,7 +191,7 @@ class SoapClientBuilder extends AbstractSoapBuilder
             $this->soapOptions['proxy_password'] = $password;
 
             if ($auth) {
-                if (!in_array($auth, array(\CURLAUTH_BASIC, \CURLAUTH_NTLM), true)) {
+                if (!\in_array($auth, [\CURLAUTH_BASIC, \CURLAUTH_NTLM], true)) {
                     throw new \InvalidArgumentException('Invalid authentication method: CURLAUTH_BASIC or CURLAUTH_NTLM constants are availables.');
                 }
 
@@ -203,10 +203,10 @@ class SoapClientBuilder extends AbstractSoapBuilder
     }
 
     /**
-    * SOAP attachment type Base64.
-    *
-    * @return \BeSimple\SoapServer\SoapServerBuilder
-    */
+     * SOAP attachment type Base64.
+     *
+     * @return \BeSimple\SoapServer\SoapServerBuilder
+     */
     public function withBase64Attachments()
     {
         $this->options['attachment_type'] = Helper::ATTACHMENTS_TYPE_BASE64;
@@ -241,7 +241,7 @@ class SoapClientBuilder extends AbstractSoapBuilder
     /**
      * Validate options.
      */
-    protected function validateOptions()
+    protected function validateOptions(): void
     {
         $this->validateWsdl();
     }

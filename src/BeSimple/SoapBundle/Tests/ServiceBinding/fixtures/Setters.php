@@ -13,7 +13,7 @@ class Setters
         return $this->foo;
     }
 
-    public function setFoo($foo)
+    public function setFoo($foo): void
     {
         $this->foo = $foo;
     }
@@ -23,7 +23,7 @@ class Setters
         return $this->bar;
     }
 
-    public function setBar($bar)
+    public function setBar($bar): void
     {
         $this->bar = $bar;
     }

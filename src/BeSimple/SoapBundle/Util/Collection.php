@@ -10,55 +10,68 @@
 
 namespace BeSimple\SoapBundle\Util;
 
+/**
+ * @template T of mixed
+ */
 class Collection implements \IteratorAggregate, \Countable
 {
-    private $elements = array();
-    private $getter;
-    private $class;
+    /**
+     * @var T[]
+     */
+    private array $elements = [];
 
-    public function __construct($getter, $class = null)
+    public function __construct(private readonly string $getter, private readonly ?string $class = null)
     {
-        $this->getter = $getter;
-        $this->class  = $class;
     }
 
-    public function add($element)
+    /**
+     * @param T $element
+     */
+    public function add($element): void
     {
         if ($this->class && !$element instanceof $this->class) {
-            throw new \InvalidArgumentException(sprintf('Cannot add class "%s" because it is not an instance of "%s"', get_class($element), $this->class));
+            throw new \InvalidArgumentException(sprintf('Cannot add class "%s" because it is not an instance of "%s"', $element::class, $this->class));
         }
 
         $this->elements[$element->{$this->getter}()] = $element;
     }
 
-    public function addAll($elements)
+    /**
+     * @param T[] $elements
+     */
+    public function addAll($elements): void
     {
         foreach ($elements as $element) {
             $this->add($element);
         }
     }
 
-    public function has($key)
+    public function has($key): bool
     {
         return isset($this->elements[$key]);
     }
 
+    /**
+     * @param string|int $key
+     *
+     * @return T|null
+     */
     public function get($key)
     {
         return $this->has($key) ? $this->elements[$key] : null;
     }
 
-    public function clear()
+    public function clear(): void
     {
-        $this->elements = array();
+        $this->elements = [];
     }
 
-    public function count()
+    public function count(): int
     {
-        return count($this->elements);
+        return \count($this->elements);
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->elements);
     }

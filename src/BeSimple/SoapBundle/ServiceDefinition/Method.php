@@ -13,7 +13,6 @@
 namespace BeSimple\SoapBundle\ServiceDefinition;
 
 use BeSimple\SoapCommon\Definition\Method as BaseMethod;
-use BeSimple\SoapCommon\Definition\Type\TypeRepository;
 
 /**
  * @author Christian Kerl <christian-kerl@web.de>
@@ -21,13 +20,9 @@ use BeSimple\SoapCommon\Definition\Type\TypeRepository;
  */
 class Method extends BaseMethod
 {
-    private $controller;
-
-    public function __construct($name, $controller)
+    public function __construct($name, private $controller)
     {
         parent::__construct($name);
-
-        $this->controller = $controller;
     }
 
     public function getController()
@@ -37,6 +32,6 @@ class Method extends BaseMethod
 
     public function getVersions()
     {
-        return array(\SOAP_1_1);
+        return [\SOAP_1_1];
     }
 }

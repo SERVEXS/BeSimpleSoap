@@ -13,6 +13,7 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 /**
  * @Annotation
  */
+#[\Attribute]
 class Method extends Configuration
 {
     private $value;
@@ -28,12 +29,12 @@ class Method extends Configuration
         return $this->service;
     }
 
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->value = $value;
     }
 
-    public function setService($service)
+    public function setService($service): void
     {
         $this->service = $service;
     }

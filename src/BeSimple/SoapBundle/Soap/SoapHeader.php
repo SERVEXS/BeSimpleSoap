@@ -10,22 +10,15 @@
 
 namespace BeSimple\SoapBundle\Soap;
 
-class SoapHeader
+class SoapHeader implements \Stringable
 {
-    private $namespace;
-    private $name;
-    private $data;
-
-    public function __construct($namespace, $name, $data)
+    public function __construct(private $namespace, private $name, private $data)
     {
-        $this->namespace = $namespace;
-        $this->name      = $name;
-        $this->data      = $data;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->data;
+        return (string) $this->data;
     }
 
     public function getNamespace()

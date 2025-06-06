@@ -37,7 +37,7 @@ class MultiPartTest extends TestCase
         string(51) "
         --urn:uuid:a81ca327-591e-4656-91a1-8f177ada95b0--"
         */
-        $this->assertEquals(51, strlen($mp->getMimeMessage()));
+        $this->assertEquals(51, \strlen($mp->getMimeMessage()));
 
         $p = new Part('test');
         $mp->addPart($p, true);
@@ -52,7 +52,7 @@ class MultiPartTest extends TestCase
         test
         --urn:uuid:a81ca327-591e-4656-91a1-8f177ada95b0--"
         */
-        $this->assertEquals(259, strlen($mp->getMimeMessage()));
+        $this->assertEquals(259, \strlen($mp->getMimeMessage()));
     }
 
     public function testGetMimeMessageWithHeaders(): void
@@ -65,7 +65,7 @@ class MultiPartTest extends TestCase
 
         --urn:uuid:231833e2-a23b-410a-862e-250524fc38f6--"
         */
-        $this->assertEquals(193, strlen($mp->getMimeMessage(true)));
+        $this->assertEquals(193, \strlen($mp->getMimeMessage(true)));
 
         $p = new Part('test');
         $mp->addPart($p, true);
@@ -82,22 +82,22 @@ class MultiPartTest extends TestCase
         test
         --urn:uuid:231833e2-a23b-410a-862e-250524fc38f6--"
         */
-        $this->assertEquals(458, strlen($mp->getMimeMessage(true)));
+        $this->assertEquals(458, \strlen($mp->getMimeMessage(true)));
     }
 
     public function testGetHeadersForHttp(): void
     {
         $mp = new MultiPart();
 
-        $result = array(
+        $result = [
             'Content-Type: multipart/related; type="text/xml"; charset=utf-8; boundary="' . $mp->getHeader('Content-Type', 'boundary') . '"',
-        );
+        ];
         $this->assertEquals($result, $mp->getHeadersForHttp());
 
-        $result = array(
+        $result = [
             'Content-Type: multipart/related; type="text/xml"; charset=utf-8; boundary="' . $mp->getHeader('Content-Type', 'boundary') . '"',
             'Content-Description: test',
-        );
+        ];
         $mp->setHeader('Content-Description', 'test');
         $this->assertEquals($result, $mp->getHeadersForHttp());
     }
@@ -130,15 +130,15 @@ class MultiPartTest extends TestCase
         $p2 = new Part('test');
         $mp->addPart($p2);
 
-        $withoutMain = array(
-            trim($p2->getHeader('Content-ID'),'<>') => $p2,
-        );
+        $withoutMain = [
+            trim((string) $p2->getHeader('Content-ID'), '<>') => $p2,
+        ];
         $this->assertEquals($withoutMain, $mp->getParts());
 
-        $withMain = array(
-            trim($p1->getHeader('Content-ID'),'<>') => $p1,
-            trim($p2->getHeader('Content-ID'),'<>') => $p2,
-        );
+        $withMain = [
+            trim((string) $p1->getHeader('Content-ID'), '<>') => $p1,
+            trim((string) $p2->getHeader('Content-ID'), '<>') => $p2,
+        ];
         $this->assertEquals($withMain, $mp->getParts(true));
     }
 }

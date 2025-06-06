@@ -10,9 +10,9 @@
 
 namespace BeSimple\SoapBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Adds tagged besimple.soap.converter services to besimple.soap.converter.repository service
@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
  */
 class TypeConverterPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (false === $container->hasDefinition('besimple.soap.converter.collection')) {
             return;
@@ -30,7 +30,7 @@ class TypeConverterPass implements CompilerPassInterface
         $definition = $container->getDefinition('besimple.soap.converter.collection');
 
         foreach ($container->findTaggedServiceIds('besimple.soap.converter') as $id => $attributes) {
-            $definition->addMethodCall('add', array(new Reference($id)));
+            $definition->addMethodCall('add', [new Reference($id)]);
         }
     }
 }

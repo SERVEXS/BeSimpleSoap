@@ -40,7 +40,7 @@ class MultiPart extends PartHeader
      *
      * @var array(\BeSimple\SoapCommon\Mime\Part)
      */
-    protected $parts = array();
+    protected $parts = [];
 
     /**
      * Construct new mime object.
@@ -55,7 +55,7 @@ class MultiPart extends PartHeader
         $this->setHeader('Content-Type', 'multipart/related');
         $this->setHeader('Content-Type', 'type', 'text/xml');
         $this->setHeader('Content-Type', 'charset', 'utf-8');
-        if (is_null($boundary)) {
+        if (null === $boundary) {
             $boundary = $this->generateBoundary();
         }
         $this->setHeader('Content-Type', 'boundary', $boundary);
@@ -64,19 +64,20 @@ class MultiPart extends PartHeader
     /**
      * Get mime message of this object (without headers).
      *
-     * @param boolean $withHeaders Returned mime message contains headers
+     * @param bool $withHeaders Returned mime message contains headers
      *
      * @return string
      */
     public function getMimeMessage($withHeaders = false)
     {
-        $message = ($withHeaders === true) ? $this->generateHeaders() : "";
+        $message = ($withHeaders === true) ? $this->generateHeaders() : '';
         // add parts
         foreach ($this->parts as $part) {
             $message .= "\r\n" . '--' . $this->getHeader('Content-Type', 'boundary') . "\r\n";
             $message .= $part->getMessagePart();
         }
         $message .= "\r\n" . '--' . $this->getHeader('Content-Type', 'boundary') . '--';
+
         return $message;
     }
 
@@ -88,18 +89,19 @@ class MultiPart extends PartHeader
      */
     public function getHeadersForHttp()
     {
-        $allowed = array(
+        $allowed = [
             'Content-Type',
             'Content-Description',
-        );
-        $headers = array();
+        ];
+        $headers = [];
         foreach ($this->headers as $fieldName => $value) {
-            if (in_array($fieldName, $allowed)) {
+            if (\in_array($fieldName, $allowed)) {
                 $fieldValue = $this->generateHeaderFieldValue($value);
                 // for http only ISO-8859-1
-                $headers[] = $fieldName . ': '. iconv('utf-8', 'ISO-8859-1//TRANSLIT', $fieldValue);
+                $headers[] = $fieldName . ': ' . iconv('utf-8', 'ISO-8859-1//TRANSLIT', $fieldValue);
             }
         }
+
         return $headers;
     }
 
@@ -107,13 +109,11 @@ class MultiPart extends PartHeader
      * Add new part to MIME message.
      *
      * @param \BeSimple\SoapCommon\Mime\Part $part   Part that is added
-     * @param boolean                        $isMain Is the given part the main part of mime message
-     *
-     * @return void
+     * @param bool                        $isMain Is the given part the main part of mime message
      */
-    public function addPart(Part $part, $isMain = false)
+    public function addPart(Part $part, $isMain = false): void
     {
-        $contentId = trim($part->getHeader('Content-ID'), '<>');
+        $contentId = trim((string) $part->getHeader('Content-ID'), '<>');
         if ($isMain === true) {
             $this->mainPartContentId = $contentId;
             $this->setHeader('Content-Type', 'start', $part->getHeader('Content-ID'));
@@ -132,19 +132,17 @@ class MultiPart extends PartHeader
      */
     public function getPart($contentId = null)
     {
-        if (is_null($contentId)) {
+        if (null === $contentId) {
             $contentId = $this->mainPartContentId;
         }
-        if (isset($this->parts[$contentId])) {
-            return $this->parts[$contentId];
-        }
-        return null;
+
+        return $this->parts[$contentId] ?? null;
     }
 
     /**
      * Get all parts.
      *
-     * @param boolean $includeMainPart Should main part be in result set
+     * @param bool $includeMainPart Should main part be in result set
      *
      * @return array(\BeSimple\SoapCommon\Mime\Part)
      */
@@ -153,13 +151,14 @@ class MultiPart extends PartHeader
         if ($includeMainPart === true) {
             $parts = $this->parts;
         } else {
-            $parts = array();
+            $parts = [];
             foreach ($this->parts as $cid => $part) {
                 if ($cid != $this->mainPartContentId) {
                     $parts[$cid] = $part;
                 }
             }
         }
+
         return $parts;
     }
 

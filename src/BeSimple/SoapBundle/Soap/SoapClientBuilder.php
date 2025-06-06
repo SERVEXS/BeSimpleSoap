@@ -2,15 +2,15 @@
 
 namespace BeSimple\SoapBundle\Soap;
 
+use BeSimple\SoapClient\SoapClientBuilder as BaseSoapClientBuilder;
 use BeSimple\SoapCommon\Classmap;
 use BeSimple\SoapCommon\Converter\TypeConverterCollection;
-use BeSimple\SoapClient\SoapClientBuilder as BaseSoapClientBuilder;
 
 class SoapClientBuilder extends BaseSoapClientBuilder
 {
     protected $soapClient;
 
-    public function __construct($wsdl, array $options, Classmap $classmap = null, TypeConverterCollection $converters = null)
+    public function __construct($wsdl, array $options, ?Classmap $classmap = null, ?TypeConverterCollection $converters = null)
     {
         parent::__construct();
 
@@ -47,20 +47,20 @@ class SoapClientBuilder extends BaseSoapClientBuilder
         return $this->soapClient;
     }
 
-    protected function checkOptions(array $options)
+    protected function checkOptions(array $options): void
     {
-        $checkOptions = array(
-            'debug'      => false,
+        $checkOptions = [
+            'debug' => false,
             'cache_type' => null,
             'exceptions' => true,
             'user_agent' => 'BeSimpleSoap',
-        );
+        ];
 
         // check option names and live merge, if errors are encountered Exception will be thrown
-        $invalid   = array();
+        $invalid = [];
         $isInvalid = false;
         foreach ($options as $key => $value) {
-            if (!array_key_exists($key, $checkOptions)) {
+            if (!\array_key_exists($key, $checkOptions)) {
                 $isInvalid = true;
                 $invalid[] = $key;
             }
@@ -69,7 +69,7 @@ class SoapClientBuilder extends BaseSoapClientBuilder
         if ($isInvalid) {
             throw new \InvalidArgumentException(sprintf(
                 'The "%s" class does not support the following options: "%s".',
-                get_class($this),
+                static::class,
                 implode('\', \'', $invalid)
             ));
         }
