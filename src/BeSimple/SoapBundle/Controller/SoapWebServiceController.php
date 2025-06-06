@@ -231,7 +231,7 @@ class SoapWebServiceController implements ContainerAwareInterface
             return $this->container->get($context);
         }
 
-        $context = sprintf('besimple.soap.context.%s', ucfirst($webservice));
+        $context = sprintf('besimple.soap.context.%s', ucfirst((string) $webservice));
         if (!$this->container->has($context)) {
             throw new NotFoundHttpException(
                 sprintf('No WebService with name "%s" found. Possible cause: case sensitivity.', $webservice)

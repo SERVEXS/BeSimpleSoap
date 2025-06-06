@@ -19,12 +19,10 @@ use BeSimple\SoapCommon\Definition\Type\TypeInterface;
  */
 class Message
 {
-    protected $name;
     protected $parts;
 
-    public function __construct($name)
+    public function __construct(protected $name)
     {
-        $this->name = $name;
         $this->parts = [];
     }
 
@@ -40,7 +38,7 @@ class Message
 
     public function get($name, $default = null)
     {
-        return isset($this->parts[$name]) ? $this->parts[$name] : $default;
+        return $this->parts[$name] ?? $default;
     }
 
     public function isEmpty()

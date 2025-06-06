@@ -23,11 +23,8 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
  */
 class SoapResponseListener
 {
-    protected SoapResponse $response;
-
-    public function __construct(SoapResponse $response)
+    public function __construct(protected SoapResponse $response)
     {
-        $this->response = $response;
     }
 
     /**

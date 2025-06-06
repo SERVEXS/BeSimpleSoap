@@ -173,13 +173,13 @@ class AbstractSoapBuilderTest extends TestCase
     {
         $builder = $this->getSoapBuilder();
 
-        $builder->withClassMapping('foo', __CLASS__);
+        $builder->withClassMapping('foo', self::class);
         $options = $builder->getSoapOptions();
 
         $this->assertCount(1, $options['classmap']);
 
         $classmap = new Classmap();
-        $classmap->add('bar', __CLASS__);
+        $classmap->add('bar', self::class);
         $builder->withClassmap($classmap);
         $options = $builder->getSoapOptions();
 

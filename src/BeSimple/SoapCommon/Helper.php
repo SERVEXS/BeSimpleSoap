@@ -24,142 +24,142 @@ class Helper
     /**
      * Attachment type: xsd:base64Binary (native in ext/soap).
      */
-    public const ATTACHMENTS_TYPE_BASE64 = 1;
+    final public const ATTACHMENTS_TYPE_BASE64 = 1;
 
     /**
      * Attachment type: MTOM (SOAP Message Transmission Optimization Mechanism).
      */
-    public const ATTACHMENTS_TYPE_MTOM = 2;
+    final public const ATTACHMENTS_TYPE_MTOM = 2;
 
     /**
      * Attachment type: SWA (SOAP Messages with Attachments).
      */
-    public const ATTACHMENTS_TYPE_SWA = 4;
+    final public const ATTACHMENTS_TYPE_SWA = 4;
 
     /**
      * Web Services Security: SOAP Message Security 1.0 (WS-Security 2004)
      */
-    public const NAME_WSS_SMS = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0';
+    final public const NAME_WSS_SMS = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0';
 
     /**
      * Web Services Security: SOAP Message Security 1.1 (WS-Security 2004)
      */
-    public const NAME_WSS_SMS_1_1 = 'http://docs.oasis-open.org/wss/oasis-wss-soap-message-security-1.1';
+    final public const NAME_WSS_SMS_1_1 = 'http://docs.oasis-open.org/wss/oasis-wss-soap-message-security-1.1';
 
     /**
      * Web Services Security UsernameToken Profile 1.0
      */
-    public const NAME_WSS_UTP = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0';
+    final public const NAME_WSS_UTP = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0';
 
     /**
      * Web Services Security X.509 Certificate Token Profile
      */
-    public const NAME_WSS_X509 = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0';
+    final public const NAME_WSS_X509 = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0';
 
     /**
      * Soap 1.1 namespace.
      */
-    public const NS_SOAP_1_1 = 'http://schemas.xmlsoap.org/soap/envelope/';
+    final public const NS_SOAP_1_1 = 'http://schemas.xmlsoap.org/soap/envelope/';
 
     /**
      * Soap 1.1 namespace.
      */
-    public const NS_SOAP_1_2 = 'http://www.w3.org/2003/05/soap-envelope/';
+    final public const NS_SOAP_1_2 = 'http://www.w3.org/2003/05/soap-envelope/';
 
     /**
      * Web Services Addressing 1.0 namespace.
      */
-    public const NS_WSA = 'http://www.w3.org/2005/08/addressing';
+    final public const NS_WSA = 'http://www.w3.org/2005/08/addressing';
 
     /**
      * WSDL 1.1 namespace.
      */
-    public const NS_WSDL = 'http://schemas.xmlsoap.org/wsdl/';
+    final public const NS_WSDL = 'http://schemas.xmlsoap.org/wsdl/';
 
     /**
      * WSDL MIME namespace.
      */
-    public const NS_WSDL_MIME = 'http://schemas.xmlsoap.org/wsdl/mime/';
+    final public const NS_WSDL_MIME = 'http://schemas.xmlsoap.org/wsdl/mime/';
 
     /**
      * WSDL SOAP 1.1 namespace.
      */
-    public const NS_WSDL_SOAP_1_1 = 'http://schemas.xmlsoap.org/wsdl/soap/';
+    final public const NS_WSDL_SOAP_1_1 = 'http://schemas.xmlsoap.org/wsdl/soap/';
 
     /**
      * WSDL SOAP 1.2 namespace.
      */
-    public const NS_WSDL_SOAP_1_2 = 'http://schemas.xmlsoap.org/wsdl/soap12/';
+    final public const NS_WSDL_SOAP_1_2 = 'http://schemas.xmlsoap.org/wsdl/soap12/';
 
     /**
      * Web Services Security Extension namespace.
      */
-    public const NS_WSS = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd';
+    final public const NS_WSS = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd';
 
     /**
      * Web Services Security Utility namespace.
      */
-    public const NS_WSU = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd';
+    final public const NS_WSU = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd';
 
     /**
      * Describing Media Content of Binary Data in XML namespace.
      */
-    public const NS_XMLMIME = 'http://www.w3.org/2004/11/xmlmime';
+    final public const NS_XMLMIME = 'http://www.w3.org/2004/11/xmlmime';
 
     /**
      * XML Schema namespace.
      */
-    public const NS_XML_SCHEMA = 'http://www.w3.org/2001/XMLSchema';
+    final public const NS_XML_SCHEMA = 'http://www.w3.org/2001/XMLSchema';
 
     /**
      * XML Schema instance namespace.
      */
-    public const NS_XML_SCHEMA_INSTANCE = 'http://www.w3.org/2001/XMLSchema-instance';
+    final public const NS_XML_SCHEMA_INSTANCE = 'http://www.w3.org/2001/XMLSchema-instance';
 
     /**
      * XML-binary Optimized Packaging namespace.
      */
-    public const NS_XOP = 'http://www.w3.org/2004/08/xop/include';
+    final public const NS_XOP = 'http://www.w3.org/2004/08/xop/include';
 
     /**
      * Web Services Addressing 1.0 prefix.
      */
-    public const PFX_WSA = 'wsa';
+    final public const PFX_WSA = 'wsa';
 
     /**
      * WSDL 1.1 namespace. prefix.
      */
-    public const PFX_WSDL = 'wsdl';
+    final public const PFX_WSDL = 'wsdl';
 
     /**
      * Web Services Security Extension namespace.
      */
-    public const PFX_WSS = 'wsse';
+    final public const PFX_WSS = 'wsse';
 
     /**
      * Web Services Security Utility namespace prefix.
      */
-    public const PFX_WSU = 'wsu';
+    final public const PFX_WSU = 'wsu';
 
     /**
      * Describing Media Content of Binary Data in XML namespace prefix.
      */
-    public const PFX_XMLMIME = 'xmlmime';
+    final public const PFX_XMLMIME = 'xmlmime';
 
     /**
      * XML Schema namespace prefix.
      */
-    public const PFX_XML_SCHEMA = 'xsd';
+    final public const PFX_XML_SCHEMA = 'xsd';
 
     /**
      * XML Schema instance namespace prefix.
      */
-    public const PFX_XML_SCHEMA_INSTANCE = 'xsi';
+    final public const PFX_XML_SCHEMA_INSTANCE = 'xsi';
 
     /**
      * XML-binary Optimized Packaging namespace prefix.
      */
-    public const PFX_XOP = 'xop';
+    final public const PFX_XOP = 'xop';
 
     /**
      * Generate a pseudo-random version 4 UUID.

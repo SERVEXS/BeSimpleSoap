@@ -31,7 +31,7 @@ class Classmap extends BaseClassmap
     public function getByClassname($classname)
     {
         if (!$this->hasByClassname($classname)) {
-            throw new \InvalidArgumentException(sprintf('The classname "%s" was not found in %s', $classname, __CLASS__));
+            throw new \InvalidArgumentException(sprintf('The classname "%s" was not found in %s', $classname, self::class));
         }
 
         return $this->classmapInversed[$classname];

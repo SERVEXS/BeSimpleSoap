@@ -13,6 +13,7 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 /**
  * @Annotation
  */
+#[\Attribute]
 class Header extends Param
 {
     public function getAliasName()

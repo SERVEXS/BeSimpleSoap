@@ -15,8 +15,8 @@ namespace BeSimple\SoapBundle\Util;
  */
 class Assert
 {
-    public const ARGUMENT_INVALID = 'Argument "%s" is invalid.';
-    public const ARGUMENT_NULL = 'Argument "%s" can not be null.';
+    final public const ARGUMENT_INVALID = 'Argument "%s" is invalid.';
+    final public const ARGUMENT_NULL = 'Argument "%s" can not be null.';
 
     public static function thatArgument($name, $condition, $message = self::ARGUMENT_INVALID): void
     {

@@ -22,25 +22,25 @@ use BeSimple\SoapCommon\Definition\Type\ComplexType;
  */
 class Dumper
 {
-    public const XML_NS = 'xmlns';
-    public const XML_NS_URI = 'http://www.w3.org/2000/xmlns/';
+    final public const XML_NS = 'xmlns';
+    final public const XML_NS_URI = 'http://www.w3.org/2000/xmlns/';
 
-    public const WSDL_NS = 'wsdl';
-    public const WSDL_NS_URI = 'http://schemas.xmlsoap.org/wsdl/';
+    final public const WSDL_NS = 'wsdl';
+    final public const WSDL_NS_URI = 'http://schemas.xmlsoap.org/wsdl/';
 
-    public const SOAP_NS = 'soap';
-    public const SOAP_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap/';
+    final public const SOAP_NS = 'soap';
+    final public const SOAP_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap/';
 
-    public const SOAP12_NS = 'soap12';
-    public const SOAP12_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap12/';
+    final public const SOAP12_NS = 'soap12';
+    final public const SOAP12_NS_URI = 'http://schemas.xmlsoap.org/wsdl/soap12/';
 
-    public const SOAP_ENC_NS = 'soap-enc';
-    public const SOAP_ENC_URI = 'http://schemas.xmlsoap.org/soap/encoding/';
+    final public const SOAP_ENC_NS = 'soap-enc';
+    final public const SOAP_ENC_URI = 'http://schemas.xmlsoap.org/soap/encoding/';
 
-    public const XSD_NS = 'xsd';
-    public const XSD_NS_URI = 'http://www.w3.org/2001/XMLSchema';
+    final public const XSD_NS = 'xsd';
+    final public const XSD_NS_URI = 'http://www.w3.org/2001/XMLSchema';
 
-    public const TYPES_NS = 'tns';
+    final public const TYPES_NS = 'tns';
 
     /**
      * @var Definition
@@ -218,7 +218,7 @@ class Dumper
     protected function addMessages(array $messages): void
     {
         foreach ($messages as $message) {
-            if (preg_match('#Header$#', $message->getName()) && $message->isEmpty()) {
+            if (preg_match('#Header$#', (string) $message->getName()) && $message->isEmpty()) {
                 continue;
             }
 

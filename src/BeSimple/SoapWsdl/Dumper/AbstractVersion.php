@@ -19,41 +19,22 @@ use BeSimple\SoapCommon\Definition\Method;
  */
 abstract class AbstractVersion implements VersionInterface
 {
-    protected $soapNs;
-
-    protected $typeNs;
-
-    protected $name;
-
-    protected $namespace;
-
-    protected $portTypeName;
-
-    protected $location;
-
-    protected $style;
-
-    protected $transport;
-
     protected $document;
 
     protected $bindingNode;
 
     protected $servicePortNode;
 
-    public function __construct($soapNs, $typeNs, $name, $namespace, $portTypeName, $location, $style = \SOAP_RPC, $transport = 'http://schemas.xmlsoap.org/soap/http')
-    {
-        $this->soapNs = $soapNs;
-        $this->typeNs = $typeNs;
-
-        $this->name = $name;
-        $this->namespace = $namespace;
-        $this->portTypeName = $portTypeName;
-
-        $this->location = $location;
-        $this->style = $style;
-        $this->transport = $transport;
-
+    public function __construct(
+        protected $soapNs,
+        protected $typeNs,
+        protected $name,
+        protected $namespace,
+        protected $portTypeName,
+        protected $location,
+        protected $style = \SOAP_RPC,
+        protected $transport = 'http://schemas.xmlsoap.org/soap/http'
+    ) {
         $this->document = new \DOMDocument('1.0', 'utf-8');
     }
 

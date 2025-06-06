@@ -23,26 +23,18 @@ class WsdlHandler
     /**
      * Binding type 'input' .
      */
-    public const BINDING_OPERATION_INPUT = 'input';
+    final public const BINDING_OPERATION_INPUT = 'input';
 
     /**
      * Binding type 'output' .
      */
-    public const BINDING_OPERATION_OUTPUT = 'output';
-
-    /**
-     * WSDL file name.
-     *
-     * @var string
-     */
-    private $wsdlFile;
+    final public const BINDING_OPERATION_OUTPUT = 'output';
 
     /**
      * DOMDocument WSDL file.
      *
-     * @var \DOMDocument
      */
-    private $domDocument;
+    private ?\DOMDocument $domDocument = null;
 
     /**
      * DOMXPath WSDL file.
@@ -56,14 +48,13 @@ class WsdlHandler
      *
      * @var array(string=>array(string=>array(string=>array(string))))
      */
-    private $mimeTypes = [];
+    private array $mimeTypes = [];
 
     /**
      * WSDL namespace of current WSDL file.
      *
-     * @var string
      */
-    private $wsdlSoapNamespace;
+    private ?string $wsdlSoapNamespace = null;
 
     /**
      * Constructor.
@@ -71,9 +62,12 @@ class WsdlHandler
      * @param string $wsdlFile    WSDL file name
      * @param string $soapVersion SOAP version constant
      */
-    public function __construct($wsdlFile, $soapVersion)
+    public function __construct(/**
+     * WSDL file name.
+     *
+     */
+    private $wsdlFile, $soapVersion)
     {
-        $this->wsdlFile = $wsdlFile;
         if ($soapVersion == \SOAP_1_1) {
             $this->wsdlSoapNamespace = Helper::NS_WSDL_SOAP_1_1;
         } else {
@@ -175,7 +169,7 @@ class WsdlHandler
 
         [$ctype] = explode('/', $currentMimeType);
         foreach ($mimeTypes as $mimeType) {
-            [$type, $subtype] = explode('/', $mimeType);
+            [$type, $subtype] = explode('/', (string) $mimeType);
             if ($subtype === '*' && $type === $ctype) {
                 return true;
             }

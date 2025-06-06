@@ -13,6 +13,7 @@
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
 use BeSimple\SoapBundle\ServiceDefinition\Annotation\Alias;
+use BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType as ComplexTypeAnnotation;
 use BeSimple\SoapBundle\ServiceDefinition\ComplexType;
 use BeSimple\SoapBundle\ServiceDefinition\Definition;
 use BeSimple\SoapBundle\Util\Collection;
@@ -28,7 +29,7 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
 {
     private string $aliasClass = Alias::class;
 
-    private string $complexTypeClass = \BeSimple\SoapBundle\ServiceDefinition\Annotation\ComplexType::class;
+    private string $complexTypeClass = ComplexTypeAnnotation::class;
 
     /**
      * Loads a ServiceDefinition from annotations from a class.
@@ -53,6 +54,10 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
             $annotations['alias'] = $alias->getValue();
         }
 
+        foreach ($class->getAttributes(Alias::class) as $alias) {
+            $annotations['alias'] = $alias->getValue();
+        }
+
         $annotations['properties'] = new Collection('getName', ComplexType::class);
         foreach ($class->getProperties() as $property) {
             $complexType = $this->reader->getPropertyAnnotation($property, $this->complexTypeClass);
@@ -62,7 +67,18 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
                 $propertyComplexType->setValue($complexType->getValue());
                 $propertyComplexType->setNillable($complexType->isNillable());
                 $propertyComplexType->setIsAttribute($complexType->isAttribute());
-                $propertyComplexType->setName($property->getName());
+                $propertyComplexType->setName($complexType->getName() ?? $property->getName());
+                $annotations['properties']->add($propertyComplexType);
+            }
+
+            foreach ($property->getAttributes(ComplexTypeAnnotation::class) as $attribute) {
+                $instance = $attribute->newInstance();
+
+                $propertyComplexType = new ComplexType();
+                $propertyComplexType->setValue($instance->getValue());
+                $propertyComplexType->setNillable($instance->isNillable());
+                $propertyComplexType->setIsAttribute($instance->isAttribute());
+                $propertyComplexType->setName($instance->getName() ?? $property->getName());
                 $annotations['properties']->add($propertyComplexType);
             }
         }
@@ -73,7 +89,7 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
     /**
      * @inheritDoc
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, ?string $type = null): bool
     {
         return \is_string($resource) && class_exists($resource) && 'annotation_complextype' === $type;
     }

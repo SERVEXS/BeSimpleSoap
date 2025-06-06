@@ -28,21 +28,12 @@ use BeSimple\SoapCommon\SoapResponseFilter;
  */
 class MimeFilter implements SoapRequestFilter, SoapResponseFilter
 {
-    /**
-     * Attachment type.
-     *
-     * @var int Helper::ATTACHMENTS_TYPE_SWA | Helper::ATTACHMENTS_TYPE_MTOM
-     */
-    protected $attachmentType = Helper::ATTACHMENTS_TYPE_SWA;
-
-    /**
-     * Constructor.
-     *
-     * @param int $attachmentType Helper::ATTACHMENTS_TYPE_SWA | Helper::ATTACHMENTS_TYPE_MTOM
-     */
-    public function __construct($attachmentType)
-    {
-        $this->attachmentType = $attachmentType;
+    public function __construct(
+        /**
+         * @var int Helper::ATTACHMENTS_TYPE_SWA | Helper::ATTACHMENTS_TYPE_MTOM
+         */
+        protected $attachmentType = Helper::ATTACHMENTS_TYPE_SWA
+    ) {
     }
 
     /**
@@ -72,8 +63,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
                 $multipart->setHeader('Content-Type', 'start-info', 'text/xml');
                 $soapPart->setHeader('Content-Type', 'application/xop+xml');
                 $soapPart->setHeader('Content-Type', 'type', 'text/xml');
-            }
-            // change content type headers for SOAP 1.2
+            } // change content type headers for SOAP 1.2
             elseif ($soapVersion == \SOAP_1_2) {
                 $multipart->setHeader('Content-Type', 'type', 'application/soap+xml');
                 $soapPart->setHeader('Content-Type', 'application/soap+xml');
@@ -86,7 +76,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
 
             // TODO
             $headers = $multipart->getHeadersForHttp();
-            [, $contentType] = explode(': ', $headers[0]);
+            [, $contentType] = explode(': ', (string)$headers[0]);
 
             $request->setContentType($contentType);
         }
@@ -112,7 +102,7 @@ class MimeFilter implements SoapRequestFilter, SoapResponseFilter
             $soapPart = $multipart->getPart();
             // convert href -> myhref for external references as PHP throws exception in this case
             // http://svn.php.net/viewvc/php/php-src/branches/PHP_5_4/ext/soap/php_encoding.c?view=markup#l3436
-            $content = preg_replace('/href=(?!#)/', 'myhref=', $soapPart->getContent());
+            $content = preg_replace('/href=(?!#)/', 'myhref=', (string)$soapPart->getContent());
             $response->setContent($content);
             $response->setContentType($soapPart->getHeader('Content-Type'));
             // store attachments

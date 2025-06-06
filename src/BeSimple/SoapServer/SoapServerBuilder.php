@@ -171,7 +171,7 @@ class SoapServerBuilder extends AbstractSoapBuilder
      *
      * @return \BeSimple\SoapServer\SoapServerBuilder
      */
-    public function withHandler($handler)
+    public function withHandler(mixed $handler)
     {
         if (\is_string($handler) && class_exists($handler)) {
             $this->handlerClass = $handler;

@@ -46,7 +46,7 @@ class SwaTypeConverter implements TypeConverterInterface, SoapKernelAwareInterfa
         // http://svn.php.net/viewvc/php/php-src/branches/PHP_5_4/ext/soap/php_encoding.c?view=markup#l3436
         $ref = $doc->documentElement->getAttribute('myhref');
 
-        if ('cid:' === substr($ref, 0, 4)) {
+        if (str_starts_with($ref, 'cid:')) {
             $contentId = urldecode(substr($ref, 4));
 
             if (null !== ($part = $this->soapKernel->getAttachment($contentId))) {
@@ -62,7 +62,7 @@ class SwaTypeConverter implements TypeConverterInterface, SoapKernelAwareInterfa
     public function convertPhpToXml($data)
     {
         $part = new MimePart($data);
-        $contentId = trim($part->getHeader('Content-ID'), '<>');
+        $contentId = trim((string) $part->getHeader('Content-ID'), '<>');
 
         $this->soapKernel->addAttachment($part);
 

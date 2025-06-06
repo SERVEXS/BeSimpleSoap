@@ -35,7 +35,7 @@ class SoapRequest extends CommonSoapRequest
         $request = new self();
 
         // $content is if unmodified from SoapClient not a php string type!
-        $request->setContent((string) (null === $content ? file_get_contents('php://input') : $content));
+        $request->setContent((string) ($content ?? file_get_contents('php://input')));
         $request->setLocation(self::getCurrentUrl());
         $request->setAction($_SERVER[SoapMessage::SOAP_ACTION_HEADER] ?? null);
         $request->setVersion($version);
@@ -57,7 +57,7 @@ class SoapRequest extends CommonSoapRequest
     public static function getCurrentUrl()
     {
         $url = '';
-        if (isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) === 'on' || $_SERVER['HTTPS'] === '1')) {
+        if (isset($_SERVER['HTTPS']) && (strtolower((string) $_SERVER['HTTPS']) === 'on' || $_SERVER['HTTPS'] === '1')) {
             $url .= 'https://';
         } else {
             $url .= 'http://';

@@ -137,7 +137,7 @@ class WsdlDownloader
     {
         // @parse_url to suppress E_WARNING for invalid urls
         if (false !== $url = @parse_url($file)) {
-            if (isset($url['scheme']) && 'http' === substr($url['scheme'], 0, 4)) {
+            if (isset($url['scheme']) && str_starts_with($url['scheme'], 'http')) {
                 return true;
             }
         }

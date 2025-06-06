@@ -26,7 +26,7 @@ class BsString
     public static function startsWith($str, $substr): bool
     {
         if (\is_string($str) && \is_string($substr) && \strlen($str) >= \strlen($substr)) {
-            return $substr === substr($str, 0, \strlen($substr));
+            return str_starts_with($str, $substr);
         }
 
         return false;

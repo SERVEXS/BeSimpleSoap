@@ -131,13 +131,13 @@ class MultiPartTest extends TestCase
         $mp->addPart($p2);
 
         $withoutMain = [
-            trim($p2->getHeader('Content-ID'), '<>') => $p2,
+            trim((string) $p2->getHeader('Content-ID'), '<>') => $p2,
         ];
         $this->assertEquals($withoutMain, $mp->getParts());
 
         $withMain = [
-            trim($p1->getHeader('Content-ID'), '<>') => $p1,
-            trim($p2->getHeader('Content-ID'), '<>') => $p2,
+            trim((string) $p1->getHeader('Content-ID'), '<>') => $p1,
+            trim((string) $p2->getHeader('Content-ID'), '<>') => $p2,
         ];
         $this->assertEquals($withMain, $mp->getParts(true));
     }

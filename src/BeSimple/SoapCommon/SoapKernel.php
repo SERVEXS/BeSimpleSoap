@@ -36,14 +36,14 @@ class SoapKernel
      *
      * @var array(SoapRequestFilter)
      */
-    private $requestFilters = [];
+    private array $requestFilters = [];
 
     /**
      * Response filters.
      *
      * @var array(SoapResponseFilter)
      */
-    private $responseFilters = [];
+    private array $responseFilters = [];
 
     /**
      * Add attachment.
@@ -52,7 +52,7 @@ class SoapKernel
      */
     public function addAttachment(MimePart $attachment): void
     {
-        $contentId = trim($attachment->getHeader('Content-ID'), '<>');
+        $contentId = trim((string) $attachment->getHeader('Content-ID'), '<>');
 
         $this->attachments[$contentId] = $attachment;
     }

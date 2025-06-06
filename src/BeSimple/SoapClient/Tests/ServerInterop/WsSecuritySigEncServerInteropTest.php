@@ -15,7 +15,7 @@ use BeSimple\SoapCommon\WsSecurityKey as BeSimpleWsSecurityKey;
 
 class WsSecuritySigEncServerInteropTest extends TestCase
 {
-    private $options = [
+    private array $options = [
         'soap_version' => \SOAP_1_2,
         'features' => \SOAP_SINGLE_ELEMENT_ARRAYS, // make sure that result is array for size=1
         'classmap' => [

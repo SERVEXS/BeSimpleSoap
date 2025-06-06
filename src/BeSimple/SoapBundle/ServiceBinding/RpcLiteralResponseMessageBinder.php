@@ -89,7 +89,7 @@ class RpcLiteralResponseMessageBinder implements MessageBinderInterface
         $this->messageRefs[$hash] = $message;
 
         if (!$message instanceof $phpType) {
-            throw new \InvalidArgumentException(sprintf('The instance class must be "%s", "%s" given.', $phpType, get_class($message)));
+            throw new \InvalidArgumentException(sprintf('The instance class must be "%s", "%s" given.', $phpType, $message::class));
         }
 
         $message = clone $message;

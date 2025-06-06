@@ -33,14 +33,14 @@ class SoapRequestTest extends TestCase
 
         $message = $request->getSoapMessage();
 
-        $this->assertEquals(735, \strlen(trim($message)));
+        $this->assertEquals(735, \strlen(trim((string) $message)));
         $this->assertCount(1, $request->getSoapAttachments());
 
         $attachment = $request->getSoapAttachments()->get('http://tempuri.org/1/632618206527087310');
 
         $this->assertNotNull($attachment);
         $this->assertEquals('application/octet-stream', $attachment->getType());
-        $this->assertEquals(767, \strlen(trim($attachment->getContent())));
+        $this->assertEquals(767, \strlen(trim((string) $attachment->getContent())));
     }
 
     private function loadRequestContentFixture($name)

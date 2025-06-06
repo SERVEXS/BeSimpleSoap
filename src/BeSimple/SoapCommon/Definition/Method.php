@@ -17,17 +17,13 @@ namespace BeSimple\SoapCommon\Definition;
  */
 class Method
 {
-    private $name;
+    private readonly \BeSimple\SoapCommon\Definition\Message $headers;
+    private readonly \BeSimple\SoapCommon\Definition\Message $input;
+    private readonly \BeSimple\SoapCommon\Definition\Message $output;
+    private readonly \BeSimple\SoapCommon\Definition\Message $fault;
 
-    private $headers;
-    private $input;
-    private $output;
-    private $fault;
-
-    public function __construct($name)
+    public function __construct(private $name)
     {
-        $this->name = $name;
-
         $this->headers = new Message($name . 'Header');
         $this->input = new Message($name . 'Request');
         $this->output = new Message($name . 'Response');

@@ -52,7 +52,7 @@ class Parser
         $lines = preg_split("/(\r\n)/", $mimeMessage);
         foreach ($lines as $line) {
             // ignore http status code and POST *
-            if (substr($line, 0, 5) == 'HTTP/' || substr($line, 0, 4) == 'POST') {
+            if (str_starts_with($line, 'HTTP/') || str_starts_with($line, 'POST')) {
                 continue;
             }
             if (isset($currentHeader)) {
@@ -172,8 +172,8 @@ class Parser
      */
     private static function decodeContent(Part $part, $content)
     {
-        $encoding = strtolower($part->getHeader('Content-Transfer-Encoding'));
-        $charset = strtolower($part->getHeader('Content-Type', 'charset'));
+        $encoding = strtolower((string) $part->getHeader('Content-Transfer-Encoding'));
+        $charset = strtolower((string) $part->getHeader('Content-Type', 'charset'));
         if ($encoding == Part::ENCODING_BASE64) {
             $content = base64_decode($content);
         } elseif ($encoding == Part::ENCODING_QUOTED_PRINTABLE) {

@@ -34,7 +34,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     public function testDownload($source, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
-        $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
+        $wsdlCacheUrl = $wsdlCacheDir->url();
 
         Cache::setEnabled(Cache::ENABLED);
         Cache::setDirectory($wsdlCacheUrl);
@@ -108,7 +108,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     public function testResolveWsdlIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
-        $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
+        $wsdlCacheUrl = $wsdlCacheDir->url();
 
         Cache::setEnabled(Cache::ENABLED);
         Cache::setDirectory($wsdlCacheUrl);
@@ -173,7 +173,7 @@ class WsdlDownloaderTest extends AbstractWebserverTest
     public function testResolveXsdIncludes($source, $cacheFile, $remoteParentUrl, $regexp, $nbDownloads): void
     {
         $wsdlCacheDir = vfsStream::setup('wsdl');
-        $wsdlCacheUrl = $wsdlCacheDir->url('wsdl');
+        $wsdlCacheUrl = $wsdlCacheDir->url();
 
         Cache::setEnabled(Cache::ENABLED);
         Cache::setDirectory($wsdlCacheUrl);

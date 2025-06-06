@@ -117,7 +117,7 @@ class SoapRequest extends Request
         $mimeMessage = Message::createFromMessage($content, $contentTypeHeader['boundary']);
         $mimeParts = $mimeMessage->getParts();
 
-        $soapMimePartId = trim($contentTypeHeader['start'], '<>');
+        $soapMimePartId = trim((string) $contentTypeHeader['start'], '<>');
         $soapMimePartType = $contentTypeHeader['start-info'];
 
         $rootPart = array_shift($mimeParts);
@@ -147,7 +147,7 @@ class SoapRequest extends Request
     protected function splitContentTypeHeader($header)
     {
         $result = [];
-        $parts = explode(';', strtolower($header));
+        $parts = explode(';', strtolower((string) $header));
 
         $result['_type'] = array_shift($parts);
 

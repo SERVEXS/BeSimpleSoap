@@ -26,37 +26,32 @@ use BeSimple\SoapCommon\Helper;
  *
  * @author Andreas Schamberger <mail@andreass.net>
  */
-class Part extends PartHeader
+class Part extends PartHeader implements \Stringable
 {
     /**
      * Encoding type base 64
      */
-    public const ENCODING_BASE64 = 'base64';
+    final public const ENCODING_BASE64 = 'base64';
 
     /**
      * Encoding type binary
      */
-    public const ENCODING_BINARY = 'binary';
+    final public const ENCODING_BINARY = 'binary';
 
     /**
      * Encoding type eight bit
      */
-    public const ENCODING_EIGHT_BIT = '8bit';
+    final public const ENCODING_EIGHT_BIT = '8bit';
 
     /**
      * Encoding type seven bit
      */
-    public const ENCODING_SEVEN_BIT = '7bit';
+    final public const ENCODING_SEVEN_BIT = '7bit';
 
     /**
      * Encoding type quoted printable
      */
-    public const ENCODING_QUOTED_PRINTABLE = 'quoted-printable';
-
-    /**
-     * Content.
-     */
-    protected $content;
+    final public const ENCODING_QUOTED_PRINTABLE = 'quoted-printable';
 
     /**
      * Construct new mime object.
@@ -69,9 +64,8 @@ class Part extends PartHeader
      *
      * @return void
      */
-    public function __construct($content = null, $contentType = 'application/octet-stream', $charset = null, $encoding = self::ENCODING_BINARY, $contentId = null)
+    public function __construct(protected mixed $content = null, $contentType = 'application/octet-stream', $charset = null, $encoding = self::ENCODING_BINARY, $contentId = null)
     {
-        $this->content = $content;
         $this->setHeader('Content-Type', $contentType);
         if (null !== $charset) {
             $this->setHeader('Content-Type', 'charset', $charset);
@@ -88,9 +82,9 @@ class Part extends PartHeader
     /**
      * __toString.
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->content;
+        return (string) $this->content;
     }
 
     /**
@@ -106,7 +100,7 @@ class Part extends PartHeader
      *
      * @param mixed $content Content to set
      */
-    public function setContent($content): void
+    public function setContent(mixed $content): void
     {
         $this->content = $content;
     }
@@ -128,25 +122,19 @@ class Part extends PartHeader
      */
     protected function generateBody()
     {
-        $encoding = strtolower($this->getHeader('Content-Transfer-Encoding'));
-        $charset = strtolower($this->getHeader('Content-Type', 'charset'));
+        $encoding = strtolower((string) $this->getHeader('Content-Transfer-Encoding'));
+        $charset = strtolower((string) $this->getHeader('Content-Type', 'charset'));
         if ($charset != 'utf-8') {
-            $content = iconv('utf-8', $charset . '//TRANSLIT', $this->content);
+            $content = iconv('utf-8', $charset . '//TRANSLIT', (string) $this->content);
         } else {
             $content = $this->content;
         }
-        switch ($encoding) {
-            case self::ENCODING_BASE64:
-                return substr(chunk_split(base64_encode($content), 76, "\r\n"), -2);
-            case self::ENCODING_QUOTED_PRINTABLE:
-                return quoted_printable_encode($content);
-            case self::ENCODING_BINARY:
-                return $content;
-            case self::ENCODING_SEVEN_BIT:
-            case self::ENCODING_EIGHT_BIT:
-            default:
-                return preg_replace("/\r\n|\r|\n/", "\r\n", $content);
-        }
+        return match ($encoding) {
+            self::ENCODING_BASE64 => substr(chunk_split(base64_encode((string) $content), 76, "\r\n"), -2),
+            self::ENCODING_QUOTED_PRINTABLE => quoted_printable_encode((string) $content),
+            self::ENCODING_BINARY => $content,
+            default => preg_replace("/\r\n|\r|\n/", "\r\n", (string) $content),
+        };
     }
 
     /**

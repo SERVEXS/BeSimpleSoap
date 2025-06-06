@@ -47,7 +47,7 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @see http://www.w3.org/TR/2006/REC-ws-addr-core-20060509/#predefaddr
      */
-    public const ENDPOINT_REFERENCE_ANONYMOUS = 'http://www.w3.org/2005/08/addressing/anonymous';
+    final public const ENDPOINT_REFERENCE_ANONYMOUS = 'http://www.w3.org/2005/08/addressing/anonymous';
 
     /**
      * (2.1) Endpoint reference (EPR) address for discarting messages.
@@ -59,7 +59,7 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * @see http://www.w3.org/TR/2006/REC-ws-addr-core-20060509/#predefaddr
      */
-    public const ENDPOINT_REFERENCE_NONE = 'http://www.w3.org/2005/08/addressing/none';
+    final public const ENDPOINT_REFERENCE_NONE = 'http://www.w3.org/2005/08/addressing/none';
 
     /**
      * (3.1) Predefined value for reply.
@@ -68,7 +68,7 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      *
      * see http://www.w3.org/TR/2006/REC-ws-addr-core-20060509/#predefrels
      */
-    public const RELATIONSHIP_TYPE_REPLY = 'http://www.w3.org/2005/08/addressing/reply';
+    final public const RELATIONSHIP_TYPE_REPLY = 'http://www.w3.org/2005/08/addressing/reply';
 
     /**
      * FaultTo.
@@ -154,11 +154,7 @@ class WsAddressingFilter implements SoapRequestFilter, SoapResponseFilter
      */
     public function getReferenceParameter($ns, $parameter)
     {
-        if (isset($this->referenceParametersRecieved[$ns][$parameter])) {
-            return $this->referenceParametersRecieved[$ns][$parameter];
-        }
-
-        return null;
+        return $this->referenceParametersRecieved[$ns][$parameter] ?? null;
     }
 
     /**
