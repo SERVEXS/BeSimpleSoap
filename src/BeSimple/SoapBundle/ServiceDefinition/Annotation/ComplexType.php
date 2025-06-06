@@ -12,6 +12,10 @@ namespace BeSimple\SoapBundle\ServiceDefinition\Annotation;
 
 /**
  * @Annotation
+ *
+ * @phpstan-type TComplexType array{name?: string, value: string, nillable?: bool, attribute?: bool}
+ *
+ * @extends Configuration<TComplexType>
  */
 #[\Attribute]
 class ComplexType extends Configuration
