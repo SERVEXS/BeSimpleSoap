@@ -41,41 +41,39 @@ class AnnotationClassLoader extends Loader
 {
     public function __construct(protected Reader $reader, protected TypeRepository $typeRepository)
     {
+        parent::__construct();
     }
 
     /**
      * Loads a ServiceDefinition from annotations from a class.
-     *
-     * @param string $class A class name
-     * @param string $type The resource type
      *
      * @return Definition\Definition A ServiceDefinition instance
      *
      * @throws InvalidArgumentException When route can't be parsed
      * @throws Exception
      */
-    public function load($class, $type = null)
+    public function load(mixed $resource, ?string $type = null): mixed
     {
-        if (!class_exists($class)) {
-            throw new InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+        if (!class_exists($resource)) {
+            throw new InvalidArgumentException(sprintf('Class "%s" does not exist.', $resource));
         }
 
-        $class = new ReflectionClass($class);
+        $resource = new ReflectionClass($resource);
         $definition = new Definition\Definition($this->typeRepository);
 
         $sharedHeaders = [];
-        foreach ($this->reader->getClassAnnotations($class) as $annotation) {
+        foreach ($this->reader->getClassAnnotations($resource) as $annotation) {
             if ($annotation instanceof Annotation\Header) {
                 $sharedHeaders[$annotation->getValue()] = $this->loadType($annotation->getPhpType());
             }
         }
 
-        foreach ($class->getAttributes(Annotation\Header::class) as $attribute) {
+        foreach ($resource->getAttributes(Annotation\Header::class) as $attribute) {
             $attributeInstance = $attribute->newInstance();
             $sharedHeaders[$attributeInstance->getValue()] = $this->loadType($attributeInstance->getPhpType());
         }
 
-        foreach ($class->getMethods() as $method) {
+        foreach ($resource->getMethods() as $method) {
             $serviceHeaders = $sharedHeaders;
             $serviceArguments = [];
             $serviceMethod = null;
@@ -95,7 +93,7 @@ class AnnotationClassLoader extends Loader
 
                     $serviceMethod = new Definition\Method(
                         $attributeInstance->getValue(),
-                        $this->getController($class, $method, $attributeInstance)
+                        $this->getController($resource, $method, $attributeInstance)
                     );
                 } else  if ($attributeInstance instanceof Annotation\Result) {
                     if ($serviceReturn) {
@@ -120,7 +118,7 @@ class AnnotationClassLoader extends Loader
 
                     $serviceMethod = new Definition\Method(
                         $annotation->getValue(),
-                        $this->getController($class, $method, $annotation)
+                        $this->getController($resource, $method, $annotation)
                     );
                 } elseif ($annotation instanceof Annotation\Result) {
                     if ($serviceReturn) {
@@ -203,7 +201,7 @@ class AnnotationClassLoader extends Loader
     /**
      * @inheritDoc
      */
-    public function supports($resource, ?string $type = null): bool
+    public function supports(mixed $resource, ?string $type = null): bool
     {
         return is_string($resource) && preg_match(
                 '/^(?:\\\\?[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)+$/',

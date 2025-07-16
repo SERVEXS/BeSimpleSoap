@@ -18,25 +18,30 @@ use BeSimple\SoapBundle\Soap\SoapRequest;
 use BeSimple\SoapBundle\Soap\SoapResponse;
 use BeSimple\SoapBundle\WebServiceContext;
 use BeSimple\SoapServer\SoapServerBuilder;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use InvalidArgumentException;
+use LogicException;
+use SoapServer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 /**
  * @author Christian Kerl <christian-kerl@web.de>
  * @author Francis Besset <francis.besset@gmail.com>
  */
-class SoapWebServiceController implements ContainerAwareInterface
+#[AsController]
+class SoapWebServiceController
 {
-    use ContainerAwareTrait;
-
-    protected \SoapServer $soapServer;
+    protected SoapServer $soapServer;
 
     protected SoapRequest $soapRequest;
 
@@ -46,14 +51,23 @@ class SoapWebServiceController implements ContainerAwareInterface
 
     private array $headers = [];
 
-    public function callAction($webservice): SoapResponse
+    public function __construct(
+        private readonly ContainerInterface    $container,
+        private readonly RouterInterface       $router,
+        private readonly Environment           $twig,
+        private readonly HttpKernelInterface   $httpKernel,
+        private readonly ParameterBagInterface $parameterBag
+    ) {
+    }
+
+    public function callAction($webservice, Request $request): SoapResponse
     {
         /** @var WebServiceContext $webServiceContext */
         $webServiceContext = $this->getWebServiceContext($webservice);
 
         $this->serviceBinder = $webServiceContext->getServiceBinder();
 
-        $this->soapRequest = SoapRequest::createFromHttpRequest($this->container->get('request_stack')->getCurrentRequest());
+        $this->soapRequest = SoapRequest::createFromHttpRequest($request);
         $this->soapServer = $webServiceContext
             ->getServerBuilder()
             ->withSoapVersion11()
@@ -70,17 +84,17 @@ class SoapWebServiceController implements ContainerAwareInterface
         return $response;
     }
 
-    public function definitionAction($webservice): Response
+    public function definitionAction($webservice, Request $request): Response
     {
         $routeName = $webservice . '_webservice_call';
-        $result = $this->container->get('router')->getRouteCollection()->get($routeName);
+        $result = $this->router->getRouteCollection()->get($routeName);
         if ($result === null) {
             $routeName = '_webservice_call';
         }
 
         $response = new Response(
-            $this->getWebServiceContext($webservice)->getWsdlFileContent(
-                $this->container->get('router')->generate(
+            $this->getWebServiceContext($webservice)?->getWsdlFileContent(
+                $this->router->generate(
                     $routeName,
                     ['webservice' => $webservice],
                     UrlGeneratorInterface::ABSOLUTE_URL
@@ -88,8 +102,6 @@ class SoapWebServiceController implements ContainerAwareInterface
             )
         );
 
-        /** @var Request $request */
-        $request = $this->container->get('request_stack')->getCurrentRequest();
         $query = $request->query;
         if ($query->has('wsdl') || $query->has('WSDL')) {
             $request->setRequestFormat('wsdl');
@@ -101,12 +113,12 @@ class SoapWebServiceController implements ContainerAwareInterface
     /**
      * Converts an Exception to a SoapFault Response.
      *
-     * @throws \LogicException When the request query parameter "_besimple_soap_webservice" does not exist
+     * @throws LogicException When the request query parameter "_besimple_soap_webservice" does not exist
      */
     public function exceptionAction(Request $request, FlattenException $exception, ?DebugLoggerInterface $logger = null): Response
     {
         if (!$webservice = $request->query->get('_besimple_soap_webservice')) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     'The parameter "%s" is required in Request::$query parameter bag to generate the SoapFault.',
                     '_besimple_soap_webservice'
@@ -116,9 +128,9 @@ class SoapWebServiceController implements ContainerAwareInterface
             );
         }
 
-        $view = '@Twig/Exception/' . ($this->container->get('kernel')->isDebug() ? 'exception' : 'error') . '.txt.twig';
+        $view = '@Twig/Exception/' . ($this->parameterBag->get('kernel.debug') ? 'exception' : 'error') . '.txt.twig';
         $code = $exception->getStatusCode();
-        $details = $this->container->get('twig')->render($view, [
+        $details = $this->twig->render($view, [
             'status_code' => $code,
             'status_text' => Response::$statusTexts[$code] ?? '',
             'exception' => $exception,
@@ -175,7 +187,7 @@ class SoapWebServiceController implements ContainerAwareInterface
             );
 
             // forward to controller
-            $response = $this->container->get('http_kernel')->handle($this->soapRequest, HttpKernelInterface::SUB_REQUEST, false);
+            $response = $this->httpKernel->handle($this->soapRequest, HttpKernelInterface::SUB_REQUEST, false);
 
             $this->setResponse($response);
 
@@ -212,12 +224,12 @@ class SoapWebServiceController implements ContainerAwareInterface
     /**
      * Set the SoapResponse
      *
-     * @throws \InvalidArgumentException If the given Response is not an instance of SoapResponse
+     * @throws InvalidArgumentException If the given Response is not an instance of SoapResponse
      */
     protected function setResponse(Response $response): SoapResponse
     {
         if (!$response instanceof SoapResponse) {
-            throw new \InvalidArgumentException('You must return an instance of BeSimple\SoapBundle\Soap\SoapResponse');
+            throw new InvalidArgumentException('You must return an instance of BeSimple\SoapBundle\Soap\SoapResponse');
         }
 
         return $this->soapResponse = $response;
@@ -231,7 +243,7 @@ class SoapWebServiceController implements ContainerAwareInterface
             return $this->container->get($context);
         }
 
-        $context = sprintf('besimple.soap.context.%s', ucfirst((string) $webservice));
+        $context = sprintf('besimple.soap.context.%s', ucfirst((string)$webservice));
         if (!$this->container->has($context)) {
             throw new NotFoundHttpException(
                 sprintf('No WebService with name "%s" found. Possible cause: case sensitivity.', $webservice)

@@ -34,32 +34,29 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
     /**
      * Loads a ServiceDefinition from annotations from a class.
      *
-     * @param string $class A class name
-     * @param string $type The resource type
-     *
      * @return Definition A ServiceDefinition instance
      *
      * @throws \InvalidArgumentException When route can't be parsed
      */
-    public function load($class, $type = null)
+    public function load(mixed $resource, ?string $type = null): mixed
     {
-        if (!class_exists($class)) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+        if (!class_exists($resource)) {
+            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $resource));
         }
 
         $annotations = [];
 
-        $class = new \ReflectionClass($class);
-        if ($alias = $this->reader->getClassAnnotation($class, $this->aliasClass)) {
+        $resource = new \ReflectionClass($resource);
+        if ($alias = $this->reader->getClassAnnotation($resource, $this->aliasClass)) {
             $annotations['alias'] = $alias->getValue();
         }
 
-        foreach ($class->getAttributes(Alias::class) as $alias) {
+        foreach ($resource->getAttributes(Alias::class) as $alias) {
             $annotations['alias'] = $alias->getValue();
         }
 
         $annotations['properties'] = new Collection('getName', ComplexType::class);
-        foreach ($class->getProperties() as $property) {
+        foreach ($resource->getProperties() as $property) {
             $complexType = $this->reader->getPropertyAnnotation($property, $this->complexTypeClass);
 
             if ($complexType) {
@@ -89,7 +86,7 @@ class AnnotationComplexTypeLoader extends AnnotationClassLoader
     /**
      * @inheritDoc
      */
-    public function supports($resource, ?string $type = null): bool
+    public function supports(mixed $resource, ?string $type = null): bool
     {
         return \is_string($resource) && class_exists($resource) && 'annotation_complextype' === $type;
     }
