@@ -122,7 +122,7 @@ abstract class AbstractVersion implements VersionInterface
     protected function addSoapAddress()
     {
         $soapAddress = $this->document->createElement($this->soapNs . ':address');
-        $soapAddress->setAttribute('location', $this->location);
+        $soapAddress->setAttribute('location', (string) $this->location);
 
         $this->servicePortNode->appendChild($soapAddress);
 
