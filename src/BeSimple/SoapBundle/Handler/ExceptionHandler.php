@@ -21,13 +21,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ExceptionHandler
 {
-    protected \SoapFault|string|null $soapFault = null;
+    protected \SoapFault|null $soapFault = null;
 
     public function __construct(protected FlattenException $exception, protected $details = null)
     {
     }
 
-    public function setSoapFault(\SoapFault|string $soapFault): void
+    public function setSoapFault(\SoapFault $soapFault): void
     {
         $this->soapFault = $soapFault;
     }
