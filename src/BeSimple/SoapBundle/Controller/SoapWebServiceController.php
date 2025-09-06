@@ -139,7 +139,7 @@ class SoapWebServiceController
 
         $handler = new ExceptionHandler($exception, $details);
         if ($soapFault = $request->query->get('_besimple_soap_fault')) {
-            $handler->setSoapFault(new \SoapFault($soapFault, $details));
+            $handler->setSoapFault(new \SoapFault(500, $soapFault));
 
             // Remove parameter from query because cannot be Serialized in Logger
             $request->query->remove('_besimple_soap_fault');
