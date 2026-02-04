@@ -35,7 +35,7 @@
         "symfony/framework-bundle": "^6.0",
         "symfony/twig-bundle": "^6.0",
         "symfony/property-access": "^6.0",
-        "laminas/laminas-mime": "~2.7",
+        "laminas/laminas-mime": "^2.14",
         "twig/twig": "^3.0",
         "doctrine/annotations": "^2.0.1"
     },
