@@ -19,6 +19,12 @@
             "email": "mail@andreass.net"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:oroinc/laminas-mime.git"
+        }
+    ],
     "require": {
         "php": ">=8.2",
         "ext-curl": "*",
