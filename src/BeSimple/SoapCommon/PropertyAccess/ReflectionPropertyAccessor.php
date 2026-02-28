@@ -22,7 +22,7 @@ final readonly class ReflectionPropertyAccessor implements PropertyAccessorInter
     {
     }
 
-    public function setValue(&$objectOrArray, $propertyPath, $value): void
+    public function setValue(object|array &$objectOrArray, string|PropertyPathInterface $propertyPath, mixed $value): void
     {
         try {
             $this->decoratedPropertyAccessor->setValue($objectOrArray, $propertyPath, $value);
@@ -50,7 +50,7 @@ final readonly class ReflectionPropertyAccessor implements PropertyAccessorInter
         }
     }
 
-    public function getValue($objectOrArray, $propertyPath)
+    public function getValue(object|array $objectOrArray, string|PropertyPathInterface $propertyPath): mixed
     {
         try {
             return $this->decoratedPropertyAccessor->getValue($objectOrArray, $propertyPath);
@@ -76,7 +76,7 @@ final readonly class ReflectionPropertyAccessor implements PropertyAccessorInter
         }
     }
 
-    public function isWritable($objectOrArray, $propertyPath): bool
+    public function isWritable(object|array $objectOrArray, string|PropertyPathInterface $propertyPath): bool
     {
         return
             $this->decoratedPropertyAccessor->isWritable($objectOrArray, $propertyPath)

@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ExceptionHandler
 {
-    protected ?\SoapFault $soapFault = null;
+    protected \SoapFault|null $soapFault = null;
 
     public function __construct(protected FlattenException $exception, protected $details = null)
     {

@@ -13,6 +13,7 @@
 namespace BeSimple\SoapBundle\ServiceDefinition\Loader;
 
 use BeSimple\SoapBundle\ServiceDefinition\Definition;
+use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
@@ -41,15 +42,9 @@ use const T_STRING;
  */
 class AnnotationFileLoader extends FileLoader
 {
-    protected $loader;
+    protected AnnotationClassLoader $loader;
 
-    /**
-     * Constructor.
-     *
-     * @param AnnotationClassLoader $loader An AnnotationClassLoader instance
-     * @param string|array $paths A path or an array of paths where to look for resources
-     */
-    public function __construct(FileLocator $locator, AnnotationClassLoader $loader, $paths = [])
+    public function __construct(FileLocator $locator, AnnotationClassLoader $loader)
     {
         if (!function_exists('token_get_all')) {
             throw new RuntimeException('The Tokenizer extension is required for the routing annotation loaders.');
@@ -63,16 +58,12 @@ class AnnotationFileLoader extends FileLoader
     /**
      * Loads from annotations from a file.
      *
-     * @param string $file A PHP file path
-     * @param string $type The resource type
-     *
-     * @return Definition A ServiceDefinition instance
-     *
      * @throws InvalidArgumentException When the file does not exist
+     * @throws Exception
      */
-    public function load($file, $type = null): ?Definition
+    public function load(mixed $resource, ?string $type = null): ?Definition
     {
-        $path = $this->locator->locate($file);
+        $path = $this->locator->locate($resource);
 
         if ($class = $this->findClass($path)) {
             return $this->loader->load($class, $type);
@@ -83,13 +74,8 @@ class AnnotationFileLoader extends FileLoader
 
     /**
      * Returns true if this class supports the given resource.
-     *
-     * @param mixed $resource A resource
-     * @param string $type The resource type
-     *
-     * @return bool True if this class supports the given resource, false otherwise
      */
-    public function supports($resource, $type = null): bool
+    public function supports(mixed $resource, ?string $type = null): bool
     {
         return is_string($resource) && 'php' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'annotation' === $type);
     }
@@ -98,10 +84,8 @@ class AnnotationFileLoader extends FileLoader
      * Returns the full class name for the first class in the file.
      *
      * @param string $file A PHP file path
-     *
-     * @return string|false Full class name if found, false otherwise
      */
-    protected function findClass($file)
+    protected function findClass($file): string
     {
         return $this->getClassFullNameFromFile($file);
     }
